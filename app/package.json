@@ -1,0 +1,42 @@
+{
+  "name": "tapaia-app",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Tapaia Phase 1 community hub prototype (GPL-3.0)",
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/copy-assets.mjs",
+    "dev": "npm run assets && concurrently -k -n server,web \"tsx watch server/index.ts\" \"vite\"",
+    "build": "npm run assets && tsc -p . && vite build",
+    "start": "NODE_ENV=production tsx server/index.ts",
+    "verify": "node scripts/verify.mjs",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@coinbase/wallet-sdk": "^4.4.0",
+    "@tanstack/react-query": "^5.104.1",
+    "@walletconnect/ethereum-provider": "^2.25.0",
+    "cookie": "^1.1.1",
+    "express": "^5.2.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "viem": "^2.57.3",
+    "wagmi": "^3.7.7",
+    "ws": "^8.22.0",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.4",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@types/ws": "^8.18.2",
+    "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^9.2.4",
+    "playwright-core": "^1.64.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.3"
+  }
+}
