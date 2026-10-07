@@ -700,8 +700,10 @@ def build(seed=7):
             lamp_heads.append(lamp(props, emit, it[1], it[2]))
         elif k == 'person':
             _, x, fy, kind, skin, hair, shirt, pants, lh = it
-            props.ell(x - 1, fy - 2, x + 15, fy + 2, '#3b2440', 110)
-            props.blit(person(kind, skin, hair, shirt or '#000000', pants or '#000000', lh), x, fy - 31)
+            im = person(kind, skin, hair, shirt or '#000000', pants or '#000000', lh)
+            hw = im.width // 2
+            props.ell(x + 7 - hw, fy - 2, x + 7 + hw, fy + 2, '#3b2440', 110)
+            props.blit(im, x + 8 - im.width // 2, fy - im.height)
     rim_light(props, .25); sun_warm(props, .18)
     layers['props'] = props
     # foreground hedge with flowers (frames the bottom edge)
