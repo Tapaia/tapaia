@@ -1,0 +1,26 @@
+# Render Blueprint for the Tapaia Phase 1 prototype (free web service).
+# One-click: https://render.com/deploy?repo=https://github.com/Tapaia/tapaia
+# The app lives in app/, but its build copies art from design/, so the service
+# runs from the repo root (a rootDir would hide design/ from the build).
+services:
+  - type: web
+    name: tapaia
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: cd app && npm ci --include=dev && npm run build
+    startCommand: cd app && npm start
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - app/**
+        - design/mockups-v2/**
+        - design/logo/**
+        - .node-version
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Optional. Add WALLETCONNECT_PROJECT_ID later in the service's Environment tab
+      # to turn on WalletConnect (phone wallets / QR). The demo works without it.

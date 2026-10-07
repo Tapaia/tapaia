@@ -20,6 +20,7 @@ import { startBots, onUserMessage } from './bots';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = Number(process.env.PORT || 4417);
+const HOST = process.env.LISTEN_HOST || '0.0.0.0'; // bind all interfaces so hosts like Render can route to us
 const PROD = process.env.NODE_ENV === 'production';
 const WC_ID = process.env.WALLETCONNECT_PROJECT_ID || process.env.VITE_WALLETCONNECT_PROJECT_ID || null;
 const RPC = process.env.ETH_RPC_URL || 'https://ethereum-rpc.publicnode.com';
@@ -27,8 +28,8 @@ const FOUNDER_SLOTS = Number(process.env.FOUNDER_SLOTS || 100); // X is undecide
 const SPEAK_MIN = 1000; // zipcoin's live Speak minimum per the spec; S is undecided
 const COOKIE = 'tapaia_sid';
 const SESSION_MS = 7 * 86_400_000;
-let BUILD = 'dev';
-try { BUILD = execSync('git rev-parse --short HEAD', { cwd: ROOT }).toString().trim(); } catch { /* not a git checkout */ }
+let BUILD = (process.env.RENDER_GIT_COMMIT || process.env.SOURCE_COMMIT || '').slice(0, 7) || 'dev';
+if (BUILD === 'dev') try { BUILD = execSync('git rev-parse --short HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch { /* not a git checkout */ }
 
 load();
 const rpcClient = createPublicClient({ chain: mainnet, transport: viemHttp(RPC) });
@@ -241,6 +242,8 @@ app.use(express.json({ limit: '32kb' }));
 
 const me = (req: express.Request) => sessionUser(req);
 
+app.get('/api/health', (_req, res) => res.json({ ok: true, build: BUILD })); // host health check
+
 app.get('/api/config', (_req, res) => {
   const cfg: AppConfig = {
     walletConnectProjectId: WC_ID, build: BUILD,
@@ -381,8 +384,8 @@ setInterval(() => { for (const c of clients) if (c.ws.readyState === WebSocket.O
 // demo users who never connected stay "off"; on boot everyone real is offline
 for (const u of Object.values(db.users)) if (u.kind === 'demo' || u.kind === 'wallet') { u.presence = 'off'; u.room = undefined; }
 
-server.listen(PORT, () => {
-  console.log(`Tapaia prototype on http://localhost:${PORT} (build ${BUILD}${PROD ? '' : ', API only, use Vite on :5173'})`);
+server.listen(PORT, HOST, () => {
+  console.log(`Tapaia prototype on http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT} (build ${BUILD}${PROD ? '' : ', API only, use Vite on :5173'})`);
   console.log(WC_ID ? 'WalletConnect enabled' : 'WALLETCONNECT_PROJECT_ID not set: injected wallets and Coinbase Wallet only');
   startBots();
 });

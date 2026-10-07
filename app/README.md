@@ -24,7 +24,8 @@ Optional environment variables:
 
 | Variable | What it does |
 |---|---|
-| `PORT` | Server port (default `4417`). |
+| `PORT` | Server port (default `4417`). Hosts like Render set this for you. |
+| `LISTEN_HOST` | Interface to bind (default `0.0.0.0`, all interfaces). |
 | `WALLETCONNECT_PROJECT_ID` | Turns on WalletConnect (QR / phone wallets). Without it, browser-extension wallets (EIP-6963) and Coinbase Wallet still work, and the WalletConnect row says it isn't configured. Get an id at cloud.reown.com. |
 | `ETH_RPC_URL` | RPC used only to verify smart-contract wallet signatures (EIP-1271 / ERC-6492). Default: a public mainnet RPC. |
 | `FOUNDER_SLOTS` | Demo value for X, the number of Founding Citizen slots (default 100; the real X isn't decided). |
@@ -38,6 +39,22 @@ npm run verify            # or: node scripts/verify.mjs http://localhost:4417
 ```
 
 Runs headless Chrome (`playwright-core` + the system Chrome/Chromium) through: demo sign-in, both entry paths, live chat between two browsers, mentions, replies, reactions, Speak, theme toggle and persistence, read-only rooms, #feeds, DMs, the mobile layout, and a real SIWE sign-in against a mock EIP-6963 wallet (throwaway key, no funds). Screenshots go to `screenshots/`.
+
+## Deploy
+
+The prototype is one Node process (Express + `ws`) that serves the built client and the WebSocket chat on the same port, so it needs a host that keeps a server running. Vercel/Netlify serverless functions won't work.
+
+**Render (free, no Docker):** [`render.yaml`](../render.yaml) at the repo root is a Blueprint for a free web service.
+
+1. Open <https://render.com/deploy?repo=https://github.com/Tapaia/tapaia> and sign in with GitHub.
+2. Give the Blueprint a name, check that it shows one free web service called `tapaia`, and click **Deploy Blueprint**.
+3. When the build finishes, open the `https://tapaia-….onrender.com` URL shown on the service page.
+
+It builds with `cd app && npm ci --include=dev && npm run build` and starts with `cd app && npm start`, on Node 22. The service runs from the repo root, not `app/`, because the build copies art from `design/`. The health check is `/api/health`. No environment variables are required. To turn on WalletConnect, add `WALLETCONNECT_PROJECT_ID` in the service's **Environment** tab, and add the onrender.com domain to the project's allowed domains at cloud.reown.com.
+
+Free-tier caveats: the service sleeps after 15 minutes without traffic, and the first visit after that takes about a minute to wake it. Chat, accounts and sessions live in memory with a snapshot on local disk, which is wiped on every restart, redeploy or spin-down, so the town resets to the seed each time.
+
+Any host that runs a long-lived Node process with WebSockets works the same way (Fly.io, Railway, a VPS): build with `npm ci --include=dev && npm run build` in `app/`, start with `npm start`, and let it read `PORT`.
 
 ## What works
 
@@ -56,7 +73,6 @@ Runs headless Chrome (`playwright-core` + the system Chrome/Chromium) through: d
 - DMs don't use message requests yet. Mute, block, report, the moderation queue, slow mode, link filters and the address guard are stubs or missing. There's a simple rate limit (8 messages per 10 seconds).
 - No push notifications, PWA install, sounds, history paging (each room keeps its last 400 messages), attachments, threads or search beyond filtering the room list.
 - ENS / zipbook names aren't looked up.
-- The footer links to `github.com/tapaia/tapaia`, which doesn't exist until the GitHub account is set up.
 
 ## Layout
 

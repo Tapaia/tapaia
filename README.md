@@ -6,7 +6,11 @@ Nobody has to role-play to use the community hub. The game never gets in the way
 
 ## Status
 
-**Design phase.** There is no running app yet. This repository holds the design, license, and (soon) code, AI prompts, and lore files. Tokenomics for **$TAPAIA** are placeholders and not final.
+**Design phase, with a working Phase 1 prototype** in [`app/`](app/) (demo mode, no wallet needed; it never sends a transaction). This repository holds the design, license, prototype code, and (soon) AI prompts and lore files. Tokenomics for **$TAPAIA** are placeholders and not final.
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Tapaia/tapaia)
+
+The button deploys the prototype as a free Render web service from [`render.yaml`](render.yaml). See [app/README.md](app/README.md#deploy) for details.
 
 ## What we're building
 
@@ -35,6 +39,7 @@ Phases have exit criteria, not fixed dates. Details: [docs/design-doc.md](docs/d
 | --- | --- |
 | [docs/design-doc.md](docs/design-doc.md) | Full project design (draft v0.3) |
 | [docs/phase1-spec.md](docs/phase1-spec.md) | Phase 1 community hub spec (draft) |
+| [app/](app/) | Phase 1 hub prototype (web app + Node WebSocket server) |
 | [design/](design/) | Visual reference and Phase 1 mockups (current: [mockups-v2](design/mockups-v2/), first take: [mockups](design/mockups/)) |
 | [docs/lore/](docs/lore/) | Canon codex and setting files (coming) |
 | [prompts/](prompts/) | AI prompts and harness (coming; required by the book's license) |

@@ -5,6 +5,9 @@
   "description": "Tapaia Phase 1 community hub prototype (GPL-3.0)",
   "license": "GPL-3.0-only",
   "type": "module",
+  "engines": {
+    "node": ">=20.19 <25"
+  },
   "scripts": {
     "assets": "node scripts/copy-assets.mjs",
     "dev": "npm run assets && concurrently -k -n server,web \"tsx watch server/index.ts\" \"vite\"",
