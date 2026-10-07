@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Tapaia mockup 02: Arrival / become a citizen</title>
+<link rel="stylesheet" href="tapaia.css">
+<style>
+  .lobbyhint { position: absolute; left: 10px; top: 56px; width: 1260px; height: 716px; opacity: .35;
+    background: var(--parch-2); border: 15px solid var(--wood-2); border-image: url('assets/frame-wood.png') 5 / 15px repeat; }
+  .arrive { left: 70px; top: 70px; width: 1140px; height: 690px; }
+  .steps { display: flex; gap: 0; height: 34px; margin: 10px 12px 0; }
+  .step { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; font: 8px 'Press Start 2P'; white-space: nowrap;
+    background: var(--parch-3); border: 2px solid var(--wood-1); margin-right: -2px; color: var(--ink-soft); }
+  .step .n { width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; background: var(--parch-1); border: 2px solid var(--wood-1); }
+  .step.done { background: #d8f5d0; color: var(--leaf-d); }
+  .step.done .n { background: var(--leaf-l); color: var(--parch-0); border-color: var(--leaf-d); }
+  .step.cur { background: var(--robe-l); color: var(--parch-0); }
+  .step.cur .n { background: var(--robe-d); color: var(--gold); border-color: var(--robe-h); }
+  .body2 { display: flex; gap: 12px; padding: 10px 12px; height: 584px; }
+  .lcol { overflow: hidden; width: 380px; display: flex; flex-direction: column; gap: 10px; }
+  .rcol { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .slots { padding: 8px 10px; }
+  .slots .big { font: 16px 'Press Start 2P'; color: var(--robe); margin: 6px 0; }
+  .slotgrid { display: grid; grid-template-columns: repeat(12, 22px); gap: 4px; margin: 8px 0; }
+  .slotgrid span { width: 22px; height: 22px; border: 2px solid var(--wood-1); background: var(--parch-3); }
+  .slotgrid span.t { background: var(--gold); border-color: var(--gold-d); box-shadow: inset -3px -3px 0 var(--gold-d); }
+  .slotgrid span.q { background: var(--parch-0); border-style: dashed; }
+  .slots .row { font-size: 19px; line-height: 21px; }
+  .preview { padding: 8px 10px; }
+  .arrival { margin-top: 6px; padding: 4px 8px; background: #f1ebfa; border: 2px solid var(--robe-h); font-size: 19px; line-height: 20px; display: flex; gap: 8px; }
+  .arrival img.a { width: 32px; height: 50px; }
+  .arrival .h { font: 8px 'Press Start 2P'; color: var(--robe); margin-bottom: 4px; display: flex; gap: 6px; align-items: center; }
+  .arrival .h img { width: 14px; height: 14px; }
+  .tabs { display: flex; gap: 0; align-items: flex-end; height: 38px; }
+  .tab { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; font: 9px 'Press Start 2P'; white-space: nowrap;
+    background: var(--parch-3); border: 3px solid var(--wood-1); border-bottom: none; margin-right: 4px; color: var(--ink-soft); }
+  .tab img { width: 18px; height: 18px; }
+  .tab.on { height: 38px; background: var(--parch-1); color: var(--ink); box-shadow: inset 0 3px 0 var(--ember); }
+  .tabpanel { margin-top: -3px; padding: 10px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .ta { height: 92px; padding: 6px 10px; font-size: 21px; line-height: 22px; background: var(--parch-0); }
+  .ta .cursor { display: inline-block; width: 9px; height: 18px; background: var(--ink); vertical-align: -3px; }
+  .meta { display: flex; gap: 8px; align-items: center; font-size: 18px; color: var(--ink-soft); }
+  .meta .r { margin-left: auto; }
+  .burn { display: flex; gap: 10px; padding: 8px 10px; background: #fff3d6; border: 3px solid var(--alert); box-shadow: 4px 4px 0 rgba(216,69,43,.2); }
+  .burn .ico { width: 36px; height: 36px; flex: none; }
+  .burn .h { font: 10px 'Press Start 2P'; color: #a8401c; margin-bottom: 4px; }
+  .burn ul { margin: 0; padding-left: 18px; font-size: 19px; line-height: 20px; }
+  .cost { display: flex; gap: 14px; align-items: center; font-size: 19px; }
+  .cost .device { flex: 1; }
+  .checks { font-size: 19px; line-height: 23px; }
+  .cb { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--wood-0); background: var(--parch-0); vertical-align: -1px; margin-right: 6px; text-align: center; font: 8px/10px 'Press Start 2P'; color: var(--leaf-d); }
+  .acts { display: flex; gap: 10px; justify-content: flex-end; align-items: center; margin-top: auto; }
+  .acts .msg { margin-right: auto; font-size: 17px; color: var(--ink-soft); max-width: 330px; line-height: 18px; }
+</style></head>
+<body>
+<div class="toolbar">
+  <div class="brand"><img src="assets/icon-tea.png" alt="">TAPAIA</div>
+  <div class="tb-sep"></div>
+  <div class="tb-btn"><img src="assets/icon-bubble.png" alt="">Rooms</div>
+  <div class="tb-btn"><img src="assets/icon-star.png" alt="">Citizens</div>
+  <div class="tb-btn"><img src="assets/icon-book.png" alt="">Book</div>
+  <div class="tb-btn"><img src="assets/icon-bell.png" alt="">Alerts</div>
+  <div class="tb-btn dim"><img src="assets/icon-door.png" alt="">Doors</div>
+  <div class="tb-btn"><img src="assets/icon-help.png" alt="">Help</div>
+  <div class="tb-spacer"></div>
+  <div class="device" style="display:flex;gap:10px;align-items:center;height:34px;padding:0 10px">
+    <img src="assets/icon-clock.png" style="width:18px;height:18px" alt="">
+    <span><b>57847</b> ticks</span><span>Rainmoon 5</span><span style="color:#5f7fa8">9:53 AM</span>
+  </div>
+  <div class="tb-btn"><img src="assets/icon-speaker.png" alt="">Sounds</div>
+  <div class="tb-btn"><img src="assets/icon-door.png" alt="">Sign Off</div>
+</div>
+
+<div class="lobbyhint"></div>
+<div class="win arrive">
+  <div class="titlebar"><img src="assets/icon-medal.png" alt=""><span class="t">Become a Citizen of Tapaia <span class="sub">your arrival post</span></span>
+    <span class="wbtn">_</span><span class="wbtn x">x</span></div>
+  <div class="steps">
+    <div class="step done"><span class="n">✓</span>SIGNED IN</div>
+    <div class="step cur"><span class="n">2</span>WRITE YOUR ARRIVAL</div>
+    <div class="step"><span class="n">3</span>SIGN IN WALLET</div>
+    <div class="step"><span class="n">4</span>VERIFIED ON-CHAIN</div>
+    <div class="step"><span class="n">5</span>WELCOME TO THE SQUARE</div>
+  </div>
+  <div class="body2">
+    <div class="lcol">
+      <div class="inset slots">
+        <div class="label">FOUNDING CITIZEN SLOTS</div>
+        <div class="big"><span class="ph">X-n</span> of <span class="ph">X</span> left</div>
+        <div class="slotgrid">
+          <span class="t"></span><span class="t"></span><span class="t"></span><span class="t"></span><span class="t"></span><span class="t"></span><span class="t"></span><span class="t"></span><span class="t"></span><span class="q"></span><span class="q"></span><span class="q"></span>
+        </div>
+        <div class="row" style="font-size:16px;color:var(--ink-soft);margin-top:-4px">illustration only: X isn't set yet</div>
+        <div class="row">The first <span class="ph">X</span> citizens get in free with a <b style="font-weight:normal;color:var(--robe)">Founding Citizen</b> badge.</div>
+        <div class="row" style="margin-top:6px">Founder window: until <span class="ph">date TBD</span><br>Rule: one per wallet · <span class="ph">eligibility rule TBD</span></div>
+        <div class="row" style="margin-top:8px;color:#a8401c">This wallet isn't eligible for a founder slot, so your arrival is a real Book post.</div>
+      </div>
+      <div class="inset preview">
+        <div class="label">PREVIEW · ARRIVALS LANE</div>
+        <div class="arrival"><img class="a" src="assets/av-wren.png" alt="">
+          <div><div class="h"><img src="assets/icon-flame.png" alt="">NEW CITIZEN · ON-CHAIN</div>
+          <span style="color:var(--robe-l)">Wren Halloway</span> → Hello Tapaia! Herb grower from Kalimar, here for the tea and the talk.</div></div>
+        <div class="row" style="font-size:17px;color:var(--ink-soft);margin-top:6px">Shows in Tapaia Square's Arrivals lane and on the zipcoin Book.</div>
+      </div>
+      <div class="inset slots" style="flex:1">
+        <div class="label">AS A CITIZEN YOU CAN</div>
+        <div class="row">✓ Post in every community room</div>
+        <div class="row">✓ Chat as your citizen in Tapaia Square</div>
+        <div class="row">✓ Pixel avatar and profile</div>
+        <div class="row" style="color:var(--ink-soft)">One-time entry, never re-checked.</div>
+      </div>
+    </div>
+
+    <div class="rcol">
+      <div class="tabs">
+        <div class="tab"><img src="assets/icon-medal.png" alt="">FOUNDING CITIZEN · FREE</div>
+        <div class="tab on"><img src="assets/icon-flame.png" alt="">BURN A BOOK POST</div>
+      </div>
+      <div class="inset tabpanel">
+        <div class="label">YOUR ARRIVAL MESSAGE</div>
+        <div class="inset ta">Hello Tapaia! Herb grower from Kalimar, here for the tea and the talk.<span class="cursor"></span></div>
+        <div class="meta"><span>Citizen name: <b style="font-weight:normal;color:var(--robe)">Wren Halloway</b></span><span class="chip">keep it short &amp; kind</span><span class="r">73 / 280 bytes</span></div>
+        <div class="burn"><img class="ico" src="assets/icon-flame.png" alt="">
+          <div><div class="h">THIS IS A REAL, PERMANENT BURN</div>
+          <ul>
+            <li>Burns <span class="ph">E</span> ZC (≈ <span class="ph">$ live estimate</span>) plus Ethereum gas, from your own wallet. Not refundable.</li>
+            <li>Posted to the zipcoin Book forever: public, can't be edited or deleted.</li>
+            <li>Reposted to X by @zipcoinbook, and publicly links this wallet to Tapaia.</li>
+            <li>Tapaia never holds your tokens or keys. Only real ZC counts: 0x4E67…8722.</li>
+          </ul></div>
+        </div>
+        <div class="cost">
+          <div class="device"><img src="assets/icon-coin.png" style="width:16px;height:16px;vertical-align:-2px" alt=""> Burn <b><span style="background:#2a3150;padding:0 3px">E</span> ZC</b> · zipcoin minimum (live from /rules): <b>1,000 ZC</b> · gas ≈ <b>live</b></div>
+        </div>
+        <div class="checks">
+          <div><span class="cb">✓</span>I understand this post is permanent and public.</div>
+          <div><span class="cb"></span>I understand the burn can't be refunded.</div>
+        </div>
+        <div class="meta" style="margin-top:4px"><img src="assets/icon-medal.png" style="width:14px;height:14px" alt="">Have a founder invite? Switch to the Founding Citizen tab: no burn, free in-game post.</div>
+        <div class="acts">
+          <span class="msg">After you sign, we check Ethereum for your Speak burn (your wallet, at least E, made after sign-up) before you become a citizen.</span>
+          <span class="btn">BACK</span>
+          <span class="btn burn big"><img src="assets/icon-circle.png" alt="">SIGN &amp; BURN</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="statusbar"><span class="dot"></span>Signed in · 0x7a3f…c91e · not a citizen yet · you can read #lobby, #support, #announcements
+  <span class="r">Based on <i>Snowmoon</i> by Vitalik Buterin (GPL v3) · not affiliated</span></div>
+</body></html>

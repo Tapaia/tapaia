@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Tapaia mockup 04: Profile card and avatar builder</title>
+<link rel="stylesheet" href="tapaia.css">
+<style>
+  .prof { left: 10px; top: 56px; width: 1260px; height: 716px; }
+  .cols { display: flex; gap: 12px; padding: 10px 12px; height: calc(100% - 28px); }
+  .builder { width: 620px; display: flex; flex-direction: column; gap: 8px; }
+  .card { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .bt { display: flex; gap: 10px; }
+  .stage { width: 220px; height: 300px; position: relative; overflow: hidden;
+    background: url('assets/scene-header.png') -330px 92px / 1230px 144px no-repeat, linear-gradient(#6fa8dc, #c2dcec 70%); }
+  .stage::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 70px; background: url('assets/tile-grass.png') 0 0 / 48px 48px; border-top: 3px solid var(--leaf-d); }
+  .stage .me { position: absolute; left: 62px; bottom: 30px; width: 96px; height: 150px; z-index: 2; }
+  .stage .shadow { position: absolute; left: 66px; bottom: 22px; width: 88px; height: 16px; background: rgba(20,10,5,.35); border-radius: 50%; z-index: 1; }
+  .opts { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .sec { padding: 6px 8px; }
+  .sec .label { margin-bottom: 6px; }
+  .outfits { display: flex; gap: 6px; }
+  .of { width: 84px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 2px; font-size: 16px; line-height: 15px; text-align: center; }
+  .of img { width: 48px; height: 75px; }
+  .of.sel { background: var(--robe-l); color: var(--parch-0); box-shadow: 0 0 0 2px var(--robe-d), inset 0 0 0 2px var(--robe-h); }
+  .row { display: flex; gap: 6px; align-items: center; font-size: 19px; flex-wrap: wrap; }
+  .sw { width: 22px; height: 22px; border: 2px solid var(--wood-0); box-shadow: inset -3px -3px 0 rgba(0,0,0,.2); }
+  .sw.sel { outline: 3px solid var(--gold); outline-offset: 1px; }
+  .opt { height: 26px; display: inline-flex; align-items: center; padding: 0 8px; border: 2px solid var(--wood-1); background: var(--parch-2); font-size: 19px; }
+  .opt.sel { background: var(--leaf-l); color: var(--parch-0); border-color: var(--leaf-d); }
+  .canon { font-size: 17px; line-height: 18px; padding: 6px 8px; }
+  .bbar { display: flex; gap: 8px; justify-content: flex-end; margin-top: auto; }
+  .ph-head { display: flex; gap: 12px; padding: 10px; align-items: center; }
+  .ph-head .bust { width: 72px; height: 72px; background: var(--parch-2); border: 3px solid var(--robe); box-shadow: 0 0 0 2px var(--robe-d); }
+  .ph-head .nm { font: 16px 'Press Start 2P'; color: var(--robe); }
+  .ph-head .sub { font-size: 19px; color: var(--ink-soft); margin-top: 6px; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .fields { padding: 4px 10px; font-size: 20px; }
+  .fields table { border-collapse: collapse; width: 100%; }
+  .fields td { padding: 3px 0; border-bottom: 2px dotted var(--parch-3); vertical-align: top; }
+  .fields td.k { width: 170px; font: 8px 'Press Start 2P'; color: var(--wood-1); padding-top: 7px; }
+  .arrival { margin: 0; padding: 6px 10px; background: #f1ebfa; border: 2px solid var(--robe-h); font-size: 19px; }
+  .arrival .h { display: flex; gap: 6px; align-items: center; font: 8px 'Press Start 2P'; color: var(--robe); margin-bottom: 4px; }
+  .arrival .h img { width: 14px; height: 14px; }
+  .stats { padding: 8px 10px; display: flex; flex-direction: column; gap: 7px; }
+  .stat { display: flex; align-items: center; gap: 8px; font-size: 18px; }
+  .stat .k { width: 74px; font: 9px 'Press Start 2P'; color: var(--wood-1); }
+  .bar { flex: 1; height: 20px; border: 3px solid var(--wood-0); background: #3a2a2a; position: relative; box-shadow: inset 0 3px 0 rgba(0,0,0,.35); }
+  .bar .fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(var(--leaf-h) 0 4px, var(--leaf-l) 4px 10px, var(--leaf-m) 10px); }
+  .bar.locked { background: repeating-linear-gradient(45deg, #6d655c 0 6px, #8f877b 6px 12px); }
+  .bar .lbl { position: absolute; left: 6px; top: 0; font-size: 16px; line-height: 14px; color: var(--parch-0); text-shadow: 1px 1px 0 #000; }
+  .stat .v { width: 150px; font-size: 17px; color: var(--ink-soft); }
+  .stat img { width: 16px; height: 16px; }
+  .cbtns { display: flex; gap: 8px; margin-top: auto; }
+  .cbtns .btn { flex: 1; padding: 0 6px; font-size: 9px; }
+</style></head>
+<body>
+<div class="toolbar">
+  <div class="brand"><img src="assets/icon-tea.png" alt="">TAPAIA</div>
+  <div class="tb-sep"></div>
+  <div class="tb-btn"><img src="assets/icon-bubble.png" alt="">Rooms</div>
+  <div class="tb-btn"><img src="assets/icon-star.png" alt="">Citizens</div>
+  <div class="tb-btn"><img src="assets/icon-book.png" alt="">Book</div>
+  <div class="tb-btn"><img src="assets/icon-bell.png" alt="">Alerts</div>
+  <div class="tb-btn dim"><img src="assets/icon-door.png" alt="">Doors</div>
+  <div class="tb-btn"><img src="assets/icon-help.png" alt="">Help</div>
+  <div class="tb-spacer"></div>
+  <div class="device" style="display:flex;gap:10px;align-items:center;height:34px;padding:0 10px">
+    <img src="assets/icon-clock.png" style="width:18px;height:18px" alt="">
+    <span><b>57847</b> ticks</span><span>Rainmoon 5</span><span style="color:#5f7fa8">9:53 AM</span>
+  </div>
+  <div class="tb-btn"><img src="assets/icon-speaker.png" alt="">Sounds</div>
+  <div class="tb-btn"><img src="assets/icon-door.png" alt="">Sign Off</div>
+</div>
+
+<div class="win prof">
+  <div class="titlebar"><img src="assets/icon-star.png" alt=""><span class="t">Citizen Profile <span class="sub">avatar builder · Ilse Hartwood</span></span>
+    <span class="wbtn">_</span><span class="wbtn">□</span><span class="wbtn x">x</span></div>
+  <div class="cols">
+    <div class="builder">
+      <div class="bt">
+        <div class="inset stage"><div class="shadow"></div><img class="me" src="assets/av-builder.png" alt="Avatar preview: robe with hood down, long plum hair, neck band"></div>
+        <div class="opts">
+          <div class="inset sec">
+            <div class="label">OUTFIT</div>
+            <div class="outfits">
+              <div class="of sel"><img src="assets/opt-robe-down.png" alt="">Robe<br>hood down</div>
+              <div class="of"><img src="assets/opt-robe-up.png" alt="">Robe, hood<br>&amp; face cover</div>
+              <div class="of"><img src="assets/opt-shirt-plain.png" alt="">Plain<br>shirt</div>
+              <div class="of"><img src="assets/opt-shirt-band.png" alt="">Band<br>shirt</div>
+            </div>
+          </div>
+          <div class="inset sec">
+            <div class="label">HAIR</div>
+            <div class="row"><span class="opt">Short</span><span class="opt sel">Long</span><span class="opt">Bun</span>
+              <span style="width:8px"></span>
+              <span class="sw" style="background:#7a4a2a"></span><span class="sw" style="background:#2e2630"></span><span class="sw" style="background:#d9a441"></span><span class="sw" style="background:#b5522b"></span><span class="sw" style="background:#9aa0ad"></span><span class="sw sel" style="background:#5a2f5e"></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="inset sec">
+        <div class="label">SKIN · NECK BAND · SHOES</div>
+        <div class="row"><span class="sw" style="background:#f6d7b8"></span><span class="sw sel" style="background:#e8b98c"></span><span class="sw" style="background:#c68a5a"></span><span class="sw" style="background:#8d5a3b"></span>
+          <span style="width:10px"></span><span class="opt sel">Silk neck band: on</span>
+          <span class="opt">Robe shoes: high heel, uneven soles</span></div>
+      </div>
+      <div class="inset canon">
+        <div class="label" style="margin-bottom:4px">FROM THE BOOK</div>
+        Veridian privacy robes are dark purple from hood to ankle, with matching shoes whose high heels and uneven soles hide your height and gait. The face cover has a strap at the nose. Neck bands are a silky cloth band. Lots of people just wear plain or band shirts.
+      </div>
+      <div class="inset sec" style="flex:1">
+        <div class="label">CITIZEN NAME</div>
+        <div class="row"><span class="inset" style="flex:1;padding:3px 8px;background:var(--parch-0)">Ilse Hartwood</span><span class="chip ok">✓ available</span></div>
+        <div class="row" style="font-size:17px;color:var(--ink-soft);margin-top:4px">Canon character names and real people's names are reserved.</div>
+      </div>
+      <div class="bbar"><span class="btn">RANDOMIZE</span><span class="btn">UNDO</span><span class="btn go">SAVE AVATAR</span></div>
+    </div>
+
+    <div class="card">
+      <div class="inset">
+        <div class="ph-head">
+          <img class="bust" src="assets/bust-builder.png" alt="">
+          <div style="flex:1">
+            <div class="nm">Ilse Hartwood</div>
+            <div class="sub">OOC handle: ilse_h · <span class="chip">not linked publicly</span></div>
+            <div class="badges">
+              <span class="chip gold"><img src="assets/icon-medal.png" alt="">Founding Citizen</span>
+              <span class="chip"><img src="assets/icon-scroll.png" alt="">free founder arrival</span>
+              <span class="chip ic"><img src="assets/icon-tree.png" alt="">in Tapaia Square</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="inset fields"><table>
+        <tr><td class="k">WALLET</td><td>0x51c2…9a04 <span class="chip ok"><img src="assets/icon-circle.png" alt="">signed in</span></td></tr>
+        <tr><td class="k">ENS / ZIPBOOK</td><td style="color:var(--ink-soft)">none set</td></tr>
+        <tr><td class="k">CITIZEN SINCE</td><td>Rainmoon 3 · 38410 <span style="color:var(--ink-soft)">(Oct 5, 2026)</span></td></tr>
+        <tr><td class="k">HOME (IC)</td><td>Kalimar, Meldan</td></tr>
+        <tr><td class="k">ABOUT</td><td>Card games, tea, getting lost on purpose.</td></tr>
+      </table></div>
+      <div class="arrival"><div class="h"><img src="assets/icon-medal.png" alt="">ARRIVAL POST</div>Ilse Hartwood → Hello Tapaia! I brought cards and a terrible sense of direction.</div>
+      <div class="inset stats">
+        <div class="stat"><span class="k">REP</span><div class="bar locked"><span class="lbl">locked</span></div><span class="v"><img src="assets/icon-lock.png" alt=""> arrives with the RPG</span></div>
+        <div class="stat"><span class="k">PROFILE</span><div class="bar"><div class="fill" style="width:80%"></div><span class="lbl">4 / 5</span></div><span class="v">add an ENS name</span></div>
+      </div>
+      <div class="device" style="font-size:18px;line-height:19px">
+        <div><b>Privacy</b> · your citizen name and OOC handle are separate by default. Linking them is your choice.</div>
+        <div>Your arrival post and wallet are public. Tapaia stores only your wallet, handle and profile.</div>
+      </div>
+      <div class="cbtns"><span class="btn">MESSAGE</span><span class="btn dim"><img src="assets/icon-door.png" alt="">KNOCK</span><span class="btn">MUTE</span><span class="btn">BLOCK</span><span class="btn">REPORT</span></div>
+    </div>
+  </div>
+</div>
+<div class="statusbar"><span class="dot"></span>Connected · 0x51c2…9a04 · Founding Citizen
+  <span class="r">Based on <i>Snowmoon</i> by Vitalik Buterin (GPL v3) · not affiliated</span></div>
+</body></html>

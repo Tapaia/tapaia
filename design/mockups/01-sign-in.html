@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Tapaia mockup 01: Welcome / sign in</title>
+<link rel="stylesheet" href="tapaia.css">
+<style>
+  body { background: url('assets/scene-landing.png') 0 0 / 1280px 800px; }
+  .signon { left: 218px; top: 132px; width: 844px; height: 548px; }
+  .inner { display: flex; gap: 14px; padding: 12px; height: calc(100% - 28px); }
+  .left { width: 300px; display: flex; flex-direction: column; gap: 10px; }
+  .logo { height: 196px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    background: linear-gradient(#a9cfea 0 55%, #c2dcec 55% 70%, #5c9a3e 70%); }
+  .logo .word { font: 30px 'Press Start 2P'; color: var(--gold); text-shadow: 3px 3px 0 var(--robe-d), -2px -2px 0 var(--robe-d), 2px -2px 0 var(--robe-d), -2px 2px 0 var(--robe-d); letter-spacing: 2px; }
+  .logo .tag { font: 8px 'Press Start 2P'; color: var(--parch-0); text-shadow: 1px 1px 0 var(--leaf-d); background: rgba(46,26,64,.75); padding: 4px 6px; }
+  .logo .crew { display: flex; gap: 6px; align-items: flex-end; }
+  .logo .crew img { width: 32px; height: 50px; }
+  .logo .crew img.cup { width: 24px; height: 24px; margin-bottom: 4px; }
+  .blurb { font-size: 20px; line-height: 21px; padding: 8px 10px; }
+  .blurb .p2 { font-size: 8px; color: var(--wood-1); }
+  .left .btn { width: 100%; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .wl { padding: 0; }
+  .wrow { display: flex; align-items: center; gap: 10px; height: 39px; padding: 0 10px; font-size: 21px; border-bottom: 2px dotted var(--parch-3); }
+  .wrow img { width: 28px; height: 28px; }
+  .wrow .nm { flex: 1; }
+  .wrow.sel { background: var(--robe-l); color: var(--parch-0); border-bottom-color: var(--robe-d); }
+  .wrow.sel .chip { background: var(--robe-d); color: var(--band); border-color: var(--robe-h); }
+  .wrow .sub { font-size: 16px; color: var(--ink-soft); }
+  .siwe { font-size: 18px; line-height: 19px; padding: 7px 10px; }
+  .actions { display: flex; gap: 10px; justify-content: flex-end; align-items: center; margin-top: auto; }
+  .actions .snd { margin-right: auto; font-size: 17px; color: var(--ink-soft); display: flex; gap: 6px; align-items: center; }
+  .actions .snd img { width: 16px; height: 16px; }
+  .footer { position: absolute; left: 218px; width: 844px; top: 694px; padding: 6px 12px; font-size: 17px; line-height: 18px; text-align: center;
+    background: rgba(251,241,214,.94); border: 3px solid var(--wood-1); box-shadow: 0 0 0 2px var(--wood-0); }
+  .ver { position: absolute; right: 12px; bottom: 8px; font: 8px 'Press Start 2P'; color: var(--parch-0); text-shadow: 1px 1px 0 #000; }
+</style></head>
+<body>
+<div class="win signon">
+  <div class="titlebar"><img src="assets/icon-door.png" alt=""><span class="t">Welcome to Tapaia <span class="sub">Sign On</span></span>
+    <span class="wbtn">_</span><span class="wbtn x">x</span></div>
+  <div class="inner">
+    <div class="left">
+      <div class="inset logo">
+        <div class="word">TAPAIA</div>
+        <div class="crew"><img src="assets/av-nessa.png" alt=""><img src="assets/av-tobin.png" alt=""><img class="cup" src="assets/icon-tea.png" alt=""><img src="assets/av-pim.png" alt=""><img src="assets/av-wren.png" alt=""></div>
+        <div class="tag">A TOWN SQUARE IN MELDAN</div>
+      </div>
+      <div class="inset blurb">
+        <div class="p2">THE $ZC COMMUNITY CHAT</div>
+        Hang out like you would on Telegram. Step into Tapaia Square to chat as a citizen of Veridia, if you like.
+      </div>
+      <span class="btn"><img src="assets/icon-bench.png" alt="">JUST LOOKING? #LOBBY</span>
+      <span class="btn"><img src="assets/icon-help.png" alt="">HELP · #SUPPORT</span>
+    </div>
+    <div class="right">
+      <div class="label">1. CHOOSE YOUR WALLET</div>
+      <div class="inset wl">
+        <div class="wrow sel"><img src="assets/wallet-rabby.png" alt=""><span class="nm">Rabby</span><span class="chip">DETECTED</span></div>
+        <div class="wrow"><img src="assets/wallet-metamask.png" alt=""><span class="nm">MetaMask</span><span class="chip ok">DETECTED</span></div>
+        <div class="wrow"><img src="assets/wallet-coinbase.png" alt=""><span class="nm">Coinbase Wallet</span></div>
+        <div class="wrow"><img src="assets/wallet-rainbow.png" alt=""><span class="nm">Rainbow</span></div>
+        <div class="wrow"><img src="assets/wallet-trust.png" alt=""><span class="nm">Trust Wallet</span></div>
+        <div class="wrow"><img src="assets/wallet-walletconnect.png" alt=""><span class="nm">WalletConnect <span class="sub">phone wallets &amp; more</span></span><img src="assets/wallet-qr.png" style="width:22px;height:22px" alt="QR"></div>
+      </div>
+      <div class="label">2. SIGN IN WITH ETHEREUM <span style="font:17px VT323;color:var(--ink-soft)">free, no transaction, no gas</span></div>
+      <div class="device siwe">
+        <div>tapaia.chat wants you to sign in with your Ethereum account:</div>
+        <div><b>0x7a3f…c91e</b> · Ethereum mainnet</div>
+        <div>Sign in to Tapaia. Nonce <b>k3v9…q2</b> · expires in 10 min</div>
+      </div>
+      <div class="actions">
+        <span class="snd"><img src="assets/icon-speaker.png" alt="">♪ door creak on sign on</span>
+        <span class="btn">SETUP</span>
+        <span class="btn go big"><img src="assets/icon-circle.png" alt="">SIGN ON</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="footer">Based on <i>Snowmoon</i> by Vitalik Buterin, used under GPL v3 · Source: github.com/<span class="ph">tapaia</span>/tapaia<br>
+  Not affiliated with Vitalik Buterin, zipcoin.cash or Stockereum. Staff never DM first and never ask for your seed phrase.</div>
+<div class="ver">build a609213</div>
+</body></html>

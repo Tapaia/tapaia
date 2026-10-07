@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Tapaia mockup 03: Tapaia Square chat room</title>
+<link rel="stylesheet" href="tapaia.css">
+<style>
+  .main { left: 10px; top: 56px; width: 1260px; height: 716px; }
+  .scene { display: block; width: 1230px; height: 144px; border-bottom: 3px solid var(--wood-0); }
+  .scene-wrap { position: relative; }
+  .scene-tag { position: absolute; left: 10px; top: 8px; display: flex; gap: 6px; }
+  .topic { height: 32px; display: flex; align-items: center; gap: 10px; padding: 0 8px; background: var(--parch-3);
+    border-bottom: 2px solid var(--parch-4); font-size: 19px; white-space: nowrap; }
+  .topic .k { font: 8px 'Press Start 2P'; color: var(--wood-1); }
+  .cols { display: flex; gap: 6px; padding: 6px 0 0; height: 474px; }
+  .rooms { width: 220px; display: flex; flex-direction: column; gap: 6px; }
+  .roomlist { flex: 1; overflow: hidden; }
+  .room { display: flex; align-items: center; gap: 6px; height: 25px; padding: 0 6px; font-size: 19px; white-space: nowrap; }
+  .room img { width: 18px; height: 18px; }
+  .room .n { margin-left: auto; color: var(--ink-soft); font-size: 17px; }
+  .room.sel { background: var(--robe-l); color: var(--parch-0); box-shadow: inset 0 0 0 2px var(--robe-d); }
+  .room.sel .n { color: var(--band); }
+  .room.dim { color: #a89478; }
+  .room .ro { font-size: 15px; color: var(--ink-soft); }
+  .center { width: 730px; display: flex; flex-direction: column; gap: 6px; }
+  .log { position: relative; height: 318px; overflow: hidden; padding: 4px 22px 4px 6px; }
+  .msg { display: flex; align-items: flex-start; gap: 6px; padding: 2px 4px; font-size: 20px; line-height: 21px; }
+  .msg .av { width: 24px; height: 24px; flex: none; margin-top: -1px; }
+  .msg .who { color: var(--robe-l); white-space: nowrap; }
+  .msg .who.f { color: var(--robe); }
+  .msg .arr { color: var(--ink-soft); margin: 0 7px; }
+  .msg .body { flex: 1; }
+  .msg .ts { color: #8a7a5a; font-size: 17px; margin-left: 8px; white-space: nowrap; }
+  .msg .mini-b { width: 12px; height: 12px; vertical-align: -1px; }
+  .msg.mention { background: #e3f6d6; box-shadow: inset 3px 0 0 var(--leaf-m); }
+  .mention-tag { color: var(--leaf-m); }
+  .rq { font-size: 16px; color: var(--parch-0); background: var(--stone); padding: 0 4px; margin-right: 4px; }
+  .reply { font-size: 17px; color: var(--ink-soft); padding-left: 36px; margin-top: 2px; }
+  .sys { display: flex; align-items: center; gap: 6px; padding: 1px 4px 1px 34px; font-size: 18px; color: #6f7f4a; }
+  .sys img { width: 14px; height: 14px; }
+  .sys .host { font: 8px 'Press Start 2P'; color: var(--leaf-m); }
+  .sys .snd { color: #a89478; font-size: 15px; }
+  .speak { margin: 3px 4px 3px 34px; padding: 4px 8px; background: #fff3d6; border: 2px solid var(--ember);
+    box-shadow: 3px 3px 0 rgba(240,138,36,.25); font-size: 19px; }
+  .speak .h { display: flex; align-items: center; gap: 6px; font: 8px 'Press Start 2P'; color: #a8401c; margin-bottom: 2px; }
+  .speak .h img { width: 14px; height: 14px; }
+  .speak .h .r { margin-left: auto; font: 16px 'VT323'; color: var(--leaf-m); }
+  .arrival { margin: 3px 4px 3px 34px; padding: 3px 8px; background: #f1ebfa; border: 2px solid var(--robe-h); font-size: 19px; }
+  .arrival .h { display: flex; align-items: center; gap: 6px; font: 8px 'Press Start 2P'; color: var(--robe); margin-bottom: 2px; }
+  .arrival .h img { width: 14px; height: 14px; }
+  .composer { height: 150px; padding: 6px; display: flex; flex-direction: column; gap: 6px; }
+  .modes { display: flex; gap: 6px; align-items: center; }
+  .mode { display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; font-size: 19px; white-space: nowrap;
+    border: 2px solid var(--wood-1); background: var(--parch-2); }
+  .mode img { width: 16px; height: 16px; }
+  .mode .rb { width: 12px; height: 12px; border: 2px solid var(--wood-0); background: var(--parch-0); }
+  .mode.on { background: var(--parch-0); box-shadow: inset 0 -3px 0 var(--leaf-l); }
+  .mode.on .rb { background: var(--leaf-l); box-shadow: inset 0 0 0 2px var(--parch-0); }
+  .mode.burnm { border-color: var(--ember); }
+  .fmt { display: flex; gap: 3px; margin-left: auto; }
+  .fmt span { width: 26px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font: 9px 'Press Start 2P';
+    background: var(--parch-2); border: 2px solid; border-color: var(--parch-0) var(--parch-4) var(--parch-4) var(--parch-0); box-shadow: 0 0 0 1px var(--wood-1); }
+  .typebox { display: flex; gap: 8px; flex: 1; }
+  .ta { flex: 1; padding: 5px 8px; font-size: 20px; background: var(--parch-0); }
+  .ta .cursor { display: inline-block; width: 9px; height: 18px; background: var(--ink); vertical-align: -3px; }
+  .ta .replyto { font-size: 16px; color: var(--ink-soft); margin-bottom: 3px; }
+  .sendcol { display: flex; flex-direction: column; gap: 6px; width: 150px; }
+  .sendcol .btn { width: 100%; }
+  .hint { font-size: 16px; color: var(--ink-soft); }
+  .buddies { width: 268px; display: flex; flex-direction: column; }
+  .blist { flex: 1; overflow: hidden; position: relative; padding-right: 16px; }
+  .bud { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 6px; font-size: 19px; white-space: nowrap; }
+  .bud .bav { width: 32px; height: 32px; background: var(--parch-2); border: 2px solid var(--parch-4); }
+  .bud .nm { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+  .bud .bdg { width: 14px; height: 14px; }
+  .bud .pres { width: 8px; height: 8px; background: var(--gc); box-shadow: 0 0 0 2px var(--gc-d); margin-right: 2px; flex: none; }
+  .bud .pres.idle { background: var(--gold); box-shadow: 0 0 0 2px var(--gold-d); }
+  .bud.away { color: #a89478; }
+  .bud.away .bav { opacity: .55; }
+  .bud.sel { background: var(--parch-3); }
+  .bbtns { display: flex; gap: 6px; padding: 6px 0 0; }
+  .bbtns .btn { flex: 1; padding: 0 6px; font-size: 8px; height: 30px; }
+  .clock { padding: 6px 8px; font-size: 18px; line-height: 19px; }
+</style></head>
+<body>
+<div class="toolbar">
+  <div class="brand"><img src="assets/icon-tea.png" alt="">TAPAIA</div>
+  <div class="tb-sep"></div>
+  <div class="tb-btn"><img src="assets/icon-bubble.png" alt="">Rooms</div>
+  <div class="tb-btn"><img src="assets/icon-star.png" alt="">Citizens</div>
+  <div class="tb-btn"><img src="assets/icon-book.png" alt="">Book</div>
+  <div class="tb-btn"><img src="assets/icon-bell.png" alt="">Alerts</div>
+  <div class="tb-btn dim"><img src="assets/icon-door.png" alt="">Doors</div>
+  <div class="tb-btn"><img src="assets/icon-help.png" alt="">Help</div>
+  <div class="tb-spacer"></div>
+  <div class="device" style="display:flex;gap:10px;align-items:center;height:34px;padding:0 10px">
+    <img src="assets/icon-clock.png" style="width:18px;height:18px" alt="">
+    <span><b>57847</b> ticks</span><span>Rainmoon 5</span><span style="color:#5f7fa8">9:53 AM</span>
+  </div>
+  <div class="tb-btn"><img src="assets/icon-speaker.png" alt="">Sounds</div>
+  <div class="tb-btn"><img src="assets/icon-door.png" alt="">Sign Off</div>
+</div>
+
+<div class="win main">
+  <div class="titlebar"><img src="assets/icon-tree.png" alt=""><span class="t">Tapaia Square <span class="sub">Meldan, Veridia · in character · 14 citizens here</span></span>
+    <span class="wbtn">_</span><span class="wbtn">□</span><span class="wbtn x">x</span></div>
+  <div class="scene-wrap">
+    <img class="scene" src="assets/scene-header.png" alt="Pixel art of Tapaia Square: tea house, library, shops, a basic playground, trees and the castle-tower mountain">
+    <div class="scene-tag"><span class="chip ic"><img src="assets/icon-tree.png" alt="">IN CHARACTER</span><span class="chip">decimal clock</span></div>
+  </div>
+  <div class="topic"><span class="k">TOPIC</span> Tea cart's open. Say hello to new arrivals, speak as your citizen.
+    <span style="margin-left:auto" class="chip"><img src="assets/icon-pin.png" alt="">Pinned: Square rules</span></div>
+
+  <div class="cols">
+    <!-- room list -->
+    <div class="rooms">
+      <div class="inset roomlist">
+        <div class="group-h">▼ COMMUNITY · OOC</div>
+        <div class="room"><img src="assets/icon-scroll.png" alt="">#announcements <span class="ro">read</span></div>
+        <div class="room"><img src="assets/icon-bubble.png" alt="">#general<span class="n">128</span></div>
+        <div class="room"><img src="assets/icon-stall.png" alt="">#market<span class="n">41</span></div>
+        <div class="room"><img src="assets/icon-help.png" alt="">#support<span class="n">9</span></div>
+        <div class="room"><img src="assets/icon-terminal.png" alt="">#dev-updates<span class="n">6</span></div>
+        <div class="room"><img src="assets/icon-robot.png" alt="">#feeds <span class="ro">bots</span></div>
+        <div class="room"><img src="assets/icon-bench.png" alt="">#lobby <span class="ro">open</span><span class="n">22</span></div>
+        <div class="group-h ic">▼ VERIDIA · IN CHARACTER</div>
+        <div class="room sel"><img src="assets/icon-tree.png" alt="">Tapaia Square<span class="n">14</span></div>
+        <div class="room dim"><img src="assets/icon-lock.png" alt="">Districts, doors… <span class="ro">later</span></div>
+      </div>
+      <div class="device clock">
+        <div><b>57847</b> · 5 longhours 78 min</div>
+        <div>Rainmoon 5 · you 9:53 AM</div>
+        <div class="gc">● arrival verified</div>
+      </div>
+    </div>
+
+    <!-- chat -->
+    <div class="center">
+      <div class="inset log">
+        <div class="sys"><img src="assets/icon-door.png" alt=""><span class="host">SQUARE HOST</span> Juniper Vale has entered the square. <span class="snd">♪ door creak</span></div>
+        <div class="msg"><img class="av" src="assets/bust-corvin.png" alt=""><div class="body"><span class="who">Corvin Ashdale</span><span class="arr">→</span>Morning, all. Tea cart is open again, jasmine today.</div><span class="ts">57656</span></div>
+        <div class="msg"><img class="av" src="assets/bust-nessa.png" alt=""><div class="body"><span class="who f">Nessa Quill</span> <img class="mini-b" src="assets/icon-medal.png" alt=""><span class="arr">→</span>Save me a cup! Is the library still all business books?</div><span class="ts">57699</span></div>
+        <div class="msg"><img class="av" src="assets/bust-pim.png" alt=""><div class="body"><span class="who">Pim Tallow</span><span class="arr">→</span>Still business books, plus a shelf of Old Belpakian.</div><span class="ts">57734</span></div>
+        <div class="arrival"><div class="h"><img src="assets/icon-medal.png" alt="">ARRIVALS · FOUNDING CITIZEN <span style="margin-left:auto;font:16px VT323;color:var(--ink-soft)">free in-game post</span></div>
+          <b style="font-weight:normal;color:var(--robe)">Ilse Hartwood</b> → Hello Tapaia! I brought cards and a terrible sense of direction.</div>
+        <div class="msg"><img class="av" src="assets/bust-tobin.png" alt=""><div class="body"><span class="who">Tobin Larkspur</span><span class="arr">→</span><span class="rq">↪ Ilse</span> Welcome! Fair warning, the slide is cold.</div><span class="ts">57784</span></div>
+        <div class="speak"><div class="h"><img src="assets/icon-flame.png" alt="">SPOKE TO THE SQUARE · REAL BOOK POST · BURNED <span class="ph" style="font:8px 'Press Start 2P'">S</span> ZC
+          <span class="r">● verified on-chain</span></div>
+          <b style="font-weight:normal;color:var(--robe-l)">Wren Halloway</b> → Herb swap at the tea cart at 6 longhours. Bring cuttings!</div>
+        <div class="msg mention"><img class="av" src="assets/bust-orla.png" alt=""><div class="body"><span class="who">Orla Fenwick</span><span class="arr">→</span><span class="mention-tag">@Ilse Hartwood</span> sit with us by the maple, room on the bench.</div><span class="ts">57832</span></div>
+        <div class="sys"><img src="assets/icon-door.png" alt=""><span class="host">SQUARE HOST</span> Marek Stonebrook has left the square. <span class="snd">♪ latch click</span></div>
+        <div class="scroll-track"><div class="scroll-thumb" style="bottom:0"></div></div>
+      </div>
+
+      <div class="raised composer">
+        <div class="modes">
+          <div class="mode on"><span class="rb"></span><img src="assets/icon-bubble.png" alt="">Say <span class="hint">free</span></div>
+          <div class="mode burnm"><span class="rb"></span><img src="assets/icon-flame.png" alt="">Speak to the Square <span class="hint">burn</span></div>
+          <div class="fmt"><span>B</span><span><i>I</i></span><span>U</span><span>@</span><span>↪</span><span>☺</span></div>
+        </div>
+        <div class="typebox">
+          <div class="inset ta"><div class="replyto">↪ Replying to Orla Fenwick</div>On my way! Saving the bench by the maple<span class="cursor"></span></div>
+          <div class="sendcol">
+            <span class="btn go big">SEND</span>
+            <span class="hint">Speak = a real zipcoin Book post: burns ≥ <span class="ph">S</span> ZC + gas, permanent.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- buddy list -->
+    <div class="buddies">
+      <div class="inset blist">
+        <div class="group-h ok">▼ FOUNDING CITIZENS (3)</div>
+        <div class="bud sel"><span class="pres"></span><img class="bav" src="assets/bust-ilse.png" alt=""><span class="nm">Ilse Hartwood</span><img class="bdg" src="assets/icon-medal.png" alt="Founding Citizen"></div>
+        <div class="bud"><span class="pres"></span><img class="bav" src="assets/bust-nessa.png" alt=""><span class="nm">Nessa Quill</span><img class="bdg" src="assets/icon-medal.png" alt=""></div>
+        <div class="bud"><span class="pres idle"></span><img class="bav" src="assets/bust-corvin.png" alt=""><span class="nm">Corvin Ashdale</span><img class="bdg" src="assets/icon-medal.png" alt=""></div>
+        <div class="group-h">▼ CITIZENS (9)</div>
+        <div class="bud"><span class="pres"></span><img class="bav" src="assets/bust-wren.png" alt=""><span class="nm">Wren Halloway</span><img class="bdg" src="assets/icon-flame.png" alt="on-chain arrival"></div>
+        <div class="bud"><span class="pres"></span><img class="bav" src="assets/bust-orla.png" alt=""><span class="nm">Orla Fenwick</span><img class="bdg" src="assets/icon-flame.png" alt=""></div>
+        <div class="bud"><span class="pres"></span><img class="bav" src="assets/bust-tobin.png" alt=""><span class="nm">Tobin Larkspur</span><img class="bdg" src="assets/icon-flame.png" alt=""></div>
+        <div class="bud"><span class="pres"></span><img class="bav" src="assets/bust-pim.png" alt=""><span class="nm">Pim Tallow</span><img class="bdg" src="assets/icon-flame.png" alt=""></div>
+        <div class="group-h ic">▼ TEAM (1)</div>
+        <div class="bud"><span class="pres"></span><img class="bav" src="assets/bust-team.png" alt=""><span class="nm">Bram Teasel</span><img class="bdg" src="assets/icon-shield.png" alt="verified team"></div>
+        <div class="group-h">▼ AWAY (1)</div>
+        <div class="bud away"><span class="pres idle"></span><img class="bav" src="assets/bust-marek.png" alt=""><span class="nm">Marek Stonebrook</span></div>
+        <div class="scroll-track"><div class="scroll-thumb" style="top:0;height:140px"></div></div>
+      </div>
+      <div class="bbtns"><span class="btn">PROFILE</span><span class="btn">MESSAGE</span><span class="btn dim">KNOCK</span></div>
+    </div>
+  </div>
+</div>
+<div class="statusbar"><span class="dot"></span>Connected · 0x7a3f…c91e · Founding Citizen · <span>Juniper Vale</span>
+  <span class="r">Based on <i>Snowmoon</i> by Vitalik Buterin (GPL v3) · not affiliated · build a609213</span></div>
+</body></html>
