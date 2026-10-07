@@ -71,11 +71,125 @@ def tea_cart(c, x, base):
         c.disc(wx, base - 2, 2, wood[0]); c.p(wx, base - 2, wood[3])
 
 
-TOWER_WARM = ['#8f8679', '#b9ad99', '#d9cfba']
+
+
+# ---------------------------------------------------------------- lore pieces (Snowmoon refs in comments)
+FONT3 = {  # 3x5 pixel letters for tiny signs
+    'L': ["x..", "x..", "x..", "x..", "xxx"], 'I': ["xxx", ".x.", ".x.", ".x.", "xxx"],
+    'B': ["xx.", "x.x", "xx.", "x.x", "xx."], 'R': ["xx.", "x.x", "xx.", "x.x", "x.x"],
+    'A': [".x.", "x.x", "xxx", "x.x", "x.x"], 'Y': ["x.x", "x.x", ".x.", ".x.", ".x."],
+    'O': ["xxx", "x.x", "x.x", "x.x", "xxx"], 'P': ["xx.", "x.x", "xx.", "x..", "x.."],
+    'E': ["xxx", "x..", "xx.", "x..", "xxx"], 'N': ["x..x", "xx.x", "x.xx", "x..x", "x..x"],
+}
+
+
+def text3(c, x, y, word, col):
+    for ch in word:
+        for j, row in enumerate(FONT3[ch]):
+            for k, v in enumerate(row):
+                if v == 'x':
+                    c.p(x + k, y + j, col)
+        x += len(FONT3[ch][0]) + 1
+
+
+def door_circle(c, cx, cy):
+    """Glowing green circle beside a door: 'tapped his watch against a glowing green circle beside the door' [ch6:10]."""
+    for dx, dy in ((0, -2), (1, -2), (-1, -1), (2, -1), (-1, 0), (2, 0), (0, 1), (1, 1)):
+        c.p(cx + dx, cy + dy, C['green_circle'])
+    for dx, dy in ((0, -1), (1, -1), (0, 0), (1, 0)):
+        c.p(cx + dx, cy + dy, '#1f6e45')
+
+
+DULL = ['#5f646e', '#6e6556', '#535d6b', '#857b69', '#4b5058', '#8f8676', '#6a6f78']
+
+
+def library(c, x, base, rnd):
+    """Tapaia's library: 'All the books are either some boring business books, or things in foreign languages
+    nobody understands, either Old Belpakian or something from Haragmir.' [ch6:223]"""
+    w, h = 40, 30
+    scene.brick_wall(c, x, base - h, w, h)
+    scene.pitched_roof(c, x, base - h, w, 7, C['roof_slate'])
+    c.outline(x, base - h, w, h, C['stone'][0])
+    # plain signboard
+    c.rect(x + 4, base - 28, 32, 7, '#efe6cf'); c.outline(x + 4, base - 28, 32, 7, C['wood'][0])
+    text3(c, x + 7, base - 27, 'LIBRARY', '#2b2530')
+    # window displays: rows of identical dull spines; a few with unreadable foreign-script marks
+    for wx in (x + 3, x + 27):
+        c.rect(wx - 1, base - 20, 12, 11, C['wood'][1])
+        c.rect(wx, base - 19, 10, 9, '#2f2a2a')
+        for shelf_y in (base - 15, base - 10):
+            c.rect(wx, shelf_y, 10, 1, C['wood'][3])
+            for i in range(10):
+                col = DULL[(i * 3 + shelf_y) % len(DULL)]
+                c.rect(wx + i, shelf_y - 4, 1, 4, col)
+                if (i + shelf_y) % 4 == 0:                  # pale squiggle = Old Belpakian / Haragmir script
+                    c.p(wx + i, shelf_y - 3, '#d8cfbb')
+                elif (i + shelf_y) % 4 == 2:                # thin gold title band = business books
+                    c.p(wx + i, shelf_y - 2, '#b9a46a')
+        c.rect(wx - 1, base - 9, 12, 1, C['wood'][3])
+    # door + green circle beside it
+    c.rect(x + 16, base - 12, 8, 12, C['wood'][1]); c.rect(x + 17, base - 11, 6, 11, C['wood'][2])
+    c.p(x + 21, base - 6, '#ffd95a')
+    door_circle(c, x + 14, base - 6)
+
+
+def empty_shop(c, x, base, rnd, w=30, h=21):
+    """A ground-floor 'active use' storefront that nobody wants: 'putting things in that theoretically qualify
+    but that nobody actually wants to use' [ch6:225]. One lone stool on a plinth under an OPEN sign, no customers.
+    (The exact contents are our joke, not canon.)"""
+    wall = C['beige']
+    c.rect(x, base - h, w, h, wall[1]); c.rect(x + w - 1, base - h, 1, h, wall[0]); c.rect(x, base - 1, w, 1, wall[0])
+    scene.pitched_roof(c, x, base - h, w, 6, C['terracotta'])
+    c.rect(x + 2, base - 17, 19, 14, C['wood'][1])           # big, nearly empty shop window
+    c.rect(x + 3, base - 16, 17, 12, '#ece6d6')
+    text3(c, x + 4, base - 15, 'OPEN', '#3f7a37')
+    c.rect(x + 9, base - 6, 5, 2, '#b1a896')                 # plinth
+    c.rect(x + 9, base - 9, 5, 1, C['wood'][2])              # the lone stool
+    c.p(x + 9, base - 8, C['wood'][0]); c.p(x + 13, base - 8, C['wood'][0])
+    c.p(x + 9, base - 7, C['wood'][0]); c.p(x + 13, base - 7, C['wood'][0])
+    c.rect(x + 2, base - 3, 19, 1, C['wood'][3])
+    c.rect(x + 22, base - 10, 6, 10, C['wood'][1]); c.rect(x + 23, base - 9, 4, 9, C['wood'][2])
+    door_circle(c, x + 24, base - 13)
+
+
+def basic_playground(c, x, base):
+    """'the playground is much more basic, my son says it's not even comfortable' [ch6:221]:
+    one bare swing frame with a single plank seat and a small plain slide. Nobody on it."""
+    g, gd = '#8a92a0', '#6b7380'
+    c.rect(x, base - 13, 1, 13, g); c.rect(x + 14, base - 13, 1, 13, g)
+    c.rect(x, base - 14, 15, 1, gd)
+    c.rect(x + 5, base - 13, 1, 9, '#a7adb1'); c.rect(x + 9, base - 13, 1, 9, '#a7adb1')
+    c.rect(x + 4, base - 4, 7, 1, C['wood'][1])
+    sx = x + 19
+    c.rect(sx, base - 8, 1, 8, g); c.rect(sx + 2, base - 8, 1, 8, g)
+    for yy in range(base - 7, base, 2):
+        c.rect(sx, yy, 3, 1, g)
+    for i in range(7):
+        c.rect(sx + 3 + i, base - 8 + i, 1, 1, '#c7ccd6')
+    c.rect(sx + 9, base - 1, 2, 1, '#c7ccd6')
+
+
+def mountain_stair_and_tower(c, stair, tower):
+    """'a straight, two-hundred-meter-tall outdoor staircase on the side of the mountain' and, at the top,
+    'the top floor of a tower, surrounded by stone walls. He could see the sky above him.' [ch6:325-327]"""
+    (x0, y0), (x1, y1) = stair
+    n = max(abs(x1 - x0), abs(y1 - y0))
+    for i in range(n + 1):
+        x = round(x0 + (x1 - x0) * i / n); y = round(y0 + (y1 - y0) * i / n)
+        c.p(x, y, '#d8cfbb'); c.p(x + 1, y, '#b1a896')
+        if i % 2 == 0:
+            c.p(x - 1, y, '#8f877b')
+    tx, ty, tw, th = tower
+    st = C['stone']
+    c.rect(tx, ty, tw, th, st[2]); c.rect(tx, ty, 1, th, st[3]); c.rect(tx + tw - 1, ty, 1, th, st[1])
+    for yy in range(ty + 2, ty + th, 3):
+        c.rect(tx + 1, yy, tw - 2, 1, st[1])
+    for xx in range(tx, tx + tw, 2):                       # open top, crenellated stone walls
+        c.p(xx, ty - 1, st[2])
+    c.rect(tx + tw // 2 - 1, ty + 4, 2, 3, '#4a4550')       # tunnel mouth / doorway
 
 
 def world_layer(L, mode, seed=11):
-    C['tower'] = TOWER_WARM          # warmer stone towers for the banner (cozier than the mockup grey)
     rnd = random.Random(seed)
     back = Canvas(W, H)
     c = back
@@ -83,16 +197,11 @@ def world_layer(L, mode, seed=11):
     m = L.get('mountain')
     if m:
         scene.mountain(c, m[0], m[1], base - 6, m[2], rnd)
-    for t in L.get('towers', []):
-        tx, th, tw, lift = t
-        scene.castle_tower(c, tx, base - 6 - lift, th, tw)
-    for t in L.get('towers', []):
-        tx, th, tw, lift = t
-        by = base - 6 - lift
-        for k in range(-1, tw + 2, 3):
-            r = rnd.randint(2, 3 + tw // 4)
-            c.disc(tx + k, by - rnd.randint(0, 2), r, C['mtn'][0])
-            c.disc(tx + k - 1, by - rnd.randint(1, 3), max(1, r - 1), C['mtn'][2])
+    if L.get('stair'):
+        mountain_stair_and_tower(c, L['stair'], L['order_tower'])
+        tx, ty, tw, th = L['order_tower']
+        for k in range(-2, tw + 3, 3):                    # trees hug the tower's base
+            c.disc(tx + k, ty + th + 1, 2, C['mtn'][0]); c.disc(tx + k - 1, ty + th, 1, C['mtn'][2])
     c = Canvas(W, H)
     for x in range(-4, W + 4, 7):
         r = rnd.randint(5, 8)
@@ -108,12 +217,15 @@ def world_layer(L, mode, seed=11):
     try:
         for kind, x, *args in L['buildings']:
             if kind == 'library':
-                scene.library(c, x, base, rnd)
+                library(c, x, base, rnd)
+            elif kind == 'empty_shop':
+                empty_shop(c, x, base, rnd)
             elif kind == 'tea':
                 scene.tea_house(c, x, base, rnd)
             elif kind == 'house':
                 w, h, wall, roof, sk, rg = args
                 scene.small_house(c, x, base, w, h, C[wall], C[roof], sk, rg, lit=False, rnd=rnd)
+                door_circle(c, x + w // 2 - 5, base - 5)
     finally:
         scene.window = orig_window
     scene.plaza(c, base, rnd)
@@ -132,7 +244,9 @@ def world_layer(L, mode, seed=11):
         elif kind == 'table':
             scene.table(c, x, y)
         elif kind == 'circle':
-            scene.green_circle_pole(c, x, y)
+            scene.green_circle_pole(c, x, y)   # 'a green circle on top of a one meter tall pole' [ch5:46]
+        elif kind == 'playground':
+            basic_playground(c, x, y)
         elif kind == 'cart':
             scene.shadow(c, x + 11, y, 13)
             tea_cart(c, x, y)
@@ -157,7 +271,7 @@ def world_layer(L, mode, seed=11):
     return back, c, lamps
 
 
-EMISSIVE = {hex2rgba(h)[:3] for h in ('#ffe9a8', '#39e07a', '#e8c070', '#ffd95a')}
+EMISSIVE = {hex2rgba(h)[:3] for h in ('#ffe9a8', '#39e07a', '#e8c070', '#ffd95a', '#1f6e45')}
 
 
 def grade_dusk(img):
@@ -198,38 +312,65 @@ def add_glows(img, lamps, cols=('#ffc36a',), r=11, alpha=70):
 LAYOUT = dict(
     base=94,
     clouds=[(14, 10, 1.1), (118, 6, 0.8), (205, 16, 0.7)],
-    mountain=(-10, 228, 30),
-    towers=[(58, 30, 7, 6), (92, 38, 8, 20), (132, 34, 8, 14), (170, 28, 7, 6)],
+    mountain=(-10, 228, 30),                 # 'a mountain covered with trees' [ch1:30]
+    stair=((150, 80), (113, 39)),            # straight outdoor staircase up its side [ch6:325]
+    order_tower=(106, 26, 11, 13),           # stone tower at the top [ch6:327]
     birds=[(196, 12), (202, 10), (208, 13)],
     buildings=[
         ('house', 2, 28, 22, 'grey', 'roof_slate', 'bread', False),
-        ('tea', 104, ),
-        ('library', 160, ),
         ('house', 36, 28, 20, 'beige', 'terracotta', 'flower', True),
         ('house', 68, 28, 23, 'blue', 'roof_slate', 'robe', False),
-        ('house', 206, 28, 19, 'beige', 'terracotta', 'flower', False),
+        ('tea', 104, ),
+        ('library', 160, ),
+        ('empty_shop', 206, ),
     ],
     props=[
         ('tree', 16, 26, 30, 14),
         ('flowerbed', 0, 31, 120),
         ('lamp', 98, 8, 16), ('table', 112, 9), ('table', 138, 9),
-        ('person', 120, 9, 'robe', 'warm', 'chestnut', ''), ('person', 146, 10, 'shirt', 'fair', 'ginger', '#5c9a3e'),
-        ('person', 176, 11, 'hood', 'warm', 'black', ''),
-        ('bench', 196, 14), ('person', 210, 14, 'robe', 'deep', 'black', ''),
-        ('tree', 244, 12, 24, 11),
-        ('cart', 262, 16), ('circle', 288, 16), ('person', 276, 19, 'robe', 'fair', 'silver', ''),
-        ('person', 294, 19, 'shirt', 'deep', 'black', '#64408a'),
-        ('lamp', 314, 14, 16), ('bench', 322, 20), ('person', 330, 21, 'hood', 'tan', 'plum', ''),
+        ('person', 120, 9, 'shirt', 'warm', 'chestnut', '#c8452e'),
+        ('person', 146, 10, 'robe', 'fair', 'ginger', ''),
+        ('person', 184, 12, 'shirt', 'tan', 'black', '#8ea3b5'),
+        ('playground', 196, 22),
+        ('tree', 248, 12, 24, 11),
+        ('cart', 262, 16), ('circle', 288, 16),
+        ('person', 276, 19, 'shirt', 'deep', 'black', '#5c9a3e'),
+        ('person', 294, 19, 'hood', 'warm', 'black', ''),
+        ('lamp', 314, 14, 16), ('bench', 322, 20), ('person', 334, 21, 'shirt', 'fair', 'silver', '#3f6fd8'),
         ('tree', 362, 18, 26, 13, True),
-        ('grass', 240, 30, 30), ('grass', 352, 32, 26),
-        ('person', 232, 27, 'shirt', 'tan', 'black', '#f2c84b'),
+        ('grass', 240, 30, 30), ('grass', 352, 32, 26), ('grass', 130, 31, 16),
+        ('person', 160, 24, 'shirt', 'fair', 'blonde', '#f2c84b'),
         ('flowerbed', 200, 33, 175),
-        ('person', 158, 22, 'robe', 'tan', 'chestnut', ''), ('person', 186, 24, 'shirt', 'fair', 'blonde', '#3f6fd8'),
-        ('person', 300, 27, 'robe', 'warm', 'black', ''), ('grass', 130, 31, 16),
-        ('circle', 132, 10),
     ],
 )
 
+
+STRIP = dict(
+    base=112,
+    mountain=(150, 375, 62),
+    stair=((312, 104), (284, 74)),
+    order_tower=(276, 60, 11, 13),
+    buildings=[
+        ('house', -6, 28, 22, 'grey', 'roof_slate', 'bread', False),
+        ('house', 26, 28, 20, 'beige', 'terracotta', 'flower', True),
+        ('tea', 62, ),
+        ('library', 118, ),
+        ('empty_shop', 166, ),
+        ('house', 200, 28, 19, 'beige', 'terracotta', 'flower', False),
+        ('house', 296, 28, 22, 'blue', 'terracotta', None, True),
+        ('house', 336, 30, 21, 'grey', 'roof_slate', 'bread', False),
+    ],
+    props=[
+        ('lamp', 56, 6, 14), ('table', 70, 6), ('table', 96, 6),
+        ('person', 80, 6, 'shirt', 'warm', 'chestnut', '#c8452e'), ('person', 104, 7, 'robe', 'fair', 'ginger', ''),
+        ('person', 146, 7, 'shirt', 'tan', 'black', '#8ea3b5'),
+        ('playground', 230, 7),
+        ('cart', 252, 7), ('circle', 278, 7),
+        ('person', 266, 8, 'shirt', 'deep', 'black', '#5c9a3e'), ('person', 284, 8, 'hood', 'warm', 'black', ''),
+        ('lamp', 300, 6, 14), ('person', 318, 7, 'shirt', 'fair', 'blonde', '#3f6fd8'),
+        ('tree', 368, 6, 20, 11, True), ('tree', 14, 6, 18, 10),
+    ],
+)
 
 def render(mode, layout=LAYOUT, clouds=True, sky=True):
     if not sky:
@@ -268,33 +409,6 @@ def haze(img, col, k):
             if a:
                 px[x, y] = (int(r + (r0 - r) * k), int(g + (g0 - g) * k), int(b + (b0 - b) * k), a)
     return img
-
-
-STRIP = dict(
-    base=112,
-    mountain=(150, 375, 62),
-    towers=[(214, 26, 6, 10), (246, 32, 7, 20), (284, 28, 6, 12), (320, 22, 6, 4)],
-    buildings=[
-        ('house', -6, 28, 22, 'grey', 'roof_slate', 'bread', False),
-        ('house', 26, 28, 20, 'beige', 'terracotta', 'flower', True),
-        ('tea', 62, ),
-        ('library', 118, ),
-        ('house', 166, 28, 23, 'blue', 'roof_slate', 'robe', False),
-        ('house', 200, 28, 19, 'beige', 'terracotta', 'flower', False),
-        ('house', 296, 28, 22, 'blue', 'terracotta', None, True),
-        ('house', 336, 30, 21, 'grey', 'roof_slate', 'bread', False),
-    ],
-    props=[
-        ('lamp', 56, 6, 14), ('table', 70, 6), ('table', 96, 6),
-        ('person', 80, 6, 'robe', 'warm', 'chestnut', ''), ('person', 104, 7, 'shirt', 'fair', 'ginger', '#5c9a3e'),
-        ('person', 140, 7, 'hood', 'warm', 'black', ''), ('tree', 160, 6, 18, 10),
-        ('bench', 176, 7), ('person', 188, 7, 'robe', 'deep', 'black', ''),
-        ('tree', 240, 6, 20, 11), ('cart', 252, 7), ('circle', 278, 7),
-        ('person', 266, 8, 'robe', 'fair', 'silver', ''), ('person', 284, 8, 'shirt', 'deep', 'black', '#64408a'),
-        ('lamp', 300, 6, 14), ('person', 318, 7, 'hood', 'tan', 'plum', ''),
-        ('tree', 368, 6, 20, 11, True), ('tree', 14, 6, 18, 10),
-    ],
-)
 
 
 if __name__ == '__main__':
