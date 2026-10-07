@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><style>@font-face { font-family: Inter; src: url('../../mockups-v2/fonts/Inter-Variable.ttf') format('truetype'); font-weight: 100 900; }
+* { box-sizing: border-box; } html, body { margin: 0; }
+body { width: 1500px; height: 500px; overflow: hidden; position: relative; font-family: Inter, sans-serif;
+  -webkit-font-smoothing: antialiased; font-feature-settings: 'cv11','ss01'; }
+.bg { position: absolute; left: 0; top: 0; width: 1500px; height: 500px; }
+.px { image-rendering: pixelated; }
+.lock { position: absolute; display: flex; align-items: center; gap: 30px; left: 900px; top: 104px; }
+.cw { position: relative; width: 150px; height: 150px; flex: none; }
+.cw img.coin { width: 150px; height: 150px; display: block; }
+/* the coin sits in the sunset: warm sheen from the glow behind it, plum occlusion on the far side */
+.cw .sheen { position: absolute; inset: 3px; border-radius: 50%; mix-blend-mode: screen;
+  background: radial-gradient(circle at 72% 22%, rgba(255,214,150,.42), rgba(255,214,150,0) 46%); }
+.cw .occl { position: absolute; inset: 3px; border-radius: 50%; mix-blend-mode: multiply;
+  background: radial-gradient(circle at 28% 88%, rgba(120,52,110,.30), rgba(120,52,110,0) 55%); }
+.wm { font-weight: 800; font-size: 112px; letter-spacing: -.045em; line-height: .9; }
+.tag { font-weight: 600; font-size: 31px; letter-spacing: -.01em; margin-top: 14px; }
+.tag b { font-weight: 800; }
+</style></head><body>
+<img class="bg px" src="art/A-scene-750x250.png">
+<div class="lock">
+  <div class="cw"><img class="coin" src="../../logo/opt4-refined/C-premium-coin/C-premium-coin.svg" style="filter:drop-shadow(0 0 10px rgba(255,240,190,.95)) drop-shadow(0 0 34px rgba(255,196,110,.75)) drop-shadow(0 0 80px rgba(255,140,90,.45))"><div class="occl"></div><div class="sheen"></div></div>
+  <div><div class="wm" style="color:#2a1640;text-shadow:-2px 0 0 rgba(255,232,176,.55), 0 0 34px rgba(255,226,160,.55)">Tapaia</div>
+  <div class="tag" style="color:#3a1f52;text-shadow:0 0 18px rgba(255,226,160,.6)">The town square for <b style="color:#6b2f86">$ZC</b></div></div>
+</div></body></html>
