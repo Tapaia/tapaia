@@ -1,0 +1,16 @@
+{
+  "name": "Tapaia",
+  "short_name": "Tapaia",
+  "description": "The town square for the $ZC community (prototype)",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf7f2",
+  "theme_color": "#5b3a86",
+  "icons": [
+    { "src": "/brand/logo-app-icon-128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "/brand/logo-app-icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/brand/logo-256.png", "sizes": "256x256", "type": "image/png", "purpose": "any" },
+    { "src": "/brand/logo-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/brand/logo-app-icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

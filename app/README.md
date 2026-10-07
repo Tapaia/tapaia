@@ -1,6 +1,8 @@
+<img src="../design/logo/opt4-refined/D-hybrid/D-hybrid-256.png" alt="Tapaia logo" width="96" height="96">
+
 # Tapaia Phase 1 hub: working prototype
 
-A clickable prototype of the Phase 1 community hub from [`docs/phase1-spec.md`](../docs/phase1-spec.md), built to look like the v2 mockups in [`design/mockups-v2/`](../design/mockups-v2/). Modern chat layout, Inter, the book palette, light and dark themes, and pixel art only as accents. The art and fonts are copied from `design/mockups-v2/` at build time. Avatars are drawn live from the same sprite maps as `design/mockups/art/sprites.py` (ported to `shared/avatar.ts`, pixel-identical to the mockup PNGs).
+A clickable prototype of the Phase 1 community hub from [`docs/phase1-spec.md`](../docs/phase1-spec.md), built to look like the v2 mockups in [`design/mockups-v2/`](../design/mockups-v2/). Modern chat layout, Inter, the book palette, light and dark themes, and pixel art only as accents. The art and fonts are copied from `design/mockups-v2/` at build time, and the official logo (favicon, app icons, sidebar and sign-in) from `design/logo/opt4-refined/D-hybrid/`. Avatars are drawn live from the same sprite maps as `design/mockups/art/sprites.py` (ported to `shared/avatar.ts`, pixel-identical to the mockup PNGs).
 
 **This is a prototype. It never sends a transaction and nothing touches real ZC.** All burns (arrival post, Speak to the Square) are simulated and labelled as such.
 

@@ -409,9 +409,15 @@ a { color: inherit; }
   background: url('/assets/scene-header.png') 30% bottom / 900px 105px no-repeat, #93c1e6; image-rendering: pixelated; }
 .mobile-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(35,20,47,0) 30%, rgba(35,20,47,.6)); }
 .mobile-hero .brand { position: absolute; z-index: 2; left: 12px; top: 12px; display: flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border-radius: 14px; background: rgba(255,255,255,.9); color: #1f1a24; }
-.mobile-hero .brand .logo-tile { width: 30px; height: 30px; } .mobile-hero .brand .logo-tile img { width: 20px; height: 20px; }
+.mobile-hero .brand .logo { width: 30px; height: 30px; }
 .mobile-hero .t { position: absolute; z-index: 2; left: 14px; bottom: 12px; right: 14px; color: #fff; font-weight: 750; font-size: 20px; letter-spacing: -.02em; line-height: 1.15; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 .members-dim { display: none; }
 @media (max-width: 1279px) { .members-dim { display: block; z-index: 41; background: rgba(29,20,38,.25); backdrop-filter: none; } }
 .pcard-dim { position: fixed; inset: 0; z-index: 44; }
+
+/* official logo (design/logo/opt4-refined/D-hybrid) */
+.logo { width: 36px; height: 36px; flex: none; display: block; }
+.logo.lg { width: 48px; height: 48px; }
+.demo-cta .ico .logo { width: 34px; height: 34px; }
+.hero .brand { padding: 5px 14px 5px 5px; }

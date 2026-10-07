@@ -226,7 +226,7 @@ function Item({ m, ch, cont, reply, ctx, mobile }: { m: Message; ch: Channel; co
   const mention = mentionsMe(m, me, ch);
   const body = m.deleted ? <div className="text deleted">message deleted</div>
     : editing ? <EditBox m={m} /> : <div className="text">{renderText(m.text, ctx)}{m.edited && <span className="edited">(edited)</span>}</div>;
-  const card = m.card && !m.deleted && <a className="linkcard" href={`https://${m.card.url}`} target="_blank" rel="noreferrer"><span className="thumb"><Px src="icon-tea" /></span><div><div className="u">{m.card.url}</div><div className="t">{m.card.title}</div><div className="d">{m.card.desc}</div></div></a>;
+  const card = m.card && !m.deleted && <a className="linkcard" href={`https://${m.card.url}`} target="_blank" rel="noreferrer"><span className="thumb"><img src="/brand/logo.svg" alt="" style={{ width: 40, height: 40 }} /></span><div><div className="u">{m.card.url}</div><div className="t">{m.card.title}</div><div className="d">{m.card.desc}</div></div></a>;
   if (cont) return <div className={`msg cont ${mention ? 'mention' : ''}`} id={`m${m.id}`}><span className="time-h">{ic ? '' : localTime(m.ts).replace(/\s?[AP]M/, '')}</span><span className="spacer" /><div className="content">{body}{card}<Reactions m={m} /></div><Toolbar m={m} ch={ch} /></div>;
   return <>{replyEl}<div className={`msg ${mention ? 'mention' : ''}`} id={`m${m.id}`}>
     {u ? <Av u={u} onClick={(e) => openCard(u.id, e)} /> : <span className="av c6" />}

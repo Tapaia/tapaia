@@ -38,7 +38,7 @@ export function Sidebar() {
   const dms = channels.filter((c) => c.layer === 'dm');
   return (
     <aside className="side">
-      <div className="ws"><span className="logo-tile"><Px src="icon-tea" /></span>
+      <div className="ws"><img className="logo" src="/brand/logo.svg" alt="Tapaia" />
         <div><div className="name">Tapaia</div><div className="sub">$ZC community</div></div>
         <button className="chev iconbtn" onClick={toggleTheme} aria-label="Toggle light or dark theme" title="Light / dark" data-testid="theme-toggle-side"><I n={dark ? 'sun' : 'moon'} c="sm" /></button></div>
       <label className="search"><I n="search" c="sm" /><input id="search" placeholder="Search Tapaia" value={q} onChange={(e) => setQ(e.target.value)} /><kbd>⌘K</kbd></label>

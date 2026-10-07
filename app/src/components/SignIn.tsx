@@ -58,17 +58,17 @@ export function SignIn() {
   return (
     <div className="split">
       <section className="hero" aria-hidden>
-        <div className="brand"><span className="logo-tile"><Px src="icon-tea" /></span><b>Tapaia</b></div>
+        <div className="brand"><img className="logo" src="/brand/logo.svg" alt="Tapaia" /><b>Tapaia</b></div>
         <div className="copy"><h1>The town square for<br />the $ZC community.</h1>
           <p>Chat like you would on Telegram. Step into Veridia and speak as your citizen whenever you feel like it.</p>
           <div className="proof"><span className="avs">{HERO_PEOPLE.map((p, i) => <Av key={i} u={p} />)}</span>Open source · based on <i>Snowmoon</i></div></div>
       </section>
       <section className="form"><div className="inner">
-        <div className="mobile-hero"><div className="brand"><span className="logo-tile"><Px src="icon-tea" /></span><b>Tapaia</b></div><div className="t">The town square for the $ZC community.</div></div>
+        <div className="mobile-hero"><div className="brand"><img className="logo" src="/brand/logo.svg" alt="Tapaia" /><b>Tapaia</b></div><div className="t">The town square for the $ZC community.</div></div>
         <h2>Welcome to Tapaia</h2>
         <p className="lede">Try it instantly, or sign in with the wallet you already use.</p>
         <button className="demo-cta" onClick={() => setDemo(true)} data-testid="try-demo">
-          <span className="ico"><Px src="icon-tea" /></span>
+          <span className="ico"><img className="logo" src="/brand/logo.svg" alt="" /></span>
           <span><b>Try the demo</b><span className="s">No wallet needed. Nothing touches real ZC.</span></span>
           <span className="r"><I n="chev-r" /></span>
         </button>
@@ -108,7 +108,7 @@ export function DemoDialog({ onClose }: { onClose: () => void }) {
   }
   return (
     <Modal onClose={onClose} size="sm" label="Try the demo">
-      <div className="mh"><span className="medal"><Px src="icon-tea" /></span>
+      <div className="mh"><span className="medal" style={{ background: 'transparent' }}><img className="logo lg" src="/brand/logo.svg" alt="" /></span>
         <div><h2>Try Tapaia as a demo citizen</h2><p>No wallet, no sign-up. Pick a name or roll a new one.</p></div>
         <button className="iconbtn x" onClick={onClose} aria-label="Close"><I n="x" /></button></div>
       <div className="prof-body">

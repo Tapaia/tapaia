@@ -2,6 +2,7 @@ node_modules/
 dist/
 public/assets/
 public/fonts/
+public/brand/
 server/data/
 *.log
 .env
