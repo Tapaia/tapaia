@@ -1,6 +1,6 @@
 # Tapaia Phase 1 spec: the community hub MVP
 
-*Draft v0.1, Oct 7, 2026, for Angelo. Builds on `docs/design-doc.md` v0.3 (section 5.2 and the Phase 1 roadmap). Mockups: `design/mockups/` (PNGs in `design/mockups/png/`). Visual sources: `design/visual-reference.md`.*
+*Draft v0.1, Oct 7, 2026, for Angelo. Builds on `docs/design-doc.md` v0.3 (section 5.2 and the Phase 1 roadmap). Mockups: `design/mockups-v2/` is the current direction (PNGs in `design/mockups-v2/png/`); the first 8-bit AOL take stays in `design/mockups/` for reference. Visual sources: `design/visual-reference.md`.*
 
 **Placeholders are letters on purpose.** No amounts, counts or dates are decided yet. Anything this spec adds that the design doc doesn't already say is marked **(decision to confirm)** and collected in section 9.
 
@@ -160,7 +160,7 @@ Mockup: `04-profile-builder.png`.
 
 **Acceptance criteria**
 1. **Avatar builder** with a live preview on a small Tapaia Square backdrop. Options from the book: outfit (privacy robe with hood down; robe with hood up and face cover with the nose strap; plain shirt; band shirt), hair style and color, skin tone, optional silk neck band. Robes come with dark purple shoes with high heels and uneven soles. Randomize, Undo, Save.
-2. Avatars are original pixel art generated from layered sprite parts in the repo (`design/mockups/art/`); no uploaded images in Phase 1 (decision to confirm, it removes a big moderation load).
+2. Avatars are original pixel art generated from layered sprite parts in the repo (`design/mockups/art/`, plus `design/mockups-v2/art_v2.py`); no uploaded images in Phase 1 (decision to confirm, it removes a big moderation load).
 3. **Citizen name**: unique, checked live, with canon character names and real people's names reserved (as in the design doc's name-claims section). It's separate from the OOC handle. The OOC handle can show an ENS or `name.zipbook.eth` name via `/identities/:who` if the user has one.
 4. A "link publicly" toggle controls whether the profile shows both names together. Default: not linked.
 5. **Profile card** shows: avatar, citizen name, OOC handle (if linked), badges, wallet (shortened), ENS/zipbook name, citizen-since date (decimal and normal), optional home district (IC flavor text) and "about" text, the arrival post, and actions (Message, Mute, Block, Report; Knock greyed until the RPG).
@@ -218,7 +218,14 @@ Mockup: `04-profile-builder.png`.
 2. A migration plan for whichever community groups exist (no official ZC Telegram was found). **No outreach or posts are made until Angelo approves them.**
 
 ## 4. Look and sound
-Late-90s AOL chat room, redrawn as cozy pixel art: wooden window frames with brass rivets, robe-purple title bars, parchment panels with beveled AOL edges, a toolbar on a wooden plank, room list on the left, buddy list on the right, "has entered the room" lines and door sounds. Colors and decor come from how the book describes Meldan: dark purple robes, tree-shaded stone and wood buildings, beige / light-blue / grey houses, glowing green circles (our "verify / sign" color), red for errors, and the book's navy-and-blue device panels for clocks and system info. Fonts: Press Start 2P for labels and buttons, VT323 for text (both SIL OFL, bundled locally). Full sources and palette: `design/visual-reference.md`.
+**Current direction: v2, `design/mockups-v2/`.** A clean, modern chat app with the polish people know from Discord, Telegram and Slack, so it feels familiar to the wider $ZC community on day one, with Veridia's charm added in small doses:
+- **Type:** Inter for all UI text. A pixel font (Press Start 2P) only for tiny accents such as the Meldan tick clock. Both fonts are SIL OFL and bundled locally.
+- **Color:** a light theme and a dark theme, both built from the book's palette (`design/visual-reference.md`): robe purple as the brand color, Veridian leaf green and the book's glowing green circles for verified/sign/online, ember orange for anything that burns ZC, gold for Founding Citizens and mentions, and warm wood/stone neutrals.
+- **Layout:** generous spacing, rounded panels, a channel sidebar, a member list, and a composer with a clear Say (free) / Speak (burn) toggle. Designed mobile-first; the phone screens are first-class, not an afterthought.
+- **Pixel art as accents only:** a compact Tapaia Square banner in the in-character room, the sign-in hero, pixel avatars, badges and small icons, and the delightful moments (the arrival card, the Speak/burn card, the Founding Citizen badge). Wallet icons are original pixel pictures, not official logos.
+- **AOL as a subtle nod:** "has entered the square" lines, buddy-list style presence, and an optional door sound.
+
+**v1, `design/mockups/` (kept for reference).** The first take was a full late-90s AOL chat room redrawn as cozy pixel art: wooden window frames, robe-purple title bars, parchment panels, pixel fonts throughout (Press Start 2P and VT323). It holds the strongest Veridia flavor but reads as dense and niche, so v2 replaces it as the main UI. Pieces of it may come back as an optional "retro" theme later.
 
 ## 5. Explicitly out of scope until later phases
 - **Phase 2:** the project token ($TAPAIA) and its launch; treasury, buybacks and the live treasury bot; any project-token burn at entry; optional holder-gated rooms.

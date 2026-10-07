@@ -4,6 +4,8 @@
 
 Art direction from Angelo: an 8-bit / 16-bit pixel take on a late-90s AOL chat room, cozy and warm (Stardew Valley-*esque* feel: soft saturated colors, wood and stone, foliage, lamp light, chibi sprites, wood/parchment panels). **All art is original**, drawn by `design/mockups/art/build_art.py`; nothing is copied from Stardew Valley or any other game.
 
+**Update (v2, current direction):** the UI is now a clean modern chat app (`design/mockups-v2/`). The palette below still drives both its light and dark themes, and the pixel art survives as accents (banner, avatars, badges, arrival/Speak cards). v1's full AOL look stays in `design/mockups/` for reference.
+
 ---
 
 ## 1. Tapaia Square itself

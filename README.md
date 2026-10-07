@@ -35,7 +35,7 @@ Phases have exit criteria, not fixed dates. Details: [docs/design-doc.md](docs/d
 | --- | --- |
 | [docs/design-doc.md](docs/design-doc.md) | Full project design (draft v0.3) |
 | [docs/phase1-spec.md](docs/phase1-spec.md) | Phase 1 community hub spec (draft) |
-| [design/](design/) | Visual reference and Phase 1 mockups |
+| [design/](design/) | Visual reference and Phase 1 mockups (current: [mockups-v2](design/mockups-v2/), first take: [mockups](design/mockups/)) |
 | [docs/lore/](docs/lore/) | Canon codex and setting files (coming) |
 | [prompts/](prompts/) | AI prompts and harness (coming; required by the book's license) |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
