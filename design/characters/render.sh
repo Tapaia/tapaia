@@ -13,8 +13,8 @@ shot() { "$CHROME" --headless=new --disable-gpu --hide-scrollbars --force-device
   --screenshot="$4" "file://$PWD/$1" >/dev/null 2>&1; }
 shot comparison.html 1364,1700 1 "$PWD/comparison.png"
 shot comparison.html 1364,1700 2 "$PWD/comparison@2x.png"
-shot out/phone-before.html 390,800 3 /tmp/tapaia-phone-before.png
-shot out/phone-after.html 390,800 3 /tmp/tapaia-phone-after.png
+shot art/phone-before.html 390,800 3 /tmp/tapaia-phone-before.png
+shot art/phone-after.html 390,800 3 /tmp/tapaia-phone-after.png
 python3 finish.py
 rm -rf __pycache__ ../banner/final/__pycache__ ../banner/styles/__pycache__ ../mockups/art/__pycache__
 ls -la *.png

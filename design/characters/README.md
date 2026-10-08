@@ -13,10 +13,10 @@ Phase 1 is a study only. Nothing in `app/` has changed. The integration plan is 
 | `character-sheet.png` | 12 citizens front-facing at 4x, front and 3/4 views of Nessa and Alder, an actual-size line-up and 64 px portraits. |
 | `builder-parts.png` | Avatar-builder options: 11 hairstyles, 8 hair colours and 7 skin tones (with their ramps), 9 expressions, 6 eye colours, 9 outfits and 8 accessories. |
 | `busts.png` | Chat busts at 40, 64 and 128 px in light and dark tiles, plus a 3x magnification of the 40 px bust. |
-| `out/sprites/*.png` | Raw 32×48 sprites (and `-3q` 3/4 views). |
-| `out/busts/*-{24,32,40,64}.png` | Raw native busts. |
-| `out/scene-square-750x250.png` | The final-header plaza with the new citizens in it (1500×500 @2x is alongside). |
-| `out/scene-square-empty-750x250.png` | The same plaza with nobody in it, PNG8 at 38 KB, as an app banner background with live citizens drawn on top. |
+| `art/sprites/*.png` | Raw 32×48 sprites (and `-3q` 3/4 views). |
+| `art/busts/*-{24,32,40,64}.png` | Raw native busts. |
+| `art/scene-square-750x250.png` | The final-header plaza with the new citizens in it (1500×500 @2x is alongside). |
+| `art/scene-square-empty-750x250.png` | The same plaza with nobody in it, PNG8 at 38 KB, as an app banner background with live citizens drawn on top. |
 
 Scripts: `charkit.py` (renderer), `citizens.py` (cast), `build.py` (sheets and raw PNGs), `scene.py` (HD Square), `compare.py` + `finish.py` (before/after pages and screenshots) and `render.sh` (runs everything; needs Python 3, Pillow, numpy and Chrome).
 
@@ -105,8 +105,8 @@ Light is a top-left key. Every material has **4 tones plus a specular**, hue-shi
 | `src/styles/app.css`, `screens.css` | `.av img` fills the tile (`width/height: 100%`) instead of 32 px inside 40. Update `.stack .avs .av img`, `.replyline .av img` and `.hero .proof .av img` to match. `.card-arrival .fig img` becomes 48×72 (the mobile fig grows from 52×60 to 64×76 with a 48 px figure, since 32 px is small for the new detail). The banner `background` moves to the new HD plaza at 1x (`750px 250px`, plus a plum fill colour for very wide screens). |
 | `src/components/Profile.tsx` | Builder. Swatch rows grow from Hair (6), Style (3) and Skin (4) to: hairstyle (11, as bust thumbnails), hair colour (8), skin (7), eyes (6), expression (9, as face chips), outfit (8 figure buttons, like today's `outfits` grid), top/bottom colour swatches (from `CLOTH`), and accessory toggles (neck band stays, plus scarf, satchel, glasses, beard, freckles, held item). Randomize and Undo stay as they are. |
 | `src/components/SignIn.tsx`, `Arrival.tsx`, `Main.tsx` | Use v2 configs and the new Figure sizes. In `Main.tsx`, the Square banner's citizen layer can draw the present citizens' sprites live, absolutely positioned at preset plaza spots over the empty background, instead of baked-in people (optional phase 2b). |
-| `scripts/copy-assets.mjs` | Also copy `design/characters/out/scene-square-empty-750x250.png`. |
-| `scripts/verify.mjs` | Golden test: the TS port must match `out/sprites/*.png` and `out/busts/*.png`, with ≤0.5% of pixels allowed to differ for float edge cases. Add a builder smoke test. |
+| `scripts/copy-assets.mjs` | Also copy `design/characters/art/scene-square-empty-750x250.png`. |
+| `scripts/verify.mjs` | Golden test: the TS port must match `art/sprites/*.png` and `art/busts/*.png`, with ≤0.5% of pixels allowed to differ for float edge cases. Add a builder smoke test. |
 
 **Mapping current builder → new parts** (migration, lossless for everything that exists today):
 

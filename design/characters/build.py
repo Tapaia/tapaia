@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 import charkit as K
 import citizens
 
-OUT = os.path.join(HERE, 'out')
+OUT = os.path.join(HERE, 'art')
 FONT = os.path.join(HERE, '..', 'mockups-v2', 'fonts', 'Inter-Variable.ttf')
 BG, INK, INK2, INK3, LINE = '#faf7f2', '#1f1a24', '#5f5768', '#8d8496', '#e8e0d3'
 ROBE7, TILE = '#45275e', ['#e9e1f3', '#ddefd9', '#f3e6cf', '#dce9f2', '#f6dfda', '#ece6dc']
@@ -260,4 +260,4 @@ if __name__ == '__main__':
     character_sheet()
     builder_parts()
     bust_sizes()
-    print('built: character-sheet.png, builder-parts.png, busts.png, out/sprites, out/busts')
+    print('built: character-sheet.png, builder-parts.png, busts.png, art/sprites, art/busts')

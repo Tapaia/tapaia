@@ -11,7 +11,7 @@ from sprites import avatar as old_avatar   # noqa: E402
 import charkit as K                         # noqa: E402
 import citizens                             # noqa: E402
 
-A = os.path.join(HERE, 'out', 'compare')
+A = os.path.join(HERE, 'art', 'compare')
 os.makedirs(A, exist_ok=True)
 CAST = {n: c for n, _, c in citizens.CAST}
 CLASSES = {'Orla Fenwick': 'c3', 'Alder Meadows': 'c1', 'Nessa Quill': 'c5', 'Tobin Larkspur': 'c4', 'Wren Halloway': 'c2', 'Odessa Brightmoss': 'c6'}
@@ -55,8 +55,8 @@ def av(name, new, size=40):
     s = name.split()[0].lower()
     cls = CLASSES.get(name, 'c6')
     if new:
-        return f'<span class="av {cls}" style="width:{size}px;height:{size}px"><img src="out/compare/new-{s}-{size}.png" style="width:{size}px;height:{size}px"></span>'
-    return f'<span class="av {cls}" style="width:{size}px;height:{size}px"><img src="out/compare/old-{s}-bust.png"></span>'
+        return f'<span class="av {cls}" style="width:{size}px;height:{size}px"><img src="art/compare/new-{s}-{size}.png" style="width:{size}px;height:{size}px"></span>'
+    return f'<span class="av {cls}" style="width:{size}px;height:{size}px"><img src="art/compare/old-{s}-bust.png"></span>'
 
 
 def feed(new, mobile=False):
@@ -64,7 +64,7 @@ def feed(new, mobile=False):
     for kind, name, badge, t, txt in ROWS:
         s = name.split()[0].lower()
         if kind == 'arrival':
-            fig = (f'out/compare/new-{s}-fig32.png' if mobile else f'out/compare/new-{s}-fig48.png') if new else f'out/compare/old-{s}-full.png'
+            fig = (f'art/compare/new-{s}-fig32.png' if mobile else f'art/compare/new-{s}-fig48.png') if new else f'art/compare/old-{s}-full.png'
             w = (32 if mobile else 48)
             out.append(f'''<div class="card-wrap"><div class="card-arrival"><div class="fig"><img class="px" src="{fig}" style="width:{w}px;height:auto"></div>
 <div style="min-width:0"><div class="k"><img class="px badge-ic" src="{MV2}/icon-medal.png" style="width:14px;height:14px">New arrival · Founding Citizen</div>
@@ -79,11 +79,11 @@ def feed(new, mobile=False):
 
 def banner(new, mobile=False):
     if mobile:
-        bg = ("background:url(out/scene-square-750x250.png) 50% bottom / 750px 250px no-repeat, #3b2251" if new else
+        bg = ("background:url(art/scene-square-750x250.png) 50% bottom / 750px 250px no-repeat, #3b2251" if new else
               f"background:url({MV2}/scene-header.png) 38% bottom / 820px 96px no-repeat, #93c1e6")
         return f'''<div class="mbanner" style="{bg};image-rendering:pixelated;display:block"><div class="over"><span class="pill glass" style="height:20px;font-size:11px;padding:0 8px"><img class="px" src="{MV2}/icon-tree.png" style="width:12px;height:12px">Meldan</span>
 <b>Tea cart’s open</b><span class="s">Speak as your citizen</span></div><div class="clock"><span class="pixel">04650</span>ticks</div></div>'''
-    bg = ("background:url(out/scene-square-750x250.png) 46% bottom / 750px 250px no-repeat, #3b2251" if new else
+    bg = ("background:url(art/scene-square-750x250.png) 46% bottom / 750px 250px no-repeat, #3b2251" if new else
           f"background:url({MV2}/scene-header.png) center bottom / 1230px 144px no-repeat, #93c1e6")
     return f'''<div class="banner" style="{bg};image-rendering:pixelated;margin:0"><div class="over"><span class="pill glass"><img class="px" src="{MV2}/icon-tree.png">In character · Meldan</span>
 <h2>Tapaia Square</h2><p>Sit down, drink tea, the shops are nearby. Speak as your citizen.</p></div>
@@ -97,9 +97,9 @@ def sizes(new):
         cls = CLASSES[n]
         for size, r in ((40, 12), (64, 18), (128, 30)):
             if new:
-                src, iw = (f'out/compare/new-{s}-{min(size, 64)}.png', size)
+                src, iw = (f'art/compare/new-{s}-{min(size, 64)}.png', size)
             else:
-                src, iw = (f'out/compare/old-{s}-bust.png', {40: 32, 64: 64, 128: 128}[size])
+                src, iw = (f'art/compare/old-{s}-bust.png', {40: 32, 64: 64, 128: 128}[size])
             out.append(f'<span class="av {cls}" style="width:{size}px;height:{size}px;border-radius:{r}px"><img src="{src}" style="width:{iw}px;height:{iw}px"></span>')
         out.append('<span style="width:28px"></span>')
     return ''.join(out)
@@ -157,6 +157,6 @@ def phone(new):
 if __name__ == '__main__':
     assets()
     open(f'{HERE}/comparison.html', 'w').write(desktop())
-    open(f'{HERE}/out/phone-before.html', 'w').write(phone(False).replace('out/', '').replace('../mockups-v2', '../../mockups-v2').replace('../../app', '../../../app'))
-    open(f'{HERE}/out/phone-after.html', 'w').write(phone(True).replace('out/', '').replace('../mockups-v2', '../../mockups-v2').replace('../../app', '../../../app'))
+    open(f'{HERE}/art/phone-before.html', 'w').write(phone(False).replace('art/', '').replace('../mockups-v2', '../../mockups-v2').replace('../../app', '../../../app'))
+    open(f'{HERE}/art/phone-after.html', 'w').write(phone(True).replace('art/', '').replace('../mockups-v2', '../../mockups-v2').replace('../../app', '../../../app'))
     print('comparison html ok')

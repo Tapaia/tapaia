@@ -1,8 +1,8 @@
 """Tapaia Square in the official 'Cozy HD pixel' style with the new citizens standing in it.
 Reuses the final X-header scene (../banner/final/header.py on top of ../banner/styles/hd.py) and swaps its
 42 px people for the new 32x48 citizen sprites, so they get the same golden-hour rim light, warmth and shadows.
-Outputs: out/scene-square-750x250.png (1 art px = 1 CSS px in the app banner; 2x for X / marketing) and
-out/scene-square-empty-750x250.png (same plaza with nobody in it, for live citizens on top)."""
+Outputs: art/scene-square-750x250.png (1 art px = 1 CSS px in the app banner; 2x for X / marketing) and
+art/scene-square-empty-750x250.png (same plaza with nobody in it, for live citizens on top)."""
 import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -40,10 +40,10 @@ def render(places=PLACES):
 if __name__ == '__main__':
     os.makedirs(f'{HERE}/out', exist_ok=True)
     img = render()
-    img.save(f'{HERE}/out/scene-square-750x250.png')
-    K.up(img, 2).save(f'{HERE}/out/scene-square-1500x500.png')
+    img.save(f'{HERE}/art/scene-square-750x250.png')
+    K.up(img, 2).save(f'{HERE}/art/scene-square-1500x500.png')
     # empty plaza for the app: citizens are drawn live on top (see README, integration plan)
     empty = render([]).convert('RGB')
     # PNG8 (256 colours, no dither): ~38 KB instead of ~110 KB, visually identical at 1x
-    empty.quantize(256, method=0, dither=0).save(f'{HERE}/out/scene-square-empty-750x250.png', optimize=True)
+    empty.quantize(256, method=0, dither=0).save(f'{HERE}/art/scene-square-empty-750x250.png', optimize=True)
     print('scene ok')
