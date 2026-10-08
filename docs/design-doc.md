@@ -1,6 +1,6 @@
 # Veridian Chat: project design doc
 
-*Working title. Draft v0.6, Oct 7, 2026, for Angelo. Not published. v0.6 adds **Zipcoin names** (6.5): a wallet's `name.zipcoin.cash` becomes its verified handle with a small badge, and claiming happens on zipcoin.cash (built in the prototype). v0.5 adds two features Angelo floated the evening of Oct 7: **Societies** (user-created groups with their own entry rules; lore: Dzego's secret societies [ch9]) and **polls with quadratic voting** that can pay the poster and the voters (lore: Silverchat polling [ch27] and Gladias's QV [ch1]; section 4.1, 5.3). It also parks an **entry-routing** idea as ON HOLD (6.2.7): a one-click 1,000 ZC zipcoin Speak bought with ETH through a non-custodial contract, plus a 2.5% Tapaia fee, with an optional small $TAPAIA buy-and-burn. v0.4's tokenomics stay as the working plan (**working, decided Oct 7, 2026**): $TAPAIA on Stockereum paired against ZC at 1%, 100 free Founding Citizens, then about $5 entry (half ZC, half $TAPAIA), about $1 Speak in $TAPAIA, paid extras about half burned, buyback-and-burn from half of our fee share, and a treasury under Angelo's sole control with public monthly reports (sections 6.2, 6.3 and 7; public summary in [tokenomics.md](tokenomics.md)). Sections 4, 5, 6, 7, 11, 12 and 13 are updated. v0.3 replaced hold-to-enter with the arrival-post entry model (6.2). v0.2 added the community-hub positioning (5.2).*
+*Working title. Draft v0.7, Oct 7, 2026, for Angelo. Not published. **v0.7 adds ten launch-scope features drawn from the novel** (section 5.4): the room "Air" panel, "Fix Tapaia", Hood-up anonymous posts, the Dzego food truck and robot tea server, the trust list, the library shelf and Herald books, pop-up classes, inspector clubs, sortition-rated billboards and a reputation-only forecasting board. Angelo wants a **full product at token launch**, so v0.7 also adds a [launch checklist](launch-checklist.md) with what is built today and a phased build order (roadmap note in section 12). It adds the "no streak mechanics" ground rule and lists six **proposed lore fixes as pending** in section 13; they are not applied. v0.6 adds **Zipcoin names** (6.5): a wallet's `name.zipcoin.cash` becomes its verified handle with a small badge, and claiming happens on zipcoin.cash (built in the prototype). v0.5 adds two features Angelo floated the evening of Oct 7: **Societies** (user-created groups with their own entry rules; lore: Dzego's secret societies [ch9]) and **polls with quadratic voting** that can pay the poster and the voters (lore: Silverchat polling [ch27] and Gladias's QV [ch1]; section 4.1, 5.3). It also parks an **entry-routing** idea as ON HOLD (6.2.7): a one-click 1,000 ZC zipcoin Speak bought with ETH through a non-custodial contract, plus a 2.5% Tapaia fee, with an optional small $TAPAIA buy-and-burn. v0.4's tokenomics stay as the working plan (**working, decided Oct 7, 2026**): $TAPAIA on Stockereum paired against ZC at 1%, 100 free Founding Citizens, then about $5 entry (half ZC, half $TAPAIA), about $1 Speak in $TAPAIA, paid extras about half burned, buyback-and-burn from half of our fee share, and a treasury under Angelo's sole control with public monthly reports (sections 6.2, 6.3 and 7; public summary in [tokenomics.md](tokenomics.md)). Sections 4, 5, 6, 7, 11, 12 and 13 are updated. v0.3 replaced hold-to-enter with the arrival-post entry model (6.2). v0.2 added the community-hub positioning (5.2).*
 
 Sources: `/workspace/snowmoon/briefing.md` (lore, checked against the novel text in `/workspace/snowmoon/text/`) and `/workspace/zipcoin/briefing.md` (ZC and Stockereum). Chapter numbers in brackets, like [ch1], point to the novel. Market and on-chain figures are snapshots from Oct 7, 2026, around 4:45 PM ET, and will change. Anything marked **(design choice)** is ours, not canon.
 
@@ -17,6 +17,7 @@ Entry and signaling use real tokens (**working, decided Oct 7, 2026**; sections 
 - **Everyday life only.** No war, no pre-war or post-war framing, no battles, no military or Kungaupei plots. The Arctic Empire exists in canon, but it stays offstage and has no playable or NPC role.
 - **Original characters only.** No canon characters as players or NPCs: no Gladias, Seila, Mov, Delwart, Zei, Evelor, Verdow and so on. Canon *institutions, places, brands and devices* are fair game: Meldan, Kalimar, Tapaia Square, Silverchat, Hydrafill, GPH, privacy robes, neck bands, Emerald, green circles.
 - **Don't invent canon.** Wherever the game needs a rule the book doesn't give, the doc labels it **(design choice)**. The in-game codex should label it the same way.
+- **No streaks or engagement traps (v0.7).** No "N days in a row" counters, loss-aversion nags or infinite feeds. People come back for scheduled gatherings and shared goals, not fear of losing something (5.4).
 - **In-world clock.** Chat timestamps use the canon decimal time: 100 ticks per minute, 100 minutes per longhour, 10 longhours per day, so a day is 100,000 ticks (e.g. "60259"). Dates use canon months (Snowmoon, Rainmoon, … Frostime). The in-world year is left unspecified so it doesn't tie play to the novel's war timeline **(design choice)**.
 
 ## 3. Core loop
@@ -208,6 +209,193 @@ The goal is that the community can move its day-to-day chat off Telegram and int
 - Societies can run **internal polls** with the same QV mechanics as square polls (4.1), scoped to members.
 
 **Open:** who can create one (any citizen vs a Rep threshold); max Societies per citizen; whether Society entry burns count toward anything else; moderation (Society mods vs platform mods); and whether OOC Societies share the same creation cost.
+
+### 5.4 Launch-scope features from the novel (v0.7)
+
+> **Decided Oct 7, 2026 (v0.7):** Angelo added all ten features below to the launch plan. He also wants a **full product at token launch**, not a bare prototype. The build order and status are in [launch-checklist.md](launch-checklist.md).
+>
+> **Principles these features follow** (same as the rest of this doc):
+> - **No real-token payouts to players** (6.1). Rewards are badges, cosmetics, communal unlocks or in-game zc.
+> - **Nothing that looks like gambling.** No stakes, wagers or prize draws you pay into.
+> - **No streak mechanics.** No "N days in a row" counters, no loss-aversion nags, and no infinite feeds. Canon frames attention extraction as the bad guy: Bluewhale wanted "to control people's attention more and extract more money" [ch3:58], and "the internet can be as addictive as drugs" [ch23:170].
+>
+> **Conventions in this section:**
+> - Citations are chapter:line in `/workspace/snowmoon/text/`, and quotes are verbatim.
+> - Anything not in the book is marked **(extrapolation)**, which means the same as **(design choice)** elsewhere in this doc.
+> - Effort: **S** = days, mostly UI and copy. **M** = one to two weeks with new server logic. **L** = more than that.
+> - Ranked by impact vs effort.
+
+#### 5.4.1 Room "Air" panel. Effort S
+- **What users see:** every room header has a small watch-style readout, styled after the canon watch screen:
+  - **CO2** (a number);
+  - **Attested ✓ N**: verified members present (a citizen with a wallet session, or a verified Zipcoin name);
+  - **Unknown ? N**: non-citizens, demo accounts and accounts with no verified identity.
+  - When unknown accounts cluster, the line turns red: **"Unknown, increased risk!"**
+  - Tapping the panel explains what each number means.
+- **Rules:**
+  - **CO2 tracks activity.** It is a function of messages per minute and the number of people present. It rises when a room is busy and falls back when it calms down **(extrapolation: canon CO2 is real air quality)**.
+  - **Ventilation.** Above a threshold, the room shows "ventilating…" and switches to slow mode automatically. In line with the canon rubric, this applies only to rooms with more than 20 people present. Slow mode lifts on its own when CO2 falls.
+  - **Risk line.** The "increased risk" line appears when unknown accounts reach a threshold share of a room or show a burst of joins. Its tooltip repeats the standing scam warnings: staff never DM first, never share your seed phrase, and check contract addresses.
+  - Thresholds are public and set in config **(extrapolation)**.
+- **Canon:**
+  - The watch readout: "Air / CO2 906 / PM2.5 4.4 / Devices / Attested ✓ 16 / Unknown ? 0" [ch11:186–199].
+  - "Attested ✓ 21 / Unknown, increased risk! 4" [ch19:30–33].
+  - The clean indoor air rubric "Applies to spaces that host more than 20 people" [ch6:105].
+
+#### 5.4.2 "Fix Tapaia": a community revival project. Effort M
+- **What users see:**
+  - A **Coordination Score** meter on the Tapaia Square banner, with the current goal ("A playground kids actually like", "Real books in the library", "Shops people use").
+  - Each milestone visibly changes the square's art: a new playground, filled library shelves, lit shopfronts.
+  - A **"Tapaia vs Galanar"** card compares us with the livelier square nearby, as a friendly rivalry.
+- **Rules:**
+  - **What fills the meter** (each with per-person daily caps so no one can farm it): arrivals, hosted events and pop-up classes (5.4.7), library books accepted (5.4.6), assembly turnout, food-truck gatherings (5.4.4), and billboards rated (5.4.9).
+  - **Milestones are permanent.** The meter never decays and nothing is taken away (no streaks).
+  - **Choosing goals.** Each season, a Herald-run (or, before Heralds exist, team-run) assembly picks the next goal. The assembly uses canon tables of ten taking turns, followed by a multi-item QV ballot.
+  - **Rewards are communal and cosmetic only:** square art, a "helped fix Tapaia" badge. No token payouts.
+  - The meter, inputs and milestones are **(extrapolation)**. The new Cozy HD art (in progress, see the checklist) supplies the before/after scenes.
+- **Canon:**
+  - Tapaia "the playground is much more basic, my son says it's not even comfortable. And I always get the feeling that that one is less lively than Galanar" [ch6:221].
+  - Its shops are "putting things in that theoretically qualify but that nobody actually wants to use" [ch6:227].
+  - Galanar has "a mini library and science museum" [ch6:199].
+  - "A Coordination Score is not a property of a person - it's a property of an entire community" [ch18:271].
+  - Assembly format: "five tables, each with ten chairs" [ch6:135], with "everyone at each table to take turns" [ch6:183].
+  - The canon assembly topic was improving public spaces [ch6:153], and "Keepers check the results when they're debating their tax rubrics" [ch6:205].
+
+#### 5.4.3 "Hood up": anonymous posts with a credential. Effort M
+- **What users see:**
+  - In rooms that allow it, the composer has a **Hood up** toggle.
+  - The post shows as **"Anonymous"** with one credential line the poster chooses, such as "Citizen ✓", "Founding Citizen ✓", "Zipcoin name holder ✓", and later "Rep ≥ 200 Verified ✓" once Rep ships (4.4).
+  - The avatar is the uniform dark-purple privacy robe with the hood up. **Hood down** returns to your normal name.
+- **Rules:**
+  - **Where it's allowed:** opt-in per room, e.g. a feedback room, AMA questions and scam reports. Never in #announcements or #market, and off by default in Societies (the Society chooses).
+  - **Limits:**
+    - Citizens only.
+    - Rate-limited.
+    - One credential line per post, and it must be true at posting time.
+    - Anonymous posts are not threaded to each other, so they can't be linked by reply chains **(extrapolation)**.
+  - **Honesty:**
+    - The UI states plainly that **Tapaia's server knows who posted**, as with Order pseudonyms (4.3).
+    - Moderators can act on abuse, and abuse removes the poster's Hood-up rights.
+    - Never claim canon-level ZK anonymity.
+- **Canon:**
+  - Delwart's first message arrives as "Anonymous / Rep score ≥ 200 Verified ✓" [ch1:354–356].
+  - Robes make people indistinguishable: "Were they male, female, young or old, he could not tell" [ch1:249].
+  - The hood as a social signal: "Mov removed the hood on his privacy robe, a gesture to appear less threatening" [ch20:164].
+
+#### 5.4.4 Dzego food truck + robot tea server. Effort S
+- **What users see:**
+  - **The truck.** A few times each Meldan day, a banner says "Dzego food truck in 7 minutes", followed by a short countdown. The truck then "parks" in Tapaia Square for a few minutes with a numbered menu.
+  - **Orders.** People order with in-game zc and a short line appears in the square ("Orla picked up a Number Ten"). The truck then leaves.
+  - **The tea house.** A labelled NPC **robot server** slides up with a menu when you enter, takes tea orders and offers refills.
+- **Rules:**
+  - The schedule is fixed and published in Meldan ticks, so people can plan to gather **(extrapolation: canon trucks deliver to homes)**.
+  - Orders cost in-game zc only and include the in-game sales tax (4.2).
+  - Menu numbers follow canon (Number Ten is the rice and vegetable dish with mushrooms). Other dishes are **(extrapolation)**.
+  - **No streaks:** no "visited N days in a row" and no penalties for missing the truck. The truck is a reason to show up, not an obligation.
+  - Bots and NPCs are labelled, as in section 8.
+- **Canon:**
+  - "Well, the Dzego food truck is coming in seven minutes" / "Sure! I assume the number ten for you again?" [ch1:281, ch1:283].
+  - "Dzego food truck in one minute. The usual I assume?" [ch11:310].
+  - Number Ten is "a vegetable and rice dish covered with mushrooms" [ch19:143–145].
+  - "A robot slid up to him, and showed him a menu" [ch6:235].
+  - "the robot had already refilled it four times" [ch15:150].
+
+#### 5.4.5 Trust list (contextual presence). Effort S
+- **What users see:**
+  - A **Trust list** on your profile.
+  - People on it can see which room you're in and your status line ("on my way to the tea house").
+  - Everyone else sees only here, idle or offline. A "hide presence" option shows nothing at all.
+- **Rules:**
+  - **One-way grants.** Adding someone doesn't add you to theirs. You can remove people at any time, and they're not notified.
+  - Order pseudonyms and Hood-up posts are **never** revealed through the trust list.
+  - Later, Emerald can suggest a temporary unlock for a planned meetup **(extrapolation)**.
+- **Canon:** "You put me on your trust list a year ago and never took me off, so our local AIs had permission to enable location sharing" [ch3:46].
+
+#### 5.4.6 Library shelf + Herald books. Effort S
+- **What users see:**
+  - Tapaia's library becomes a room with **shelves** of long-form "books": guides ("How to claim a Zipcoin name", "Staying safe from scams"), lore notes with citations, translations, and session write-ups.
+  - Books by Heralds get a **Herald book** label.
+  - A "quiz me" button asks Emerald for a short quiz on a book (needs the AI service, 8).
+- **Rules:**
+  - Any citizen can submit a book: a title, a shelf and Markdown text up to a length cap.
+  - Volunteer librarians (mods at first) accept books. Accepted books count toward Fix Tapaia.
+  - **Starting state.** In keeping with canon, the shelves start nearly empty: a few dull "business books" and untranslated Old Belpakian and Haragmir spines. We never write fake Old Belpakian text; those spines simply can't be opened **(extrapolation)**.
+  - Lore books must cite chapter:line and keep canon separate from fan additions.
+- **Canon:**
+  - "All the books are either some boring business books, or things in foreign languages nobody understands, either Old Belpakian or something from Haragmir" [ch6:223].
+  - Heralds: "Some give speeches, others write books, others help organize assemblies" [ch6:169].
+  - "He asked Emerald to come up with a quiz related to the information he viewed so far" [ch6:107].
+
+#### 5.4.7 Pop-up classes. Effort S
+- **What users see:**
+  - A **Classes** board.
+  - A citizen schedules a short class (topic, host, start tick). At the start tick, the class room "decrypts" and is announced to people who tapped *Remind me*, DU-style.
+  - Attendees get an attendance badge for that class, and the host can turn notes into a library book.
+- **Rules:**
+  - Any citizen can host, with a cap of N classes per week and normal moderation.
+  - **Topics:** wallet safety, how Tapaia works, the novel's mechanisms, Dzegoban phrases. Dzegoban classes use **canon-attested words only**, and we don't invent vocabulary.
+  - No paid entry at launch (event tickets in 7.4 stay a separate, later paid extra).
+  - The last-minute reveal is flavor: rooms are not secret from the server **(extrapolation)**.
+- **Canon:**
+  - The autobus poster: "Education is every Veridian's responsibility and duty for a lifetime" [ch1:255].
+  - DU: "The exact location of the classroom should be getting decrypted and broadcasted any moment now" [ch2:50].
+
+#### 5.4.8 Inspector clubs. Effort S
+- **What users see:**
+  - An **#inspectors** room and an **Inspector** badge.
+  - Volunteers publish reports on what they reviewed: a commit of the GPL repo, bot code, AI prompts, or a range of treasury and buyback transactions. Each report has a summary and findings.
+  - The team replies publicly to each finding.
+- **Rules:**
+  - **Report template:** scope (commit hash or tx range), method, findings, severity.
+  - Reports are signed with the author's wallet as a plain message signature (never a transaction).
+  - The badge carries **no powers** and no payouts. Open-source contributor bounties from the treasury (7.5) stay a separate, published program.
+  - Reports go to the library's "Inspections" shelf.
+- **Canon:** Dzego's rule that "anyone can go and unscrew any camera in public and inspect it themselves. There's entire clubs that do it and publish their reports online" [ch5:164].
+
+#### 5.4.9 Billboards on the square, rated by sortition. Effort M
+- **What users see:**
+  - A billboard strip on Tapaia Square showing rotating in-world posters from businesses, Societies, classes and events.
+  - Drafted citizens get "Rate this poster" in their day, using the same −5..+5 slider as aesthetics drafts (4.1).
+  - An NPC **Hydrafill** runs parody ads as the house gag, labelled as NPC.
+- **Rules:**
+  - **Posters:** a fixed-size pixel-art template plus a short caption. Moderation pre-checks each one.
+  - **Banned content:** anything promoting "gambling or risky investment" or "excessive display of wealth" (canon Tier 4/5). That means **no token shilling, prices or "pumps" on billboards**.
+  - **Rating:** a small random panel rates each poster. Ratings are normalized per rater (mean 0, mean square 1, with the growing-weight edge case in 4.1).
+  - **Display time** scales with the score.
+  - **The featured slot** uses **randomize-above-cutoff**: every poster in the top 10% has an equal chance.
+  - **Paid slots (optional, 7.4).** A poster slot can be a paid extra in $TAPAIA, about half burned. **Payment never changes ratings or the featured draw.**
+  - Rating posters is how aesthetics drafts work before players own property **(extrapolation)**.
+- **Canon:**
+  - Gladias "wished that it had been the Hydrafill advertisement that he had been selected to vote on" / "We need more fun in the world." [ch1:269, ch1:271].
+  - At his hearing, the thing he wished he'd voted on was "A Hydrafill billboard" [ch8:180].
+  - The Tier 4 criteria include "gambling or risky investment, excessive display of wealth" [ch1:174].
+  - Randomize-above-cutoff: "If the committee says you're in the top ten percent, you have the same chance of getting in, no matter if you're at ninety one or ninety nine" [ch17:144].
+
+#### 5.4.10 Forecasting board (reputation only, no money). Effort M
+- **What users see:**
+  - A **Forecasts** board of questions with a deadline, such as "Will Fix Tapaia reach milestone 2 this season?" or "Will the next Society poll have 50+ voters?".
+  - Citizens set a probability (1–99%) and can update it until the deadline.
+  - After questions resolve, each person gets a public **Forecaster score** (Brier-based) and a leaderboard.
+- **Rules:**
+  - **No stakes of any kind.** There is no zc, no tokens, no prizes, and nothing to buy or trade. It is reputation only.
+  - **Banned questions:** token or crypto prices, markets, and anything about real people's private lives.
+  - **Questions:**
+    - Proposed by citizens and approved by mods, later by Heralds.
+    - Each has written resolution criteria.
+    - Resolved publicly with a link to the evidence.
+  - A score shows only after N resolved questions.
+  - Forecaster score may later feed Rep (4.4) **(extrapolation)**.
+  - This deliberately takes the canon idea **without** Silverchat Predict's betting.
+- **Canon:**
+  - Verdow on Veridia's missing institution: "There's no position where you have to stand up and say - if we do X, then Y will happen - and you rise up if you're right, and fall if you're wrong" [ch32:102].
+  - Silverchat Predict "lets people - or bots - make bets on future events" [ch27:126], with Gladias naming "two weaknesses" [ch27:128].
+
+**Dependencies:**
+- Food-truck orders need the in-game zc ledger.
+- Billboards need the sortition draft and QV normalizer.
+- Hood-up's Rep credential needs Rep v1.
+- Library quizzes need the AI service.
+- The [launch checklist](launch-checklist.md) orders the build around these.
 
 ## 6. Zipcoin integration
 
@@ -555,6 +743,8 @@ Vitalik released *Snowmoon* under **GPL v3** and explicitly asks derivative proj
 
 There are no dates; each phase ends when its exit criteria are met. **The community hub is the MVP; the RPG layers on top of it.** Token steps follow section 7 (working, decided Oct 7, 2026).
 
+> **v0.7: full product at token launch.** Angelo wants the token to launch on a full product, not a bare prototype. The phases below describe the build sequence. The **token launch (Phase 2 below) now waits until the launch scope is live**: the hub, real entry, Societies, QV polls, the in-game zc ledger, the aesthetics draft, Rep v1, the character upgrade and the ten features in 5.4. The current status and the proposed launch build order (phases A–E) are in [launch-checklist.md](launch-checklist.md). What counts as launch scope vs the first seasons after launch is open decision 28.
+
 **Phase 0: Foundations**
 - Pick a name for the app and the token (collision-checked). Create the GPL repo with LICENSE, README credit and disclaimer, and a canon codex with chapter citations.
 - Write the code of conduct (OOC and IC sections). Get a legal consult on the token design (entry burn and founder slots, burns, revenue, buybacks, optional holder rooms) and on the in-game zc design, before anything launches.
@@ -654,3 +844,45 @@ Decided in v0.2 (public multisig and hold-to-enter since replaced): token on Sto
 25. **AI models.** Open-weight models (cleanest for the open pipeline) or hosted APIs (easier, but less reproducible)?
 26. **Visitors at launch.** Ship Dzego and Freetown visitors with the first RPG phase, or later?
 27. **Legal review.** Who, which jurisdictions to serve or geo-block. With the new token design this has to happen before the token launch at the latest (phase 0 proposed). Poll payout currency (14) should be in that consult if real $TAPAIA is on the table.
+
+**Launch scope (v0.7)**
+28. **What "full product at token launch" includes.** The [launch checklist](launch-checklist.md) proposes two groups:
+    - **Before the token:** the hub, real entry, Societies, QV polls, the in-game zc ledger, the aesthetics draft, Rep v1, the character upgrade and the ten features in 5.4.
+    - **The first seasons after launch:** the Order, courts, knocks and mini-games.
+    - Confirm, or move items across.
+29. **Settings for the 5.4 features:**
+    - Air thresholds (CO2 formula, ventilation trigger, "increased risk" share);
+    - which rooms allow Hood-up;
+    - food truck times;
+    - billboard panel size and display-time curve;
+    - forecast question rules and the minimum resolved count before a score shows.
+30. **Hosting budget.** A full launch needs an always-on paid instance and a managed database (the free Render plan sleeps and wipes data on restart). Pick a host and a monthly budget.
+
+**Proposed lore fixes, pending (v0.7; not applied, waiting for Angelo)**
+These came out of the novel review on Oct 7, 2026. Nothing in this doc has been changed for them yet.
+
+- **P1. Poll payouts.**
+  - 4.1 currently shares 50% of a poll's fee among voters and gives the poster a cut of boosts.
+  - In canon the fee goes to the platform: "You can burn zipcoins - well, pay zipcoins to the company" [ch27:36], and when Silverchat ran the poll itself "they get a hundred percent of the fee back" [ch27:48]. Payment buys priority: "you need a high priority level" [ch27:40].
+  - Paying people to take part is the book's exploit: Bluewhale's "You donate ten zipcoins and get back twenty" [ch11:244].
+  - Proposed: the poster pays for reach and priority; voters get at most a badge or Rep; drop the poster's cut of boosts.
+  - Also: QV normalization needs many ratings per person ("All his votes would be automatically shifted, stretched or squeezed…" [ch1:108]), so polls should be multi-item ballots.
+- **P2. Robe colors.**
+  - 7.4 sells robe colors.
+  - In canon the robe is "a loose-fitting dark purple dress… privacy robe wearers all wore shoes of the same dark purple color" [ch1:132], so that "Were they male, female, young or old, he could not tell" [ch1:249].
+  - Proposed: robes stay uniform purple everywhere; sell ordinary clothes and accessories instead.
+- **P3. Order badges and audits.**
+  - 7.4 shows a public "full standing" badge, and 4.3 gives Acolytes a solo audit queue.
+  - In canon, membership is secret: "the faux pas of revealing to a stranger his status as an Order member" [ch6:173]; "HEY EVERYONE, IT'S AN ORDER MEMBER!" [ch1:221]. Only Heralds go public, after they have no power [ch6:165]. Acolyte audits are group chats: "nine Acolytes assigned to this audit, split into three groups of three" [ch1:213].
+  - Proposed: no visible Order badge except for Heralds; don't market ranks as cosmetics; Acolyte audits in 3×3 rooms.
+- **P4. Free square chat.**
+  - 5.1 says every square post is a ~$1 Speak, but the prototype already has free "Say" plus optional Speak.
+  - Canon Tapaia is where "you can sit down, drink tea, there are shops nearby" [ch6:221]. Burns are rare signals to strangers: "burning a hundred zipcoins at his doorstep" [ch20:164]; the 400 zc broadcast [ch19:188].
+  - Proposed: in-character chat is free, and Speak is the optional paid card.
+- **P5. Single Veridian names.**
+  - The prototype's seed citizens use Anglo first-plus-last names (Nessa Quill, Corvin Ashdale), and one is billed as "Keeper of the tea cart schedule", although Keeper is the secret Order role.
+  - Veridians in the book go by single invented names: "Hi, I'm Pelae." [ch6:141]; "I'm Alagael, I've been a Herald for seven years" [ch6:153]; "I'm Lectoby." [ch20:318]. "No surnames" is an observed pattern, not a stated rule **(extrapolation)**.
+  - Canon tea is served by robots: "a robot slid up to them, bringing tea" [ch29:96].
+- **P6. Emerald honesty label** (smaller, same review).
+  - Canon Emerald is "the local AI running from Gladias's hand device" [ch1:24], and ours runs on our server (section 9).
+  - Proposed: say so in the UI, and later consider an optional in-browser model.
