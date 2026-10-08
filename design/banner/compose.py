@@ -65,14 +65,14 @@ def banner_html(key):
     return f'<!doctype html><html><head><meta charset="utf-8"><style>{BASE_CSS}</style></head><body>{v["body"].replace("%COIN%", COIN)}</body></html>'
 
 
-BIO = ['The town square for $ZC 🌳', 'Chat • Role-play • Burn to be heard', 'Set in Veridia, from Snowmoon 📖', 'Open source | Not affiliated w/ Vitalik']
+BIO = ['A town square in Veridia 🌳', 'Chat • Role-play • Gather, powered by Zipcoin', 'Set in the world of Snowmoon 📖', 'Open source | Not affiliated w/ Vitalik']
 
 
 def profile(key, theme):
     dark = theme == 'dark'
     bg, fg, sub, line = ('#000', '#e7e9ea', '#71767b', '#2f3336') if dark else ('#fff', '#0f1419', '#536471', '#eff3f4')
     btn = 'background:#eff3f4;color:#0f1419' if dark else 'background:#0f1419;color:#fff'
-    bio = '<br>'.join(BIO).replace('$ZC', f'<span style="color:#1d9bf0">$ZC</span>')
+    bio = '<br>'.join(BIO)  # plain text: no cashtag, so nothing renders as a blue link
     return f'''<div class="xp" style="background:{bg};color:{fg};border-color:{line}">
   <div class="top" style="border-color:{line}"><span class="back">←</span><div><b>Tapaia</b><div style="color:{sub};font-size:13px">0 posts</div></div></div>
   <div class="hdr"><img src="banner-{key}.png"></div>

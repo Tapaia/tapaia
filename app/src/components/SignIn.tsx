@@ -59,12 +59,12 @@ export function SignIn() {
     <div className="split">
       <section className="hero" aria-hidden>
         <div className="brand"><img className="logo" src="/brand/logo.svg" alt="Tapaia" /><b>Tapaia</b></div>
-        <div className="copy"><h1>The town square for<br />the $ZC community.</h1>
-          <p>Chat like you would on Telegram. Step into Veridia and speak as your citizen whenever you feel like it.</p>
+        <div className="copy"><h1>A town square<br />in Veridia.</h1>
+          <p>Chat, role-play and gather, powered by Zipcoin. Talk like you would on Telegram, and speak as your citizen whenever you feel like it.</p>
           <div className="proof"><span className="avs">{HERO_PEOPLE.map((p, i) => <Av key={i} u={p} />)}</span>Open source · based on <i>Snowmoon</i></div></div>
       </section>
       <section className="form"><div className="inner">
-        <div className="mobile-hero"><div className="brand"><img className="logo" src="/brand/logo.svg" alt="Tapaia" /><b>Tapaia</b></div><div className="t">The town square for the $ZC community.</div></div>
+        <div className="mobile-hero"><div className="brand"><img className="logo" src="/brand/logo.svg" alt="Tapaia" /><b>Tapaia</b></div><div className="t">A town square in Veridia.<span className="s">Chat, role-play and gather, powered by Zipcoin.</span></div></div>
         <h2>Welcome to Tapaia</h2>
         <p className="lede">Try it instantly, or sign in with the wallet you already use.</p>
         <button className="demo-cta" onClick={() => setDemo(true)} data-testid="try-demo">

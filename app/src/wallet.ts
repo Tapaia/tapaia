@@ -10,7 +10,7 @@ import type { PublicUser } from '../shared/types';
 import { api } from './store';
 
 export function makeWagmi(projectId: string | null): Config {
-  const meta = { name: 'Tapaia', description: 'The town square for the $ZC community', url: location.origin, icons: [`${location.origin}/brand/logo-256.png`] };
+  const meta = { name: 'Tapaia', description: 'A town square in Veridia, powered by Zipcoin', url: location.origin, icons: [`${location.origin}/brand/logo-256.png`] };
   const connectors = [
     injected({ shimDisconnect: true }), // legacy window.ethereum ("Browser wallet")
     coinbaseWallet({ appName: 'Tapaia', appLogoUrl: meta.icons[0] }),

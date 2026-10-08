@@ -40,6 +40,13 @@ try {
   await A.getByTestId('try-demo').waitFor();
   await A.waitForTimeout(400);
   await shot(A, '01-sign-in.png');
+  {
+    const title = await A.title();
+    const hero = await A.locator('.hero h1').innerText();
+    const desc = await A.locator('meta[name="description"]').getAttribute('content');
+    ok('page title and hero lead with the place, name Zipcoin, no "$ZC" ticker',
+      title.includes('A town square in Veridia') && /town square\s+in Veridia/.test(hero) && /Zipcoin/.test(desc || '') && !/\$ZC/.test(title + hero + desc + await A.locator('body').innerText()), title);
+  }
   await A.getByTestId('try-demo').click();
   await A.waitForFunction(() => (document.querySelector('#dn')?.value || '').length > 1);
   await A.waitForTimeout(300);

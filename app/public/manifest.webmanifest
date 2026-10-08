@@ -1,7 +1,7 @@
 {
   "name": "Tapaia",
   "short_name": "Tapaia",
-  "description": "The town square for the $ZC community (prototype)",
+  "description": "A town square in Veridia. Chat, role-play and gather, powered by Zipcoin (prototype)",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#faf7f2",

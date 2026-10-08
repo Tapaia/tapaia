@@ -1,6 +1,8 @@
 # Tapaia
 
-**Tapaia** is an open-source community chat for the [Zipcoin](https://www.zipcoin.cash/) ($ZC) / *Snowmoon* community — meant to replace Telegram for day-to-day hangouts — with an optional chat-based role-play RPG layered on top. The game is set in everyday **Veridia**, the country in Vitalik Buterin's novel [*Snowmoon*](https://vitalik.eth.limo/snowmoon/). The name comes from **Tapaia Square**, a town square in Meldan.
+*A town square in Veridia.*
+
+**Tapaia** is an open-source town square set in everyday **Veridia**, the country in Vitalik Buterin's novel [*Snowmoon*](https://vitalik.eth.limo/snowmoon/). It's a place for the Zipcoin and *Snowmoon* community to chat, role-play and gather — meant to replace Telegram for day-to-day hangouts — with an optional chat-based role-play RPG layered on top. [Zipcoin](https://www.zipcoin.cash/) (ZC) is the currency that powers the square, the way a game has its in-world money. The name comes from **Tapaia Square**, a town square in Meldan.
 
 Nobody has to role-play to use the community hub. The game never gets in the way of normal conversation.
 
@@ -16,9 +18,9 @@ The button deploys the prototype as a free Render web service from [`render.yaml
 
 1. **Community hub (out of character)** — announcements, general chat, market talk, support, and bot feeds. The MVP and Telegram replacement.
 2. **Veridia RPG (in character)** — original citizens of Meldan, sortition drafts, courts, businesses, and the Order of Steering, built on the novel's institutions (not its war plot).
-3. **$TAPAIA on Stockereum** — fair launch paired against $ZC once the app is live: 1% fee, no presale, no team allocation. See the [tokenomics page](docs/tokenomics.md).
+3. **$TAPAIA on Stockereum** — fair launch paired against Zipcoin (ZC) once the app is live: 1% fee, no presale, no team allocation. See the [tokenomics page](docs/tokenomics.md).
 
-Entry (working plan): the first 100 citizens get in free as Founding Citizens. After that, new citizens make a one-time burn of about $5, half $ZC and half $TAPAIA, with a public arrival message. Speaking in Tapaia Square burns about $1 of $TAPAIA.
+Entry (working plan): the first 100 citizens get in free as Founding Citizens. After that, new citizens make a one-time burn of about $5, half ZC and half $TAPAIA, with a public arrival message. Speaking in Tapaia Square burns about $1 of $TAPAIA.
 
 ## Roadmap (summary)
 
@@ -59,7 +61,7 @@ This project publishes its source, AI prompts, lore files, and other non-commodi
 
 **Tapaia is not affiliated with, endorsed by, or connected to Vitalik Buterin, the Ethereum Foundation, zipcoin.cash, Stockereum, or any related project.**
 
-$ZC, $TAPAIA, and any other crypto-assets mentioned here are speculative. **Nothing in this repository is financial advice.** Tokenomics are a **working plan** and may change before launch; they are not a commitment or a promise of price or returns. Do your own research. Never share seed phrases or private keys; project staff will never DM you first asking for them.
+Zipcoin (ZC), $TAPAIA, and any other crypto-assets mentioned here are speculative. **Nothing in this repository is financial advice.** Tokenomics are a **working plan** and may change before launch; they are not a commitment or a promise of price or returns. Do your own research. Never share seed phrases or private keys; project staff will never DM you first asking for them.
 
 ## License
 

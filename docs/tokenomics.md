@@ -6,17 +6,17 @@
 
 **Not financial advice. Not affiliated with Vitalik Buterin or zipcoin.cash.**
 
-$TAPAIA is the token for [Tapaia](../README.md), the community chat and role-play town square for the $ZC / *Snowmoon* community. It launches on [Stockereum](https://stockereum.com), paired against $ZC, **only after the app is live**. There is no $TAPAIA contract yet, so anything calling itself $TAPAIA today is fake.
+$TAPAIA is the token for [Tapaia](../README.md), a town square in Veridia where the Zipcoin and *Snowmoon* community chats, role-plays and gathers. It launches on [Stockereum](https://stockereum.com), paired against Zipcoin (ZC), **only after the app is live**. There is no $TAPAIA contract yet, so anything calling itself $TAPAIA today is fake.
 
 ## Fair launch
 - **1,000,000,000 $TAPAIA**, fixed. No minting, ever.
 - The whole supply goes into Stockereum's locked Uniswap v4 pool, and the liquidity can't be pulled.
 - **No presale. No team allocation. No dev buy planned.** If that ever changes, we'll say so publicly.
-- **1% trading fee**, the same as $ZC. Stockereum keeps 0.5% and Tapaia gets 0.5%, paid in ZC.
+- **1% trading fee**, the same as Zipcoin's. Stockereum keeps 0.5% and Tapaia gets 0.5%, paid in ZC.
 
 ## Getting in
 - **The first 100 citizens get in free**, with a Founding Citizen badge.
-- **After that, entry is a one-time burn of about $5**, half $ZC and half $TAPAIA (plus gas). It goes with your public arrival message.
+- **After that, entry is a one-time burn of about $5**, half ZC and half $TAPAIA (plus gas). It goes with your public arrival message.
 - You don't need to keep holding anything afterwards. A few special rooms may ask you to hold tokens.
 
 ## Using it

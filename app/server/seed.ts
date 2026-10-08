@@ -53,7 +53,7 @@ export const SEED_MESSAGES: SeedMsg[] = [
   /* 2 */ { ch: 'general', u: 'bram', ago: 300, text: 'Phase 1 beta notes are up in #dev-updates. Big one: push notifications now work when you add Tapaia to your home screen on iPhone and Android.', react: { '🎉': ['nessa', 'wren', 'orla', 'sorrel', 'pim', 'odessa', 'lumi', 'tobin', 'corvin', 'ilse', 'marek', 'juniper'], '🙌': ['nessa', 'wren', 'orla', 'sorrel', 'pim'], '🍵': ['corvin', 'nessa', 'ilse'] } },
   /* 3 */ { ch: 'general', u: 'odessa', ago: 292, text: 'Installed it on my phone and the first mention came through instantly. Honestly smoother than the old group chat 👋' },
   /* 4 */ { ch: 'general', u: 'sorrel', ago: 288, text: 'Same here. Is there a way to schedule dark mode for after sunset?', replyTo: 3 },
-  /* 5 */ { ch: 'general', u: 'lumi', ago: 281, text: 'Source is up if anyone wants to dig in, prompts and art generators included:', card: { url: 'github.com/tapaia/tapaia', title: 'Tapaia: open-source community chat for $ZC', desc: 'GPL v3 · based on Snowmoon by Vitalik Buterin · not affiliated' } },
+  /* 5 */ { ch: 'general', u: 'lumi', ago: 281, text: 'Source is up if anyone wants to dig in, prompts and art generators included:', card: { url: 'github.com/tapaia/tapaia', title: 'Tapaia: an open-source town square in Veridia', desc: 'GPL v3 · based on Snowmoon by Vitalik Buterin · not affiliated' } },
   /* 6 */ { ch: 'general', kind: 'system', sys: 'citizen', u: 'sorrel', ago: 276, text: 'just became a citizen. Say hi!' },
   /* 7 */ { ch: 'general', u: 'odessa', ago: 274, text: '@jvale did your arrival post confirm okay?' },
   /* 8 */ { ch: 'general', u: 'juniper', ago: 272, text: 'Yep, about a minute. The preview made it really clear what I was burning before I signed.' },

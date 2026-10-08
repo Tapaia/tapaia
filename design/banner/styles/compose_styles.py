@@ -55,7 +55,7 @@ def banner_html(k):
 <div class="lock">
   <div class="cw"><img class="coin" src="{COIN}" style="filter:{s['coin']}"><div class="occl"></div><div class="sheen"></div></div>
   <div><div class="wm" style="color:{s['wm']};text-shadow:{s['wm_sh']}">Tapaia</div>
-  <div class="tag" style="color:{s['tag']};text-shadow:{s['tag_sh']}">The town square for <b style="color:{s['zc']}">$ZC</b></div></div>
+  <div class="tag" style="color:{s['tag']};text-shadow:{s['tag_sh']}">A town square in <b style="color:{s['zc']}">Veridia</b></div></div>
 </div></body></html>'''
 
 
