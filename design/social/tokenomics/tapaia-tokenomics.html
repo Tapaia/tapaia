@@ -1,0 +1,67 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face { font-family: Inter; src: url('../../mockups-v2/fonts/Inter-Variable.ttf') format('truetype'); font-weight: 100 900; }
+* { box-sizing: border-box; } html, body { margin: 0; }
+body { width: 1600px; height: 900px; overflow: hidden; position: relative; font-family: Inter, sans-serif;
+  -webkit-font-smoothing: antialiased; font-feature-settings: 'cv11','ss01'; color: #2a1640; }
+.bg { position: absolute; inset: 0; width: 1600px; height: 900px; image-rendering: pixelated; }
+.px { image-rendering: pixelated; }
+/* lockup: same wordmark CSS as design/banner/final (Inter 800, -.045em, .9), plum on the coin-sun afterglow */
+.lock { position: absolute; left: 56px; top: 28px; display: flex; align-items: center; gap: 26px; }
+.cw { position: relative; width: 112px; height: 112px; flex: none; }
+.cw img { width: 112px; height: 112px; display: block;
+  filter: drop-shadow(0 0 8px rgba(255,240,190,.9)) drop-shadow(0 0 28px rgba(255,196,110,.7)); }
+.cw .sheen { position: absolute; inset: 2px; border-radius: 50%; mix-blend-mode: screen;
+  background: radial-gradient(circle at 72% 22%, rgba(255,214,150,.38), rgba(255,214,150,0) 46%); }
+.wm { font-weight: 800; font-size: 90px; letter-spacing: -.045em; line-height: .9; color: #2a1640;
+  text-shadow: -2px 0 0 rgba(255,232,176,.55), 0 0 30px rgba(255,226,160,.55); }
+.tag { font-weight: 700; font-size: 31px; letter-spacing: -.01em; margin-top: 8px; color: #3a1f52;
+  text-shadow: 0 0 16px rgba(255,226,160,.6); }
+.tag b { font-weight: 800; color: #6b2f86; }
+/* pixel-cornered panels */
+.pc { clip-path: polygon(0 8px, 4px 8px, 4px 4px, 8px 4px, 8px 0, calc(100% - 8px) 0, calc(100% - 8px) 4px, calc(100% - 4px) 4px,
+  calc(100% - 4px) 8px, 100% 8px, 100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px), calc(100% - 4px) calc(100% - 4px),
+  calc(100% - 8px) calc(100% - 4px), calc(100% - 8px) 100%, 8px 100%, 8px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 8px), 0 calc(100% - 8px)); }
+.ring { width: 92px; height: 92px; flex: none; border-radius: 50%; background: #45275e; box-shadow: inset 0 0 0 6px #2fc56a;
+  display: flex; align-items: center; justify-content: center; }
+.ring img { width: 64px; height: 64px; }
+.hero { position: absolute; left: 56px; top: 178px; width: 1488px; height: 116px; padding: 0 30px 0 14px;
+  background: #fbf1d6; display: flex; align-items: center; gap: 24px; }
+.hero:before, .card:before { content: ''; position: absolute; inset: 0; pointer-events: none;
+  box-shadow: inset 0 -6px 0 #e8cf98, inset 0 4px 0 #fff8e6; }
+.hero { background: linear-gradient(#ffe9a8, #ffd95a); }
+.hero:before { box-shadow: inset 0 -6px 0 #e0a526, inset 0 4px 0 #fff3c8; }
+.hero .k { font-weight: 800; font-size: 21px; letter-spacing: .12em; color: #8a5a0c; text-transform: uppercase; }
+.hero .h { font-weight: 800; font-size: 52px; letter-spacing: -.03em; line-height: 1.02; margin-top: 2px; }
+.hero .h i { font-style: normal; color: #b07a12; padding: 0 6px; }
+.hero .r { margin-left: auto; text-align: right; font-weight: 650; font-size: 28px; line-height: 1.3; color: #5a3a12; }
+.hero .r b { font-weight: 800; color: #2a1640; }
+.grid { position: absolute; left: 56px; top: 312px; width: 1488px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+.card { position: relative; height: 132px; background: #fbf1d6; display: flex; align-items: center; gap: 22px; padding: 0 20px 0 18px; }
+.card .h { font-weight: 800; font-size: 46px; letter-spacing: -.03em; line-height: 1.02; white-space: nowrap; }
+.card .h em { font-style: normal; color: #6b2f86; }
+.card .s { font-weight: 600; font-size: 29px; letter-spacing: -.01em; margin-top: 8px; color: #5a3a72; white-space: nowrap; }
+.foot { position: absolute; left: 0; right: 0; top: 858px; height: 42px; display: flex; align-items: center; justify-content: center;
+  font-weight: 650; font-size: 24px; color: #e8dcf2; letter-spacing: .005em; }
+.foot b { font-weight: 800; color: #ffd95a; }
+.foot .sep { color: #8a64b0; padding: 0 14px; }
+</style></head><body>
+<img class="bg" src="art/bg-400x225.png">
+<div class="lock">
+  <div class="cw"><img src="../../logo/opt4-refined/D-hybrid/D-hybrid.svg"><div class="sheen"></div></div>
+  <div><div class="wm">Tapaia</div><div class="tag"><b>$TAPAIA</b> tokenomics</div></div>
+</div>
+<div class="hero pc">
+  <div class="ring"><img class="px" src="art/icon-lock.png"></div>
+  <div><div class="k">Fair launch on Stockereum</div><div class="h">1% fee<i>·</i>No presale<i>·</i>No dev buy</div></div>
+  <div class="r">All <b>1B $TAPAIA</b> in a locked pool<br>Paired with <b>$ZC</b></div>
+</div>
+<div class="grid">
+  <div class="card pc"><div class="ring"><img class="px" src="art/icon-badge.png"></div><div><div class="h"><em>100</em> free Founding Citizens</div><div class="s">The first 100 in get a badge, no burn</div></div></div>
+  <div class="card pc"><div class="ring"><img class="px" src="art/icon-door.png"></div><div><div class="h">Entry <em>~$5</em>, one time</div><div class="s">Burned: half $ZC, half $TAPAIA</div></div></div>
+  <div class="card pc"><div class="ring"><img class="px" src="art/icon-speak.png"></div><div><div class="h">Speak <em>~$1</em> in $TAPAIA</div><div class="s">Burned. Everyday chat stays free</div></div></div>
+  <div class="card pc"><div class="ring"><img class="px" src="art/icon-shop.png"></div><div><div class="h">Extras: <em>half burned</em></div><div class="s">Cosmetics, your shop, ranks, events</div></div></div>
+  <div class="card pc"><div class="ring"><img class="px" src="art/icon-flame.png"></div><div><div class="h">Fees: <em>half buyback &amp; burn</em></div><div class="s">Other half: running costs &amp; prizes</div></div></div>
+  <div class="card pc"><div class="ring"><img class="px" src="art/icon-chest.png"></div><div><div class="h">Public treasury</div><div class="s">Monthly reports of fees and burns</div></div></div>
+</div>
+<div class="foot"><span><b>Numbers may change before launch</b></span><span class="sep">·</span><span><b>Not financial advice</b></span><span class="sep">·</span><span>Not affiliated with Vitalik Buterin or zipcoin.cash</span></div>
+</body></html>

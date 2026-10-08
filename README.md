@@ -6,7 +6,7 @@ Nobody has to role-play to use the community hub. The game never gets in the way
 
 ## Status
 
-**Design phase, with a working Phase 1 prototype** in [`app/`](app/) (demo mode, no wallet needed; it never sends a transaction). This repository holds the design, license, prototype code, and (soon) AI prompts and lore files. Tokenomics for **$TAPAIA** are placeholders and not final.
+**Design phase, with a working Phase 1 prototype** in [`app/`](app/) (demo mode, no wallet needed; it never sends a transaction). This repository holds the design, license, prototype code, and (soon) AI prompts and lore files. Tokenomics for **$TAPAIA** are a working plan decided Oct 7, 2026 (numbers may change before launch); see [docs/tokenomics.md](docs/tokenomics.md).
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Tapaia/tapaia)
 
@@ -16,9 +16,9 @@ The button deploys the prototype as a free Render web service from [`render.yaml
 
 1. **Community hub (out of character)** — announcements, general chat, market talk, support, and bot feeds. The MVP and Telegram replacement.
 2. **Veridia RPG (in character)** — original citizens of Meldan, sortition drafts, courts, businesses, and the Order of Steering, built on the novel's institutions (not its war plot).
-3. **$TAPAIA on Stockereum** — planned launch paired against $ZC. Utility and revenue model are placeholders; see the design doc.
+3. **$TAPAIA on Stockereum** — fair launch paired against $ZC once the app is live: 1% fee, no presale, no team allocation. See the [tokenomics page](docs/tokenomics.md).
 
-Entry (current direction, for now): new citizens burn a real zipcoin Book "Speak" post as a permanent arrival message. The first X citizens (number not set) get in free as Founding Citizens.
+Entry (working plan): the first 100 citizens get in free as Founding Citizens. After that, new citizens make a one-time burn of about $5, half $ZC and half $TAPAIA, with a public arrival message. Speaking in Tapaia Square burns about $1 of $TAPAIA.
 
 ## Roadmap (summary)
 
@@ -37,7 +37,8 @@ Phases have exit criteria, not fixed dates. Details: [docs/design-doc.md](docs/d
 
 | Path | What it is |
 | --- | --- |
-| [docs/design-doc.md](docs/design-doc.md) | Full project design (draft v0.3) |
+| [docs/tokenomics.md](docs/tokenomics.md) | $TAPAIA tokenomics, the short public version |
+| [docs/design-doc.md](docs/design-doc.md) | Full project design (draft v0.4) |
 | [docs/phase1-spec.md](docs/phase1-spec.md) | Phase 1 community hub spec (draft) |
 | [app/](app/) | Phase 1 hub prototype (web app + Node WebSocket server) |
 | [design/](design/) | Visual reference and Phase 1 mockups (current: [mockups-v2](design/mockups-v2/), first take: [mockups](design/mockups/)) |
@@ -58,7 +59,7 @@ This project publishes its source, AI prompts, lore files, and other non-commodi
 
 **Tapaia is not affiliated with, endorsed by, or connected to Vitalik Buterin, the Ethereum Foundation, zipcoin.cash, Stockereum, or any related project.**
 
-$ZC, $TAPAIA, and any other crypto-assets mentioned here are speculative. **Nothing in this repository is financial advice.** Tokenomics described in the design doc are **placeholders** (best current option, not a commitment). Do your own research. Never share seed phrases or private keys; project staff will never DM you first asking for them.
+$ZC, $TAPAIA, and any other crypto-assets mentioned here are speculative. **Nothing in this repository is financial advice.** Tokenomics are a **working plan** and may change before launch; they are not a commitment or a promise of price or returns. Do your own research. Never share seed phrases or private keys; project staff will never DM you first asking for them.
 
 ## License
 
