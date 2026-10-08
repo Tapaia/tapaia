@@ -1,6 +1,6 @@
 # Veridian Chat: project design doc
 
-*Working title. Draft v0.4, Oct 7, 2026, for Angelo. Not published. v0.4 records the tokenomics Angelo decided on the evening of Oct 7, marked **working, decided Oct 7, 2026**: they are the plan, but the numbers can still change before launch. $TAPAIA launches on Stockereum paired against ZC with a 1% fee and no presale, team allocation or planned dev buy. The first 100 citizens enter free; after that, entry burns about $5 (half ZC, half $TAPAIA). A square Speak burns about $1 of $TAPAIA. Paid extras are about half burned, half of our fee share goes to buyback-and-burn, and the treasury starts under Angelo's sole control with public monthly reports (sections 6.2, 6.3 and 7; public summary in [tokenomics.md](tokenomics.md)). Sections 1, 5, 6, 7, 9, 11, 12 and 13 are updated to match. v0.3 replaced hold-to-enter with the arrival-post entry model (6.2) and kept hold-to-enter only for specific gated rooms (6.2.6). v0.2 added the community-hub positioning (5.2).*
+*Working title. Draft v0.5, Oct 7, 2026, for Angelo. Not published. v0.5 adds two features Angelo floated the evening of Oct 7: **Societies** (user-created groups with their own entry rules; lore: Dzego's secret societies [ch9]) and **polls with quadratic voting** that can pay the poster and the voters (lore: Silverchat polling [ch27] and Gladias's QV [ch1]; section 4.1, 5.3). It also parks an **entry-routing** idea as ON HOLD (6.2.7): a one-click 1,000 ZC zipcoin Speak bought with ETH through a non-custodial contract, plus a 2.5% Tapaia fee, with an optional small $TAPAIA buy-and-burn. v0.4's tokenomics stay as the working plan (**working, decided Oct 7, 2026**): $TAPAIA on Stockereum paired against ZC at 1%, 100 free Founding Citizens, then about $5 entry (half ZC, half $TAPAIA), about $1 Speak in $TAPAIA, paid extras about half burned, buyback-and-burn from half of our fee share, and a treasury under Angelo's sole control with public monthly reports (sections 6.2, 6.3 and 7; public summary in [tokenomics.md](tokenomics.md)). Sections 4, 5, 6, 7, 11, 12 and 13 are updated. v0.3 replaced hold-to-enter with the arrival-post entry model (6.2). v0.2 added the community-hub positioning (5.2).*
 
 Sources: `/workspace/snowmoon/briefing.md` (lore, checked against the novel text in `/workspace/snowmoon/text/`) and `/workspace/zipcoin/briefing.md` (ZC and Stockereum). Chapter numbers in brackets, like [ch1], point to the novel. Market and on-chain figures are snapshots from Oct 7, 2026, around 4:45 PM ET, and will change. Anything marked **(design choice)** is ours, not canon.
 
@@ -44,8 +44,16 @@ Everyone starts as a **citizen**. The other roles layer on top. Everything below
 - **Courts.** Canon: 5 anonymous, randomly drawn judges, deliberating as two pairs plus a tiebreaker, with the median view deciding. An appeal draws a fresh random panel; there's no court hierarchy. Bad-faith or frivolous suits can earn a penalty judgment [ch6, ch26].
   - *Game version:* players can sue over in-game disputes (an unpaid order, a business accused of misdescribing itself, a contested audit). Five eligible citizens are drawn. Two private pair-rooms and a tiebreaker room each submit a position on a scale (e.g. award 0–100% of the claim), and the median wins. The plaintiff stakes in-game zc, and a 5-0 "frivolous" finding forfeits it.
   - Judges get the canon "no daily news" flavor as an optional honor-code badge.
-- **Polls (Silverchat-style).** Canon: on Silverchat you pay or burn zipcoins to put a question to a cross-section of users, and more zipcoins reach more people [ch27]. Seila also mixes real questions with decoys so outsiders can't tell what she cares about.
-  - *Game version:* spend in-game zc to send a poll to a random sample of active players; paying more widens the sample. Decoy questions are supported. Results are posted in the square so everyone knows the outcome and knows everyone else saw it (the canon "common knowledge" goal).
+- **Polls with quadratic voting (Silverchat-style).** Canon: on Silverchat you pay or burn zipcoins to put a question to a cross-section of users, and more zipcoins reach more people [ch27]. Seila also mixes real questions with decoys so outsiders can't tell what she cares about. Canon QV: Gladias's aesthetics vote is rescaled so each person's average is 0 and mean square is 1, so going extreme on everything doesn't help [ch1].
+  - *Game version (draft, ideas Oct 7, 2026):*
+    1. **The poster pays to broadcast** in $TAPAIA (or in-game zc if we stay on the safer path; open, 13). Reach scales with payment, as in Silverchat.
+    2. **That payment is split**, e.g. **50% shared among the voters, 30% burned, 20% to the treasury** **(design choice; exact split open)**.
+    3. **Voters vote with free voice credits** under quadratic voting (same rescale as aesthetics drafts: average 0, mean square 1). They spend nothing to vote and earn a share just for answering.
+    4. **Boosts:** other citizens can add funds to a poll they want more people to see; the original poster gets a cut of every boost, so a good question can pay.
+    5. **Decoys and common knowledge.** Decoy questions are supported. Results are posted in the square so everyone knows the outcome and knows everyone else saw it (the canon goal [ch27]).
+    6. **Societies** can run the same polls internally, scoped to their members (5.3).
+  - *Anti-abuse:* only citizens who have entered can vote and earn; one vote per citizen; daily earning caps. Paying people to vote attracts bots and throwaway accounts, so founder-slot and Sybil rules (6.2.3, 11) matter here too.
+  - *Payout currency (open, 13):* paying posters and voters in **real $TAPAIA** conflicts with the existing principle that the game never pays real tokens to players (6.1, 11). **Recommended:** start with **in-game zc or badges**, and only later consider real $TAPAIA for big polls, after a legal check. Angelo has not decided.
 - **Assemblies.** Herald-hosted citizens' assemblies on a topic (canon example: improving public spaces [ch6]). The AI writes a "broad listen report", a summary of square sentiment, for Keepers to read.
 
 ### 4.2 Businesses
@@ -121,6 +129,7 @@ The app has two layers that share one login, one sidebar and one moderation syst
 | **Keeper rooms** | 21 per rubric, as 3 sealed rooms of 7 | Members don't know who is in the other two rooms. They see only numbered pseudonyms. Proposals and broad listen reports are shared across all three, but discussion isn't. The rooms lock for the quiet period, then all 21 vote. |
 | **Assembly hall** | Open, Herald-run | Structured sessions with a topic. The AI summarizes them. |
 | **Visitor hostel** | Everyone | Onboarding for visitor characters. |
+| **Societies** | Members (and public rooms the Society opens) | User-created groups with their own entry rules (5.3). |
 
 ### 5.2 Community hub layer (out of character)
 
@@ -178,6 +187,28 @@ The goal is that the community can move its day-to-day chat off Telegram and int
 - **Different rules, clearly marked.** IC rooms use the decimal clock, in-character speech and burn-to-be-heard; OOC rooms use normal time and free posting. Each room header says which it is.
 - **Players and non-players are equal OOC.** Rep and Order roles carry no weight in community channels, and community moderation doesn't depend on game standing.
 
+### 5.3 Societies (user-created groups)
+
+> **Idea, Oct 7, 2026 evening.** Angelo wants user-made channels or groups with their own entry rules. The lore-accurate name is **Societies**.
+
+**Lore.** Chapter 9: Dzego's secret societies run payments, reputation and governance on cryptographic networks ("the ones that handle payments and reputation and manage governance for Dzego's secret societies") [ch9]. The book has no clans or guilds. **"Circle" is avoided** so it isn't confused with green pay circles. Secret-society flavor fits Dzegojan visitors especially, but any citizen can found a Society **(design choice)**.
+
+**What a Society is.** A user-created group with its own room (or set of rooms), membership list and entry rules. It can be in-character (a Veridia Society) or out-of-character (a community club); the room header says which. Societies sit alongside the fixed rooms in 5.1 and the OOC channels in 5.2; they don't replace #general or Tapaia Square.
+
+**Entry rules the creator sets** (one or a combination) **(design choice):**
+- **Hold an amount** of ZC and/or $TAPAIA (same caveats as optional holder rooms, 6.2.6);
+- **Burn to enter** (ZC, $TAPAIA, or both);
+- **Invite only;**
+- **Founders only** (Founding Citizen badge required);
+- or a mix (e.g. burn *or* invite).
+
+**Possible extras (open):**
+- A **creation cost in $TAPAIA** (about half burned, half to the treasury, matching paid extras in 7.4), so Societies aren't free spam.
+- **Society shops:** a Society can run a ground-floor shop / private room under the same rules as "your own shop" (7.4), still audited and taxed in-game.
+- Societies can run **internal polls** with the same QV mechanics as square polls (4.1), scoped to members.
+
+**Open:** who can create one (any citizen vs a Rep threshold); max Societies per citizen; whether Society entry burns count toward anything else; moderation (Society mods vs platform mods); and whether OOC Societies share the same creation cost.
+
 ## 6. Zipcoin integration
 
 Canon zipcoin is just everyday money with burn and ZK features. The novel never says who issues it or what its supply is. Linking the game to real $ZC is our choice, not canon. Real $ZC is an ERC-20 on Ethereum at `0x4E67DB19044549fF420860834c91b45BaD298722`, with a fixed supply of 1B, no owner and no mint. It is not affiliated with Vitalik.
@@ -195,15 +226,17 @@ Relevant real features, all on Ethereum mainnet:
 
 > **Changed in v0.4 (working, decided Oct 7, 2026).** The tokenomics placeholders are replaced with Angelo's decisions: 100 free Founding Citizens, then an entry burn of about $5 split half ZC and half $TAPAIA; a square Speak of about $1 in $TAPAIA only; paid extras about half burned; a 1% fee with half of our share going to buyback-and-burn; and a treasury Angelo controls alone at first, with public monthly reports (6.2, 6.3, 7). Where earlier text conflicts, v0.4 wins.
 
+> **Changed in v0.5 (ideas, Oct 7, 2026 evening).** Adds **Societies** (user-created groups; 5.3) and expands **polls** into a paid quadratic-voting feature that can compensate posters and voters (4.1). Parks an **entry-routing** alternative as ON HOLD (6.2.7): one-click 1,000 ZC Speak via ETH through our non-custodial contract + 2.5% fee, optional small $TAPAIA buy-and-burn; swapping $TAPAIA into ZC was considered and rejected. Open: pay poll earners in real $TAPAIA vs in-game currency first (13). Where v0.5 adds features, it sits on top of v0.4; where it conflicts on entry, the ON HOLD note in 6.2.7 wins only if adopted.
+
 ### 6.1 Two kinds of money in the app
 
 | | Real tokens ($ZC + $TAPAIA) | In-game zc (play money) |
 |---|---|---|
 | **Used for** | The entry burn (about $5: half ZC as an on-chain arrival post, half $TAPAIA, 6.2); small burns for loud actions, e.g. about $1 of $TAPAIA per square Speak (6.3); buying paid extras in $TAPAIA (7.4); optionally, holding for specific gated rooms (6.2.6). | Taxes, salaries, business sales, court stakes, polls, the guess bounty, loans. |
 | **Where it lives** | The player's own wallet. We never hold it. | Our database ledger. |
-| **Can it pay out to a player?** | No. Burns go to a dead address; about half of each paid-extra payment is burned and the rest goes to the treasury. Nothing in the game sends real tokens to a player (event prizes included, 7.4). | It can move between players, but it can't be bought, sold or redeemed. |
+| **Can it pay out to a player?** | **No, under the standing rule.** Burns go to a dead address; about half of each paid-extra payment is burned and the rest goes to the treasury. Nothing in the game sends real tokens to a player (event prizes included, 7.4). **v0.5 exception under discussion:** paid polls that compensate posters and voters in real $TAPAIA would break this (4.1, 13). | It can move between players, but it can't be bought, sold or redeemed. Recommended currency for poll rewards at first. |
 
-Keeping every payout (bounties, court awards, salaries) in play money is what keeps the game away from gambling and wagering rules, so that line stays.
+Keeping every payout (bounties, court awards, salaries, and for now poll rewards) in play money is what keeps the game away from gambling and wagering rules, so that line stays unless Angelo deliberately accepts the extra risk for real-$TAPAIA poll payouts (13).
 
 ### 6.2 Entry: the arrival post (citizenship and chat access)
 
@@ -268,6 +301,17 @@ A middle path is fixed amounts with a published review rule, plus live dollar es
 5. **Multiple wallets.** Allow linking several wallets (signed with each) and sum the balances? That helps people who keep tokens in a cold wallet. It needs a delegate pattern so no one has to sign in with a cold wallet (e.g. delegate.xyz-style delegation, to be checked).
 6. **Which rooms.** Which specific rooms, if any, are hold-gated. The main community channels and citizenship are not.
 7. **Order roles and courts.** Proposed: no Order role, court seat or civic draft is ever hold-gated, so a balance drop never affects them.
+
+**6.2.7 Entry routing alternative — ON HOLD (idea, Oct 7, 2026 evening)**
+
+Angelo is sitting on this; it is **not** adopted. If it is, it replaces the ~$5 half-ZC / half-$TAPAIA entry in 6.2.
+
+- **Problem it solves.** Zipcoin Speak needs at least **1,000 ZC** (about **$16** at evening Oct 7 prices), so a ~$5 entry can't also be a real Book post (open issue in 6.2).
+- **Proposal:** entry is a **one-click 1,000 ZC zipcoin Speak** bought with **ETH** through **our non-custodial contract**. The contract swaps ETH → ZC, burns the Speak as the player's arrival post on the Book (so every new citizen shows up publicly in the ZC community), and takes a **2.5% Tapaia fee**, shown clearly before the user confirms. The swap and burn happen in **one transaction from the user's wallet**; we never hold funds.
+- **Optional add-on:** a small (~**$2–3**) **$TAPAIA buy-and-burn** in the same flow, so every entry also buys on our pool and shrinks supply. Without it, entry only touches ZC.
+- **Rejected alternative:** requiring users to swap **$TAPAIA into ZC** for entry. That would make every new citizen a seller of $TAPAIA (sell pressure), add a step before joining, and was dropped.
+- **Fee note:** 2.5% is on the high side vs typical wallet-swap fees (often under 1%), but it bundles the swap and the burn; show it before confirm. On a ~$16 Speak, 2.5% is about $0.40 — a small extra income stream, not a main one.
+- **If adopted:** update 6.2, 6.2.5, 7.3, the public [tokenomics.md](tokenomics.md), and the open Book-minimum item in 13. Until then, the working plan stays the ~$5 split.
 
 ### 6.3 Burn-to-be-heard (game actions)
 
@@ -345,6 +389,7 @@ Everything is priced in $TAPAIA. About **half of each payment is burned** (to `0
 - **Order ranks:** Acolyte, Sentinel, Keeper and Herald. Rising takes a burn **plus a track record of activity** (audits done, prediction score, the hearing), so a rank can't be bought outright. The canon rules in 4.3 still apply on top. Sentinel and Keeper are secret tracks, so both cost the same and the public badge shows "full standing" without naming the track. Keeper seats are drawn at random and Heralds are randomly retired members, so the burn buys eligibility, never the seat. The thresholds are open.
 - **Event tickets:** tea-house nights, AMAs and Minpentai tournaments. A paid ticket plus a real-value prize can look like a wager, so prizes are cosmetics, badges or in-game zc, or real-value prizes go only to free-entry contests (6.1, 11). This needs the legal check.
 - **Still open:** exact prices (using the method chosen in 6.2.4), whether items are one-off or per season, and the rank thresholds. The earlier extras ideas (building-style packs, guild rooms, name claims) are parked. If name claims come back, reserve canon character names and real people's names, as zipcoin does for "kept" names.
+- **Societies (v0.5):** a creation cost in $TAPAIA and Society shops are possible paid extras tied to 5.3; same half-burned rule if adopted.
 
 ### 7.5 Treasury policy (working, decided Oct 7, 2026)
 - **Sole control at first.** Angelo holds the treasury alone in a **dedicated treasury wallet** that is used for nothing else. Its address is published in the repo, the site, #announcements and the app footer. It receives the ZC creator fees and the treasury half of paid extras.
@@ -395,7 +440,7 @@ API + chat server ──── Postgres (players, rooms, OOC + IC messages, ledg
    │        │    └──── Redis (presence, pub/sub, rate limits)
    │        ├── Community hub (OOC channels, notifications/push, digests, bots: ZC feed, Book, price, treasury)
    │        ├── Access service (arrival-post verification, founder slots and badges; optional hold checks for gated rooms)
-   │        ├── Game engine (sortition, audits, courts, Keeper votes, bounties, seasons)
+   │        ├── Game engine (sortition, audits, courts, Keeper votes, polls/QV, Societies, bounties, seasons)
    │        ├── Randomness service (public beacon + commit-reveal; all draws auditable)
    │        ├── AI service (GM, NPCs, Emerald, summaries; prompts in repo)
    │        ├── Moderation service (filters, reports, mod queue, scam/wrong-address detection)
@@ -467,10 +512,12 @@ Vitalik released *Snowmoon* under **GPL v3** and explicitly asks derivative proj
 | Risk | Why it matters | Mitigation |
 |---|---|---|
 | **Regulatory: securities** | A project token sold to the public, described as a revenue generator, with buybacks funded by revenue, could be read as an investment contract in some jurisdictions. Holder revenue share or dividends would make this much worse. | No holder revenue share, dividends or yield; HolderDistributor off. Describe revenue as paying for the project. Buyback-and-burn framed as supply policy, never as a price promise. No team price talk. Legal advice before launch, including on buybacks; consider geo restrictions. |
-| **Regulatory: real-money stakes** | Real-value bounties, wagers on guesses, paid polls with payouts, paid event tickets with real-value prizes, or redeemable credits could count as gambling or money transmission, depending on jurisdiction. Privacy-pool features are mixer-adjacent. | All payouts (bounties, court awards, salaries, polls) stay in non-redeemable in-game zc. Real tokens are only held or burned, or paid to the treasury for extras; nothing pays out to players. Burn-ahead credits are non-transferable and non-redeemable. Event prizes are cosmetics, badges or in-game zc, or real-value prizes only for free-entry contests (7.4). No custody. |
+| **Regulatory: real-money stakes** | Real-value bounties, wagers on guesses, paid polls with payouts, paid event tickets with real-value prizes, or redeemable credits could count as gambling or money transmission, depending on jurisdiction. Privacy-pool features are mixer-adjacent. **v0.5:** polls that pay posters and voters in real $TAPAIA would deliberately break the "never pays real tokens to players" rule (4.1, 6.1). | All payouts (bounties, court awards, salaries, and poll rewards at first) stay in non-redeemable in-game zc or badges. Real tokens are only held or burned, or paid to the treasury for extras, unless Angelo later accepts real-$TAPAIA poll payouts after a legal check (13). Burn-ahead credits are non-transferable and non-redeemable. Event prizes are cosmetics, badges or in-game zc, or real-value prizes only for free-entry contests (7.4). No custody. |
 | **Entry burn excludes newcomers** | To join after the founder slots run out, someone needs a wallet, ETH for gas, and enough ZC and $TAPAIA for the entry burn, which is spent for good. They also have to be willing to post something permanent and public. That's a lot of friction for a Telegram replacement and shuts out curious readers of the novel. | Open #lobby, #support and #announcements; a clear onboarding guide; keep entry at about $5 and resolve the Book-minimum gap (6.2); show current cost in dollars (burn plus gas) before asking anyone to buy; founder slots for the existing community. |
 | **Permanent on-chain arrival posts and moderation** | Every paid citizen's arrival post is permanent, public and reposted to X by @zipcoinbook. Someone could pay to make abuse, slurs, scam links or someone else's personal data their arrival post, and we can't delete it. It also permanently links the wallet to joining the community, which some people won't want. | Preview, warning and explicit signature; suggest short, safe arrival messages; hide abusive arrival posts in the app (filtered Arrivals lane, hide-by-default rules) and remove citizenship; say so in the code of conduct; never re-broadcast. Tell people up front that the link between wallet and community is public. |
 | **Sybil farming of free founder slots** | Free entry is the cheapest way into the app, so one person could grab many founder slots with many wallets, take badges and stack drafts, juries and the Keeper pool. | One slot per wallet; a founder window; invite list or community allowlist published as a rule; probation before the badge is final; Rep thresholds for civic roles; optional proof-of-personhood (6.2.3). |
+| **Poll payout farming** | Paying voters (and posters via boosts) attracts bots and throwaway accounts, especially if rewards are real $TAPAIA. | Only entered citizens vote and earn; one vote per citizen; daily earning caps; prefer in-game rewards first (4.1, 13). |
+| **Society spam / paywalled echo chambers** | Free Society creation could flood the sidebar; burn-to-enter Societies could look like selling access. | Creation cost in $TAPAIA if adopted; platform moderation still applies; Society entry never buys civic roles (5.3). |
 | **Founders vs paid citizens** | Founders get in free and get a badge; later citizens pay. That can feel unfair, and a "Founding Citizen" badge could become a status item people try to buy or fake. | Same arrival ritual for everyone; the badge carries no votes, Rep or powers; non-transferable; publish how many slots were used and by what rule. |
 | **Price swings change entry and action cost** | With a fixed ZC entry burn, a ZC price rise can make entry (or a Speak) expensive overnight, and a fall makes spam cheap. With a USD-equivalent burn, the ZC amount changes all the time and depends on an oracle. Zipcoin's own Speak minimum and median-relative sizing can also change without us. Existing citizens are no longer at risk of being locked out, since entry is one-time. | Pick the model deliberately (6.2.4); review fixed amounts on a published schedule; read zipcoin's current rules rather than hardcoding them; show live dollar estimates (burn plus gas) before signing. |
 | **Burn costs need a price source or fixed amounts** | USD-equivalent burns and thresholds need an oracle. Spot prices on thin v4 pools are easy to manipulate, and there's no established oracle for a new ZC-paired token. | Prefer fixed amounts, or a TWAP over a long window from the main pools, with sanity bounds. Never use a single spot read. |
@@ -539,8 +586,9 @@ There are no dates; each phase ends when its exit criteria are met. **The commun
 - Secret tasks, salaries and the guess bounty (in-game zc only).
 - Heralds and assemblies, and broad listen reports.
 - Five-judge courts with appeals and frivolous-suit penalties.
-- Polls with sampling and decoys. Verifiable sortition published.
-- Paid extras in $TAPAIA (cosmetics, your own shop, Order ranks, event tickets), about half burned and half to the treasury.
+- Polls with sampling, decoys, quadratic voting, boosts, and the chosen payout currency (in-game first recommended; 4.1, 13). Verifiable sortition published.
+- Societies: create, set entry rules, optional creation cost and Society shops; internal polls (5.3).
+- Paid extras in $TAPAIA (cosmetics, your own shop, Order ranks, event tickets; Society creation/shops if adopted), about half burned and half to the treasury.
 - Opt-in "Post to the Book" with warnings and the "🔥 real burn" badge, and the filtered "From the Book" lane.
 - *Exit:* at least one rubric change passed by players. Bounty, court and burn flows tested on a mainnet fork (`anvil --fork-url`, per zipcoin's local dev docs) and then on mainnet with small amounts.
 
@@ -555,13 +603,16 @@ There are no dates; each phase ends when its exit criteria are met. **The commun
 
 Decided in v0.4 (**working, decided Oct 7, 2026**; can still change before launch): a 1% fee tier, with our 0.5% split half to buyback-and-burn and half to running costs and prizes; a fair launch (the whole 1B supply in the locked Stockereum pool, no presale, no team allocation, no dev buy planned); 100 free Founding Citizens; entry about $5, half ZC and half $TAPAIA; square Speak about $1 in $TAPAIA only; paid extras (cosmetics, your own shop, Order ranks, event tickets) about half burned; a treasury under Angelo's sole control at first, with a published address, monthly reports and a multisig later; and the token launches only after the app is live.
 
+Added in v0.5 (ideas, not decided): **Societies** as the lore name for user-created groups (5.3); **polls with QV**, boosts, and a draft payment split (4.1). **ON HOLD:** entry as one-click 1,000 ZC Speak via ETH + 2.5% fee, optional small $TAPAIA buy-and-burn (6.2.7).
+
 Decided in v0.3: entry by an arrival post; Founding Citizens with a badge and a free in-game arrival post; hold-to-enter demoted to an optional tool for specific gated rooms.
 
 Decided in v0.2 (public multisig and hold-to-enter since replaced): token on Stockereum paired against ZC; token as a revenue generator; burn-to-be-heard; revenue from the creator fee and paid extras; buyback-and-burn from ZC fees; no holder revenue share; community hub as the MVP with the RPG on top.
 
 **Token and economy**
 1. **USD-to-token pricing.** How the ~$5 entry, ~$1 Speak and extras prices become ZC and $TAPAIA amounts: fixed amounts reviewed on a schedule, an on-chain TWAP, or an oracle (6.2.4).
-2. **Book minimum vs the ZC half.** The Book's 1,000 ZC floor (about $17 on the evening of Oct 7) is above the whole ~$5 entry. Pay the floor, burn the ZC half without a Book post, or revisit the target (6.2).
+2. **Book minimum vs the ZC half.** The Book's 1,000 ZC floor (about $16–17 on the evening of Oct 7) is above the whole ~$5 entry. Pay the floor, burn the ZC half without a Book post, or revisit the target (6.2). **Related ON HOLD:** the one-click 1,000 ZC Speak routing in 6.2.7 would replace the ~$5 model if adopted.
+2a. **Entry routing (ON HOLD).** Adopt 6.2.7 (ETH → 1,000 ZC Speak + 2.5% fee, optional ~$2–3 $TAPAIA buy-and-burn) or keep the ~$5 half-ZC / half-$TAPAIA burn? Swapping $TAPAIA into ZC was rejected.
 3. **Founder slots.** The count is decided (100). Still open: the founder window and which anti-farming rules (one per wallet, invite list or allowlist, probation, proof-of-personhood) (6.2.3).
 4. **Arrival-post rules.** Whether a pre-existing Book post can count; what happens to citizenship if an arrival post is abusive; suggested guidance for what to write.
 5. **Open areas.** Which rooms can be read or used before entering (proposed: #lobby, #support, #announcements).
@@ -574,17 +625,22 @@ Decided in v0.2 (public multisig and hold-to-enter since replaced): token on Sto
 12. **Treasury.** The treasury address once the wallet is created, the buyback schedule, how ZC is converted for bills, a rule for the $TAPAIA the treasury receives, and the exact multisig trigger (e.g. 1,000 citizens or a set treasury size) (7.5).
 13. **Mid-term balance drops.** Mostly resolved by v0.3: entry is one-time, and civic roles are never hold-gated (proposed). Confirm.
 
+**Polls and Societies (v0.5)**
+14. **Poll payout currency.** Pay posters and voters in **real $TAPAIA**, or start with **in-game zc / badges** and only later consider real $TAPAIA for big polls? **Recommended: in-game first.** Real $TAPAIA conflicts with "the game never pays real tokens to players" (6.1) and raises regulatory risk (11). Angelo has not decided.
+15. **Poll payment split and boosts.** Keep the draft 50% voters / 30% burned / 20% treasury? Poster cut of boosts: what percent? Daily earning caps: what amounts?
+16. **Societies.** Creation cost? Who can create (any citizen vs Rep threshold)? Caps per citizen? Society shops? OOC Societies on the same rules? (5.3)
+
 **Community hub**
-14. **Gate before the token exists.** Proposed: phase 1 uses the 100 founder slots, then (if they fill before $TAPAIA launches) a ZC-only Book arrival post. Alternatives: fully open at first, or delay the hub until the token launches.
-15. **Telegram migration.** Which groups to move, how long the read-only pointer period lasts, and whether to mirror announcements during the move. Who does the outreach (nothing is sent until you decide).
-16. **Mobile.** PWA with web push first (proposed), or native apps early? Which extra alert channels (email, XMTP, Farcaster)?
-17. **#market rules** and how strictly price talk is moderated; who the first moderators are.
-18. **Bots.** Which feeds at launch, alert thresholds, and whether the game digest posts into #general by default or only for people who opt in.
+17. **Gate before the token exists.** Proposed: phase 1 uses the 100 founder slots, then (if they fill before $TAPAIA launches) a ZC-only Book arrival post. Alternatives: fully open at first, or delay the hub until the token launches.
+18. **Telegram migration.** Which groups to move, how long the read-only pointer period lasts, and whether to mirror announcements during the move. Who does the outreach (nothing is sent until you decide).
+19. **Mobile.** PWA with web push first (proposed), or native apps early? Which extra alert channels (email, XMTP, Farcaster)?
+20. **#market rules** and how strictly price talk is moderated; who the first moderators are.
+21. **Bots.** Which feeds at launch, alert thresholds, and whether the game digest posts into #general by default or only for people who opt in.
 
 **Game and project**
-19. **Name.** Tapaia / $TAPAIA is the working name (this doc's title still says Veridian Chat). Run the collision check (Stockereum graduations API, GeckoTerminal, X) before launch.
-20. **Season length** (one in-game year = how many real weeks?). This sets Keeper terms, the quiet period and Herald draws.
-21. **License flavor.** GPL-3.0 everywhere, or AGPL-3.0 for the server? Also, which moderation materials, if any, stay private?
-22. **AI models.** Open-weight models (cleanest for the open pipeline) or hosted APIs (easier, but less reproducible)?
-23. **Visitors at launch.** Ship Dzego and Freetown visitors with the first RPG phase, or later?
-24. **Legal review.** Who, which jurisdictions to serve or geo-block. With the new token design this has to happen before the token launch at the latest (phase 0 proposed).
+22. **Name.** Tapaia / $TAPAIA is the working name (this doc's title still says Veridian Chat). Run the collision check (Stockereum graduations API, GeckoTerminal, X) before launch.
+23. **Season length** (one in-game year = how many real weeks?). This sets Keeper terms, the quiet period and Herald draws.
+24. **License flavor.** GPL-3.0 everywhere, or AGPL-3.0 for the server? Also, which moderation materials, if any, stay private?
+25. **AI models.** Open-weight models (cleanest for the open pipeline) or hosted APIs (easier, but less reproducible)?
+26. **Visitors at launch.** Ship Dzego and Freetown visitors with the first RPG phase, or later?
+27. **Legal review.** Who, which jurisdictions to serve or geo-block. With the new token design this has to happen before the token launch at the latest (phase 0 proposed). Poll payout currency (14) should be in that consult if real $TAPAIA is on the table.
