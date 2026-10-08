@@ -325,11 +325,11 @@ This is close to what v0.1 called a "utility token" and did not recommend, becau
 
 | Stream | What it is | Goes to | Notes |
 |---|---|---|---|
-| **(a) Stockereum creator fee** | The trade fee on every buy and sell of the project token. **Leaning 2%.** | Treasury, in ZC | At 2%, the platform keeps 1% and the creator gets 1% of volume (per the briefing). For comparison, 1% nets the creator 0.5% and 3% nets 2%. Income depends entirely on trading volume, which may be thin. |
+| **(a) Stockereum creator fee** | The trade fee on every buy and sell of the project token. **Chosen: 1%** (matches ZC). | Treasury, in ZC | At 1%, the platform keeps 0.5% and the creator gets 0.5% of volume (per the briefing). Working split of our 0.5%: half to buyback-and-burn of the project token, half to running costs and prizes (same shape as ZC's Veridian sales tax). Income depends entirely on trading volume, which may be thin. |
 | **(b) Action burns** | Small burns of both tokens for Speak, knocks and Order actions (6.3). | Nobody (burned) | Reduces supply of both tokens. **Not treasury revenue.** |
 | **(c) Paid extras** | Custom building styles and aesthetics, guild rooms, name claims, priced in the project token. | Split: P% treasury, Q% burned | Cosmetic and convenience items only. They must not buy votes, audit results, court outcomes, Rep or Order seats. Paid building styles shouldn't change aesthetics ratings by themselves; citizens still rate them. |
 
-Fee tier note: 2% is the current lean because the creator share doubles from 0.5% to 1% compared with 1%, while traders pay less than at 3%. 3% would net 2% but makes a likely thin pool more expensive to trade. Final tier is an open decision, and it can never change after launch.
+Fee tier note (decided Oct 7, 2026): 1%, matching ZC. A lower fee keeps traders and volume, which matters more than the rate; ZC holders already accept 1%. 2% would net 1% and 3% would net 2%, but both make a likely thin pool more expensive to trade. The tier can never change after launch.
 
 ### 7.4 Paid extras (details to decide)
 - **Building styles / aesthetics packs** for homes and storefronts (text templates, frames, art).
@@ -343,7 +343,7 @@ Fee tier note: 2% is the current lean because the creator share doubles from 0.5
 - **Buyback and burn:** a set share (Z%) of ZC fee revenue is used to buy the project token from the pool and burn it. The rest funds running costs under the spending policy.
 - **Published spending policy** covering hosting, AI inference, moderation, open-source contributor bounties and audits, with a regular public report (e.g. quarterly) linking every transaction. The #feeds bot posts treasury moves as they happen (5.2).
 - **Things to decide:** the buyback share Z; schedule (fixed schedule is transparent but easy to front-run; ad hoc is harder to front-run but looks discretionary); what happens to project tokens received from paid extras (hold, burn, or a stated rule; selling them would look like the team dumping); how and when ZC is converted to pay bills, since fees accrue in ZC and bills are in dollars.
-- Treasury buybacks go through our own pool and pay its fee like any other trade. At a 2% tier, half of that fee comes back to us as creator fee and the platform keeps the other half.
+- Treasury buybacks go through our own pool and pay its fee like any other trade. At the 1% tier, half of that fee comes back to us as creator fee and the platform keeps the other half.
 - **Dev buy at launch:** optional, as with ZC's 0.1 WETH. If we do one, disclose the amount and wallet beforehand. The team will need some tokens to use its own app; say where they came from.
 
 ### 7.6 What we must not promise (keep this)
@@ -506,7 +506,7 @@ There are no dates; each phase ends when its exit criteria are met. **The commun
 
 **Phase 2: Token launch**
 - Final legal check. Set up the treasury multisig and publish the spending policy and buyback rule.
-- Choose the fee tier (leaning 2%). Decide on a dev buy and disclose it. Prepare copycat warnings.
+- Fee tier: 1% (decided). Decide on a dev buy and disclose it. Prepare copycat warnings.
 - Launch on Stockereum paired against ZC, with holder rewards off. Publish the address everywhere; the app hardcodes it.
 - Decide whether the entry burn also includes the project token (6.2.5); if yes, add it for new citizens only (existing citizens are never asked to re-enter). Optional hold-gated rooms (6.2.6) only if Angelo wants them. Treasury bot live.
 - *Exit:* entry flow working for new citizens with no unresolved complaints; first public treasury report.
@@ -548,7 +548,7 @@ Decided in v0.3 (current direction, for now): entry by burning a real zipcoin Bo
 Decided in v0.2 (placeholder, not final; hold-to-enter since replaced as the main gate): token on Stockereum paired against ZC; token as a revenue generator; hold-to-enter with both tokens; burn-to-be-heard with both tokens; revenue from the creator fee and paid extras; buyback-and-burn from ZC fees; public multisig; no holder revenue share; community hub as the MVP with the RPG on top.
 
 **Token and economy**
-1. **Fee tier.** Leaning 2% (creator nets 1%). Confirm 2%, or choose 1% (nets 0.5%) or 3% (nets 2%). It can never change after launch.
+1. **Fee tier.** Decided: 1% (creator nets 0.5%), matching ZC. It can never change after launch.
 2. **Entry burn amount E.** Zipcoin's minimum, our own fixed ZC amount (with a published review rule), or a USD-equivalent via a price oracle (6.2.4)? The dollar amount is undecided.
 3. **Project token at entry.** Burn only ZC (via the Book post), also burn the project token, or let people choose (6.2.5)?
 4. **Founder slots.** How many (X), the founder window, and which anti-farming rules (one per wallet, invite list or allowlist, probation, proof-of-personhood) (6.2.3).
