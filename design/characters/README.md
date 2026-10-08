@@ -88,7 +88,18 @@ Light is a top-left key. Every material has **4 tones plus a specular**, hue-shi
 5. **The new Square banner is busier.** The HD golden-hour scene at 1x is richer but busier behind the banner text than the old flat 3x strip, and its characters are about the same size as before, so they don't pop as much. It's also dusk-only, with no daytime or light-theme version.
 6. Some colour pairs need care. Espresso hair on brown skin, for example, is low contrast, so the builder should warn or nudge.
 
-## 4. Integration plan (Phase 2, not done here)
+## 4. Integration plan (Phase 2: done, Oct 7, 2026)
+
+**Status:** shipped in the app as described below, with these differences:
+- 128 px tiles show the 64 px portrait at 2x (as planned); the renderer draws any bust size natively, with ≤32 px using the S face templates, 33–48 px M and larger L (`bust_spec()` here, `bustSpec()` in TS).
+- The TS port is pixel-exact against all 110 goldens (`art/sprites`, `art/busts` at 24/32/36/40/48/64, `art/figures` at 48 and 80, written by `build.py` together with `cast.json`); the 0.5% tolerance was not needed.
+- Seed citizens wear the cast looks. Tobin keeps his hood up because his seed lines are about it, so he wears Alder's hooded robe. Ilse, Marek and the two bots get new v2 configs in the same style.
+- The Square banner uses the scene with the cast baked in (`scene-square-750x250.png`), pinned right with a plum fade on wide banners. Live citizens on the empty plaza (phase 2b) are not done.
+- The builder uses three tabs (Outfit, Face & hair, Extras) to fit the profile dialog.
+- `?avatars=classic` is a per-browser fallback to the v1 sprites (on by default: HD).
+
+The original plan follows.
+
 
 **Approach:** keep today's architecture, where `shared/avatar.ts` is a TS port of a Python sprite script and `ui.tsx` renders to a canvas and caches a data URL. Port `charkit.py` to TS the same way. There are no part atlases to ship. The renderer is about 900 lines of Python and roughly 12 KB of minified, gzipped TS, which costs less than a single sprite sheet and makes every combination and every size possible.
 

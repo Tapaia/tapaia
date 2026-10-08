@@ -51,7 +51,7 @@ export function Main({ mobile }: { mobile: boolean }) {
         <div className="title">{ic ? <Px src="icon-tree" /> : ch.layer === 'dm' && other ? <Av u={other} size="s28" /> : <span className="hash">#</span>}{title}{ch.layer === 'dm' && <ZipBadge u={other} />}</div>
         <div className="topic">{ch.layer === 'dm' ? `Direct message with ${other?.handle}. Staff never DM first.` : ch.topic}</div>
         <div className="acts">
-          {ch.layer !== 'dm' && <button className="stack" onClick={() => useS.setState({ showMembers: !showMembers })} aria-label="Members"><span className="avs">{stack.map((u) => <Av key={u.id} u={u} />)}</span>{present.length}</button>}
+          {ch.layer !== 'dm' && <button className="stack" onClick={() => useS.setState({ showMembers: !showMembers })} aria-label="Members"><span className="avs">{stack.map((u) => <Av key={u.id} u={u} px={24} />)}</span>{present.length}</button>}
           <button className="iconbtn" onClick={() => useS.setState({ pinsHidden: { ...pinsHidden, [ch.id]: !pinsHidden[ch.id] } })} aria-label="Pinned" title="Pinned"><I n="pin" /></button>
           <button className="iconbtn" onClick={toggleTheme} aria-label="Toggle light or dark theme" title={dark ? 'Light theme' : 'Dark theme'} data-testid="theme-toggle"><I n={dark ? 'sun' : 'moon'} /></button>
           <button className={`iconbtn ${showMembers ? 'on' : ''}`} onClick={() => useS.setState({ showMembers: !showMembers })} aria-label="Toggle member list" data-testid="members-toggle"><I n="users" /></button>
@@ -65,7 +65,7 @@ export function Main({ mobile }: { mobile: boolean }) {
           <div style={{ minWidth: 0 }}><div className="nm">{title}</div>
             <div className="st">{ic ? <><span className="g" />{present.length} here · in character</> : ch.layer === 'dm' ? 'Direct message' : <><span className="g" />{present.length} online</>}</div></div>
         </div>
-        {ch.layer !== 'dm' && <button className="stack" onClick={() => useS.setState({ showMembers: true })} aria-label="Members"><span className="avs">{stack.map((u) => <Av key={u.id} u={u} />)}</span></button>}
+        {ch.layer !== 'dm' && <button className="stack" onClick={() => useS.setState({ showMembers: true })} aria-label="Members"><span className="avs">{stack.map((u) => <Av key={u.id} u={u} px={24} />)}</span></button>}
         <button className="iconbtn" onClick={() => useS.setState({ showMembers: true })} aria-label="Members" data-testid="members-m"><I n="more" /></button>
       </div>
       {ic && readable && <>
@@ -206,7 +206,7 @@ function Item({ m, ch, cont, reply, ctx, mobile }: { m: Message; ch: Channel; co
     const waveCount = (m.reactions['👋'] ?? []).length;
     const founder = u.entry === 'founder';
     return <div className="card-wrap" id={`m${m.id}`}><div className="card-arrival">
-      <div className="fig"><Figure cfg={u.avatar} w={mobile ? 32 : 48} /></div>
+      <div className="fig"><Figure cfg={u.avatar} w={48} /></div>
       <div style={{ minWidth: 0 }}><div className="k"><Px src={founder ? 'icon-medal' : 'icon-flame'} className="badge-ic" />New arrival · {founder ? 'Founding Citizen' : 'Arrival post'}{m.simulated && <span className="pill demo sample">demo · nothing burned</span>}</div>
         <div className="q"><b role="button" onClick={(e) => openCard(u.id, e)} style={{ cursor: 'pointer' }}>{u.citizenName}</b>{u.zip && <> <ZipBadge u={u} /> <span className="zipdom">{zipDomain(u.zip.name)}</span></>} “{m.text}”</div></div>
       <div className="wave">
@@ -214,12 +214,12 @@ function Item({ m, ch, cont, reply, ctx, mobile }: { m: Message; ch: Channel; co
         <span className="time" style={{ fontSize: 12, color: 'var(--text-3)' }} title={timeTitle}>{time}</span></div>
     </div><Toolbar m={m} ch={ch} /></div>;
   }
-  const replyEl = reply && <div className="replyline" onClick={() => jump(reply.id)}><span className="bar" />{users[reply.userId ?? ''] && <Av u={users[reply.userId!]} />}<b>{nameIn(users[reply.userId ?? ''], ch)}</b><span className="snip">{reply.deleted ? 'deleted message' : reply.text}</span></div>;
+  const replyEl = reply && <div className="replyline" onClick={() => jump(reply.id)}><span className="bar" />{users[reply.userId ?? ''] && <Av u={users[reply.userId!]} px={24} />}<b>{nameIn(users[reply.userId ?? ''], ch)}</b><span className="snip">{reply.deleted ? 'deleted message' : reply.text}</span></div>;
   if (m.kind === 'speak' && u) {
     return <>{replyEl}<div className="card-wrap" id={`m${m.id}`}><div className="card-speak">
       <div className="h"><Px src="icon-flame" />Spoke to the Square · burned <span className="ph" style={{ textTransform: 'none' }}>S</span> ZC
         <span className="v demo" title="Prototype: Speak is simulated, nothing was burned">{m.simulated ? <>demo · nothing burned</> : <><I n="check" c="sm" />Verified on-chain</>}</span></div>
-      <div className="b"><Av u={u} onClick={(e) => openCard(u.id, e)} /><div style={{ minWidth: 0 }}><div className="meta"><span className="who" role="button" onClick={(e) => openCard(u.id, e)}>{u.citizenName}</span><ZipBadge u={u} />{u.zip && <span className="zipdom">{zipDomain(u.zip.name)}</span>}<span className="time" title={timeTitle}>{time}</span></div>
+      <div className="b"><Av u={u} px={mobile ? 36 : 40} onClick={(e) => openCard(u.id, e)} /><div style={{ minWidth: 0 }}><div className="meta"><span className="who" role="button" onClick={(e) => openCard(u.id, e)}>{u.citizenName}</span><ZipBadge u={u} />{u.zip && <span className="zipdom">{zipDomain(u.zip.name)}</span>}<span className="time" title={timeTitle}>{time}</span></div>
         <div className="text">{m.deleted ? <span className="deleted">message deleted</span> : renderText(m.text, ctx)}</div><Reactions m={m} /></div></div>
     </div><Toolbar m={m} ch={ch} /></div></>;
   }
@@ -229,7 +229,7 @@ function Item({ m, ch, cont, reply, ctx, mobile }: { m: Message; ch: Channel; co
   const card = m.card && !m.deleted && <a className="linkcard" href={`https://${m.card.url}`} target="_blank" rel="noreferrer"><span className="thumb"><img src="/brand/logo.svg" alt="" style={{ width: 40, height: 40 }} /></span><div><div className="u">{m.card.url}</div><div className="t">{m.card.title}</div><div className="d">{m.card.desc}</div></div></a>;
   if (cont) return <div className={`msg cont ${mention ? 'mention' : ''}`} id={`m${m.id}`}><span className="time-h">{ic ? '' : localTime(m.ts).replace(/\s?[AP]M/, '')}</span><span className="spacer" /><div className="content">{body}{card}<Reactions m={m} /></div><Toolbar m={m} ch={ch} /></div>;
   return <>{replyEl}<div className={`msg ${mention ? 'mention' : ''}`} id={`m${m.id}`}>
-    {u ? <Av u={u} onClick={(e) => openCard(u.id, e)} /> : <span className="av c6" />}
+    {u ? <Av u={u} px={mobile ? 36 : 40} onClick={(e) => openCard(u.id, e)} /> : <span className="av c6" />}
     <div className="content"><div className="meta"><span className="who" role="button" onClick={(e) => u && openCard(u.id, e)}>{name}</span><ZipBadge u={u} /><Badges u={u} />{m.sample && <span className="pill sample">SAMPLE DATA</span>}<span className="time" title={timeTitle}>{time}</span></div>
       {body}{card}<Reactions m={m} /></div>
     <Toolbar m={m} ch={ch} /></div></>;

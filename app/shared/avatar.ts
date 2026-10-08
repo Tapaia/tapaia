@@ -1,13 +1,19 @@
-// Pixel avatar renderer: a TypeScript port of design/mockups/art/sprites.py `avatar()`.
-// Same char maps, same palette, same edits, so avatars match the mockup PNGs pixel for pixel.
-// Original art, GPL v3 (part of the Tapaia repo).
+// Avatar configs. v2 ("Cozy HD pixel", rendered by shared/avatar2.ts) is what the app stores and draws.
+// v1 (the original 16x24 sprites, a port of design/mockups/art/sprites.py `avatar()`) stays for stored data from
+// before the switch: normalizeAvatar() migrates it losslessly, and avatarPixels() still draws it for the
+// classic-avatars fallback (?avatars=classic). Original art, GPL v3 (part of the Tapaia repo).
+import {
+  CLOTH, EXPRS, rgb, EYES, HAIRS as HAIRS2, HAIRSTYLES, OUTFITS2, SKINS as SKINS2,
+  type CitizenCfg, type EyeKey, type Expr, type HairKey as HairKey2, type HairStyle as HairStyle2, type Outfit2, type SkinKey as SkinKey2,
+} from './avatar2';
 
 export type Outfit = 'robe' | 'hood' | 'plain' | 'slogan';
 export type HairKey = 'black' | 'chestnut' | 'ginger' | 'blonde' | 'plum' | 'silver';
 export type SkinKey = 'fair' | 'warm' | 'tan' | 'deep';
 export type HairStyle = 'short' | 'long' | 'bun';
 
-export interface AvatarCfg {
+/** v1 config (before the Cozy HD switch). */
+export interface AvatarCfgV1 {
   outfit: Outfit;
   hair: HairKey;
   hairstyle: HairStyle;
@@ -43,7 +49,7 @@ const BODY_SHIRT = ['...ossss', '..oTTTTT', '.oTTTTTT', '.oTTTTTT', 'osTTTTTT', 
 const mirror = (rows: string[]) => rows.map((r) => r + r.split('').reverse().join(''));
 
 /** Returns rows of hex colours (null = transparent). Width is always 16. */
-export function avatarPixels(cfg: AvatarCfg): (string | null)[][] {
+export function avatarPixels(cfg: AvatarCfgV1): (string | null)[][] {
   const hood = cfg.outfit === 'hood';
   const outfit = cfg.outfit === 'robe' || cfg.outfit === 'hood' ? 'robe' : 'shirt';
   const slogan = cfg.outfit === 'slogan';
@@ -84,22 +90,114 @@ export function avatarPixels(cfg: AvatarCfg): (string | null)[][] {
   return out;
 }
 
-export const DEFAULT_AVATAR: AvatarCfg = { outfit: 'robe', hair: 'chestnut', hairstyle: 'short', skin: 'warm', band: true };
 
-export function randomAvatar(rand: () => number = Math.random): AvatarCfg {
-  const pick = <T,>(xs: readonly T[]) => xs[Math.floor(rand() * xs.length)];
+// ---------------------------------------------------------------------------------------------- v2
+/** The stored / rendered avatar: the charkit render config (see CitizenCfg) tagged v: 2. Only outfit, skin and hair
+ *  are required; the renderer fills the rest from DEFAULT_CITIZEN. */
+export type AvatarCfg = { v: 2 } & Pick<CitizenCfg, 'outfit' | 'skin' | 'hair'> & Partial<Omit<CitizenCfg, 'outfit' | 'skin' | 'hair'>>;
+export type { CitizenCfg };
+
+const HEX = /^#[0-9a-f]{6}$/i;
+const isColour = (c: unknown) => typeof c === 'string' && (c in CLOTH || HEX.test(c));
+const side = (v: unknown) => v === 1 || v === -1;
+const unit = (v: unknown) => typeof v === 'number' && Number.isFinite(v) && v >= -1 && v <= 1;
+const bool = (v: unknown) => typeof v === 'boolean';
+const oneOf = (xs: readonly string[]) => (v: unknown) => typeof v === 'string' && xs.includes(v);
+/** Field validators: anything not listed here is dropped. */
+const FIELDS: Record<string, (v: unknown) => boolean> = {
+  v: (v) => v === 2,
+  skin: (v) => typeof v === 'string' && v in SKINS2, hair: (v) => typeof v === 'string' && v in HAIRS2,
+  hairstyle: oneOf(HAIRSTYLES), eyes: (v) => typeof v === 'string' && v in EYES, expr: oneOf(EXPRS), outfit: oneOf(OUTFITS2),
+  top: isColour, bottom: isColour, over: (v) => v === null || isColour(v), accent: (v) => v === null || isColour(v),
+  bottom_kind: (v) => v === 'skirt', stockings: isColour, neckband: bool, scarf: isColour, satchel: bool, satchel_side: side,
+  glasses: bool, beard: bool, freckles: bool, blush: bool, held: oneOf(['tea', 'book']), pose: oneOf(['down', 'hold']),
+  hold_side: side, book_col: isColour, part: unit, tail_side: side, braid_side: side, rolled: bool, long_sleeve: bool, turn: unit,
+};
+
+/** v1 -> v2, lossless for everything v1 has (see design/characters/README.md, "Mapping current builder -> new parts"). */
+export function migrateAvatar(a: AvatarCfgV1): AvatarCfg {
+  const outfit = ({ robe: 'robe', hood: 'hood', plain: 'tee', slogan: 'bandtee' } as const)[a.outfit];
   return {
-    outfit: pick(['robe', 'robe', 'hood', 'plain', 'slogan'] as const),
-    hair: pick(Object.keys(HAIRS) as HairKey[]),
-    hairstyle: pick(['short', 'long', 'bun'] as const),
-    skin: pick(Object.keys(SKINS) as SkinKey[]),
-    band: rand() < 0.4,
-    shirt: pick(SHIRTS),
+    v: 2, skin: a.skin, hair: a.hair, hairstyle: a.hairstyle, eyes: 'brown', expr: 'smile', outfit,
+    top: a.shirt ?? (outfit === 'tee' || outfit === 'bandtee' ? '#5c9a3e' : 'leaf'), bottom: 'charcoal',
+    ...(outfit === 'bandtee' ? { accent: 'cream' } : {}), neckband: a.band,
   };
 }
 
-export function isAvatarCfg(a: any): a is AvatarCfg {
-  return a && ['robe', 'hood', 'plain', 'slogan'].includes(a.outfit) && a.hair in HAIRS && a.skin in SKINS &&
+export function isAvatarCfgV1(a: any): a is AvatarCfgV1 {
+  return !!a && typeof a === 'object' && ['robe', 'hood', 'plain', 'slogan'].includes(a.outfit) && a.hair in HAIRS && a.skin in SKINS &&
     ['short', 'long', 'bun'].includes(a.hairstyle) && typeof a.band === 'boolean' &&
-    (a.shirt === undefined || (typeof a.shirt === 'string' && /^#[0-9a-f]{6}$/i.test(a.shirt)));
+    (a.shirt === undefined || (typeof a.shirt === 'string' && HEX.test(a.shirt)));
 }
+
+/** Accepts a v1 or v2 config from anywhere (API body, old db.json) and returns a clean v2 config, or null. */
+export function normalizeAvatar(a: unknown): AvatarCfg | null {
+  if (!a || typeof a !== 'object') return null;
+  const o = a as Record<string, unknown>;
+  if (o.v === undefined && isAvatarCfgV1(o)) return migrateAvatar(o);
+  if (o.v !== 2) return null;
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(o)) {
+    if (!(k in FIELDS)) continue;
+    if (v === undefined) continue;
+    if (!FIELDS[k](v)) return null;
+    out[k] = v;
+  }
+  if (!out.outfit || !out.skin || !out.hair) return null;
+  return out as AvatarCfg;
+}
+export const isAvatarCfg = (a: unknown): a is AvatarCfg => normalizeAvatar(a) !== null;
+
+/** v2 -> closest v1, only for the classic-avatars fallback. */
+export function toV1(a: AvatarCfg): AvatarCfgV1 {
+  const skin = ({ porcelain: 'fair', fair: 'fair', warm: 'warm', olive: 'warm', tan: 'tan', brown: 'deep', deep: 'deep' } as const)[a.skin];
+  const hair = ({ espresso: 'black', auburn: 'ginger' } as Record<string, HairKey>)[a.hair] ?? (a.hair as HairKey);
+  const hs = a.hairstyle ?? 'short';
+  const hairstyle: HairStyle = ['long', 'wavy', 'braid', 'bob'].includes(hs) ? 'long' : ['bun', 'elderbun'].includes(hs) ? 'bun' : 'short';
+  const outfit: Outfit = a.outfit === 'robe' || a.outfit === 'hood' ? a.outfit : a.outfit === 'bandtee' ? 'slogan' : 'plain';
+  const top = a.top ?? 'leaf';
+  return { outfit, skin, hair, hairstyle, band: !!a.neckband, shirt: CLOTH[top] ?? top };
+}
+
+export const DEFAULT_AVATAR: AvatarCfg = { v: 2, skin: 'warm', hair: 'chestnut', hairstyle: 'short', eyes: 'brown', expr: 'smile', outfit: 'robe', top: 'leaf', bottom: 'charcoal', neckband: true };
+
+/** Builder colour rows (keys of CLOTH; hex also works anywhere). */
+export const TOPS = ['leaf', 'moss', 'sage', 'skyblue', 'wallblue', 'teal', 'plum', 'lilac', 'maple', 'rust', 'hydra', 'mustard', 'cream', 'charcoal'];
+export const BOTTOMS = ['charcoal', 'brown', 'denim', 'navy', 'moss', 'wood', 'stone', 'plum'];
+export const ACCENTS = ['cream', 'white', 'parchment', 'hydra', 'rose', 'skyblue', 'sage', 'maple'];
+export const SCARVES = ['maple', 'mustard', 'teal', 'rose', 'sage', 'plum', 'cream'];
+
+const dist = (a: string, b: string) => { const A = rgb(CLOTH[a] ?? a), B = rgb(CLOTH[b] ?? b); return Math.hypot(A[0] - B[0], A[1] - B[1], A[2] - B[2]); };
+
+export function randomAvatar(rand: () => number = Math.random): AvatarCfg {
+  const pick = <T,>(xs: readonly T[]) => xs[Math.floor(rand() * xs.length)];
+  const outfit = pick(['robe', 'robe', 'hood', 'tee', 'bandtee', 'tunic', 'cardigan', 'apron', 'coat'] as const);
+  const skin = pick(Object.keys(SKINS2) as SkinKey2[]);
+  // keep the parts readable against each other (no auburn hair + rust coat on deep skin): re-pick close colours
+  let hair = pick(Object.keys(HAIRS2) as HairKey2[]);
+  for (let i = 0; i < 20 && dist(HAIRS2[hair], SKINS2[skin]) < 55; i++) hair = pick(Object.keys(HAIRS2) as HairKey2[]);
+  let top = pick(TOPS);
+  for (let i = 0; i < 20 && (dist(top, SKINS2[skin]) < 70 || dist(top, HAIRS2[hair]) < 70); i++) top = pick(TOPS);
+  let bottom = pick(BOTTOMS);
+  for (let i = 0; i < 20 && dist(bottom, top) < 60; i++) bottom = pick(BOTTOMS);
+  const a: AvatarCfg = {
+    v: 2, skin, hair, hairstyle: pick(HAIRSTYLES), eyes: pick(Object.keys(EYES) as EyeKey[]),
+    expr: pick(['smile', 'smile', 'grin', 'content', 'calm', 'laugh', 'wink', 'shy'] as const), outfit, top, bottom,
+  };
+  if (outfit === 'robe' || outfit === 'hood') a.neckband = rand() < 0.4;
+  if (outfit === 'cardigan' || outfit === 'bandtee') { let ac = pick(ACCENTS); for (let i = 0; i < 20 && dist(ac, top) < 70; i++) ac = pick(ACCENTS); a.accent = ac; }
+  if (outfit === 'apron') { let ov = pick(['parchment', 'cream', 'moss', 'wood']); for (let i = 0; i < 20 && dist(ov, top) < 70; i++) ov = pick(['parchment', 'cream', 'moss', 'wood']); a.over = ov; }
+  if (outfit !== 'robe' && outfit !== 'hood') {
+    if (rand() < 0.2) a.scarf = pick(SCARVES);
+    if (rand() < 0.2) a.satchel = true;
+    if (rand() < 0.15) a.held = pick(['tea', 'book'] as const);
+  }
+  if (a.hairstyle === 'braid') a.braid_side = -1;          // braid over the left shoulder, hands free on the right
+  if (a.held) { a.pose = 'hold'; a.hold_side = a.satchel ? -1 : 1; }
+  if (a.satchel) a.satchel_side = 1;
+  if (a.held && a.hold_side === -1 && a.braid_side === -1) a.braid_side = 1;
+  if (rand() < 0.12) a.glasses = true;
+  if (rand() < 0.15) a.freckles = true;
+  return a;
+}
+export type { EyeKey, Expr, HairKey2, HairStyle2, Outfit2, SkinKey2 };

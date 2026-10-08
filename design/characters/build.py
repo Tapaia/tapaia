@@ -1,6 +1,6 @@
 """Build the character deliverables: raw sprites/busts, the character sheet, builder-part samples and bust sizes.
 Run: python3 build.py   (needs Pillow + numpy).  Original art, GPL v3."""
-import os, sys, re
+import os, sys, re, json
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.dont_write_bytecode = True
@@ -47,15 +47,25 @@ CAST = citizens.CAST
 BYNAME = {n: c for n, _, c in CAST}
 
 
+GOLDEN_BUSTS = (24, 32, 36, 40, 48, 64)   # every tile size the app draws natively (128 = the 64 bust at 2x)
+GOLDEN_FIGS = (1.5, 2.5)                    # arrival card (48x72) and hero / builder preview (80x120)
+
+
 def raw():
-    for sub in ('sprites', 'busts'):
+    """Per-citizen PNGs + cast.json: also the golden set app/scripts/test-avatar2.ts holds the TS port to."""
+    for sub in ('sprites', 'busts', 'figures'):
         os.makedirs(f'{OUT}/{sub}', exist_ok=True)
     for n, _, c in CAST:
         K.sprite(c).save(f'{OUT}/sprites/{slug(n)}.png')
-        for s in (24, 32, 40, 64):
+        for s in GOLDEN_BUSTS:
             K.bust(c, s).save(f'{OUT}/busts/{slug(n)}-{s}.png')
+        for k in GOLDEN_FIGS:
+            K.figure(c, k).save(f'{OUT}/figures/{slug(n)}-{int(round(32 * k))}.png')
     for n in citizens.TURNED:
         K.sprite(dict(BYNAME[n], turn=.8)).save(f'{OUT}/sprites/{slug(n)}-3q.png')
+    with open(os.path.join(HERE, 'cast.json'), 'w') as f:
+        json.dump({'cast': [{'name': n, 'slug': slug(n), 'role': r, 'cfg': c} for n, r, c in CAST],
+                   'turned': [slug(n) for n in citizens.TURNED], 'busts': GOLDEN_BUSTS, 'figures': GOLDEN_FIGS}, f, indent=1)
 
 
 def character_sheet():

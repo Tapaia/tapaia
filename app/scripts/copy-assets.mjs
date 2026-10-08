@@ -13,4 +13,6 @@ for (const d of ['assets', 'fonts']) {
 const logo = path.resolve(here, '../../design/logo/opt4-refined/D-hybrid');
 fs.mkdirSync(path.join(pub, 'brand'), { recursive: true });
 for (const f of fs.readdirSync(logo)) fs.copyFileSync(path.join(logo, f), path.join(pub, 'brand', f.replace(/^D-hybrid/, 'logo')));
-console.log('copied art + fonts from design/mockups-v2 and the logo from design/logo');
+// Cozy HD Square banner (design/characters/scene.py): the plaza with the cast in it, 1 art px = 1 CSS px
+fs.copyFileSync(path.resolve(here, '../../design/characters/art/scene-square-750x250.png'), path.join(pub, 'assets', 'scene-square.png'));
+console.log('copied art + fonts from design/mockups-v2, the Square banner from design/characters and the logo from design/logo');

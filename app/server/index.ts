@@ -12,7 +12,7 @@ import { mainnet } from 'viem/chains';
 import { generateSiweNonce, parseSiweMessage } from 'viem/siwe';
 import { db, load, save, addMessage, newId, newToken, publicUser, type User } from './store';
 import { canPost, canRead, byteLen } from '../shared/perms';
-import { isAvatarCfg, randomAvatar } from '../shared/avatar';
+import { normalizeAvatar, randomAvatar } from '../shared/avatar';
 import type { AppConfig, Channel, ClientMsg, Message, PublicUser, ServerMsg, Tile } from '../shared/types';
 import { ZC_ADDRESS } from './seed';
 import { randomName, RESERVED } from './names';
@@ -74,7 +74,7 @@ function newUser(kind: 'demo' | 'wallet', opts: { citizenName?: string; handle?:
   const u: User = {
     id, kind, handle: uniqueHandle((opts.handle || r.handle).toLowerCase()),
     citizenName: uniqueCitizenName(validCitizenName(opts.citizenName) ? opts.citizenName!.trim() : r.citizenName),
-    avatar: isAvatarCfg(opts.avatar) ? opts.avatar : randomAvatar(), tile: TILES[Math.floor(Math.random() * 6)],
+    avatar: normalizeAvatar(opts.avatar) ?? randomAvatar(), tile: TILES[Math.floor(Math.random() * 6)],
     badges: [], isCitizen: false, presence: 'off', linked: false, createdAt: Date.now(), speaks: 0,
     status: kind === 'demo' ? 'trying the demo' : 'new here',
   };
@@ -399,7 +399,7 @@ app.patch('/api/profile', (req, res) => {
       u.handle = h;
     }
   }
-  if (b.avatar !== undefined) { if (!isAvatarCfg(b.avatar)) return res.status(400).json({ error: 'Bad avatar' }); u.avatar = b.avatar; }
+  if (b.avatar !== undefined) { const a = normalizeAvatar(b.avatar); if (!a) return res.status(400).json({ error: 'Bad avatar' }); u.avatar = a; }   // v1 or v2 in, v2 stored
   if (typeof b.linked === 'boolean') u.linked = b.linked;
   if (typeof b.about === 'string') u.about = b.about.slice(0, 160);
   if (typeof b.status === 'string') u.status = b.status.slice(0, 40);

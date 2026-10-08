@@ -1,0 +1,229 @@
+{
+ "cast": [
+  {
+   "name": "Wren Halloway",
+   "slug": "wren-halloway",
+   "role": "herb grower, tea-cart regular",
+   "cfg": {
+    "skin": "warm",
+    "hair": "chestnut",
+    "hairstyle": "short",
+    "eyes": "green",
+    "expr": "smile",
+    "outfit": "tunic",
+    "top": "leaf",
+    "bottom": "brown",
+    "satchel": true,
+    "satchel_side": 1
+   }
+  },
+  {
+   "name": "Nessa Quill",
+   "slug": "nessa-quill",
+   "role": "runs the tea cart",
+   "cfg": {
+    "skin": "fair",
+    "hair": "ginger",
+    "hairstyle": "bun",
+    "eyes": "blue",
+    "expr": "grin",
+    "freckles": true,
+    "outfit": "apron",
+    "top": "skyblue",
+    "over": "parchment",
+    "bottom": "charcoal",
+    "rolled": true,
+    "held": "tea",
+    "pose": "hold",
+    "hold_side": 1
+   }
+  },
+  {
+   "name": "Orla Fenwick",
+   "slug": "orla-fenwick",
+   "role": "reads in the library",
+   "cfg": {
+    "skin": "tan",
+    "hair": "black",
+    "hairstyle": "long",
+    "part": 0.18,
+    "eyes": "brown",
+    "expr": "calm",
+    "glasses": true,
+    "outfit": "cardigan",
+    "top": "plum",
+    "accent": "cream",
+    "bottom": "moss",
+    "bottom_kind": "skirt",
+    "held": "book",
+    "pose": "hold",
+    "hold_side": 1,
+    "book_col": "maple"
+   }
+  },
+  {
+   "name": "Corvin Ashdale",
+   "slug": "corvin-ashdale",
+   "role": "robe, hood down, neck band",
+   "cfg": {
+    "skin": "porcelain",
+    "hair": "silver",
+    "hairstyle": "swept",
+    "part": -0.3,
+    "eyes": "grey",
+    "expr": "content",
+    "beard": true,
+    "outfit": "robe",
+    "neckband": true
+   }
+  },
+  {
+   "name": "Alder Meadows",
+   "slug": "alder-meadows",
+   "role": "robe, hood up, face cover",
+   "cfg": {
+    "skin": "warm",
+    "hair": "black",
+    "outfit": "hood",
+    "eyes": "brown",
+    "expr": "smile"
+   }
+  },
+  {
+   "name": "Tobin Larkspur",
+   "slug": "tobin-larkspur",
+   "role": "band shirt, laughs easily",
+   "cfg": {
+    "skin": "deep",
+    "hair": "black",
+    "hairstyle": "curly",
+    "eyes": "brown",
+    "expr": "laugh",
+    "outfit": "bandtee",
+    "top": "charcoal",
+    "accent": "hydra",
+    "bottom": "denim"
+   }
+  },
+  {
+   "name": "Odessa Brightmoss",
+   "slug": "odessa-brightmoss",
+   "role": "elder, scarf and long coat",
+   "cfg": {
+    "skin": "brown",
+    "hair": "silver",
+    "hairstyle": "elderbun",
+    "eyes": "amber",
+    "expr": "content",
+    "outfit": "coat",
+    "top": "wallblue",
+    "scarf": "maple",
+    "bottom": "charcoal",
+    "held": "tea",
+    "pose": "hold",
+    "hold_side": -1
+   }
+  },
+  {
+   "name": "Pim Tallow",
+   "slug": "pim-tallow",
+   "role": "new in town, yellow shirt",
+   "cfg": {
+    "skin": "porcelain",
+    "hair": "blonde",
+    "hairstyle": "ponytail",
+    "eyes": "blue",
+    "expr": "surprised",
+    "outfit": "tee",
+    "top": "hydra",
+    "bottom": "denim",
+    "tail_side": 1
+   }
+  },
+  {
+   "name": "Juniper Vale",
+   "slug": "juniper-vale",
+   "role": "braid, cardigan, satchel",
+   "cfg": {
+    "skin": "olive",
+    "hair": "plum",
+    "hairstyle": "braid",
+    "braid_side": -1,
+    "part": -0.25,
+    "eyes": "hazel",
+    "expr": "wink",
+    "outfit": "cardigan",
+    "top": "sage",
+    "accent": "white",
+    "bottom": "brown",
+    "satchel": true,
+    "satchel_side": 1
+   }
+  },
+  {
+   "name": "Bram Teasel",
+   "slug": "bram-teasel",
+   "role": "tea house baker",
+   "cfg": {
+    "skin": "fair",
+    "hair": "auburn",
+    "hairstyle": "crop",
+    "eyes": "green",
+    "expr": "smile",
+    "beard": true,
+    "outfit": "apron",
+    "top": "cream",
+    "over": "moss",
+    "bottom": "brown",
+    "rolled": true
+   }
+  },
+  {
+   "name": "Lumi Ardent",
+   "slug": "lumi-ardent",
+   "role": "robe, hood down, wavy hair",
+   "cfg": {
+    "skin": "brown",
+    "hair": "black",
+    "hairstyle": "wavy",
+    "eyes": "brown",
+    "expr": "shy",
+    "outfit": "robe",
+    "neckband": false
+   }
+  },
+  {
+   "name": "Sorrel Finch",
+   "slug": "sorrel-finch",
+   "role": "cosy cardigan, bob",
+   "cfg": {
+    "skin": "warm",
+    "hair": "auburn",
+    "hairstyle": "bob",
+    "part": 0.3,
+    "eyes": "hazel",
+    "expr": "thoughtful",
+    "outfit": "tee",
+    "top": "teal",
+    "bottom": "charcoal",
+    "scarf": "mustard"
+   }
+  }
+ ],
+ "turned": [
+  "nessa-quill",
+  "alder-meadows"
+ ],
+ "busts": [
+  24,
+  32,
+  36,
+  40,
+  48,
+  64
+ ],
+ "figures": [
+  1.5,
+  2.5
+ ]
+}

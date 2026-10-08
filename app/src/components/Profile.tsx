@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { I, Px, Av, Figure, Modal, BADGE_ICON, BADGE_LABEL, useTicks, avatarUrl, ZipBadge, zipDomain, zipTitle } from '../ui';
 import { ZipNamePanel, zipPage } from './ZipName';
 import { api, setTheme, signOff, toast, useS, wsSend, type ThemePref } from '../store';
-import { HAIRS, SKINS, SHIRTS, randomAvatar, type AvatarCfg, type Outfit } from '../../shared/avatar';
+import { ACCENTS, BOTTOMS, SCARVES, TOPS, randomAvatar, type AvatarCfg } from '../../shared/avatar';
+import { CLOTH, EXPRS, EYES, HAIRS, HAIRSTYLES, SKINS, type Expr, type HairStyle, type Outfit2 } from '../../shared/avatar2';
 import { fmtTicks, meldanTicks } from '../../shared/clock';
 import type { PublicUser } from '../../shared/types';
 import { useConfig } from 'wagmi';
@@ -61,7 +62,11 @@ export function ProfileCard() {
   </>;
 }
 
-const OUTFITS: [Outfit, string][] = [['robe', 'Robe'], ['hood', 'Robe + hood'], ['plain', 'Plain shirt'], ['slogan', 'Slogan shirt']];
+const OUTFITS: [Outfit2, string][] = [['robe', 'Robe'], ['hood', 'Robe + hood'], ['tee', 'Plain shirt'], ['bandtee', 'Band shirt'],
+  ['tunic', 'Tunic'], ['cardigan', 'Cardigan'], ['apron', 'Apron'], ['coat', 'Long coat']];
+const STYLE_LABEL: Record<HairStyle, string> = { short: 'Short', swept: 'Swept', crop: 'Crop', curly: 'Curly', long: 'Long', wavy: 'Wavy', bob: 'Bob', braid: 'Braid', ponytail: 'Ponytail', bun: 'Bun', elderbun: 'Low bun' };
+const EXPR_LABEL: Record<Expr, string> = { smile: 'Smile', grin: 'Grin', laugh: 'Laugh', content: 'Content', calm: 'Calm', shy: 'Shy', wink: 'Wink', surprised: 'Surprised', thoughtful: 'Thoughtful' };
+type BTab = 'outfit' | 'face' | 'extras';
 
 export function ProfileEditor() {
   const me = useS((s) => s.me)!;
@@ -75,9 +80,13 @@ export function ProfileEditor() {
   const [linked, setLinked] = useState(me.linked);
   const [busy, setBusy] = useState(false);
   const ticks = useTicks();
-  useEffect(() => { avatarUrl(av); }, [av]);
+  const [tab, setTab] = useState<BTab>('outfit');
+  useEffect(() => { avatarUrl(av, 'figure', 80); }, [av]);
   const upd = (p: Partial<AvatarCfg>) => { setHist((h) => [...h.slice(-20), av]); setAv({ ...av, ...p }); };
-  const shirt = av.outfit === 'plain' || av.outfit === 'slogan';
+  const robe = av.outfit === 'robe' || av.outfit === 'hood';
+  const hood = av.outfit === 'hood';
+  /** switching outfit fills the colour it needs (apron colour, cardigan inner / band-shirt print) */
+  const pickOutfit = (k: Outfit2) => upd({ outfit: k, ...(k === 'apron' && !av.over ? { over: 'parchment' } : {}), ...((k === 'cardigan' || k === 'bandtee') && !av.accent ? { accent: 'cream' } : {}) });
   const days = Math.max(1, Math.ceil((Date.now() - (me.arrivalAt ?? me.createdAt)) / 86_400_000));
   async function save() {
     setBusy(true);
@@ -86,8 +95,14 @@ export function ProfileEditor() {
       useS.setState({ me: m }); toast('Citizen saved.'); close();
     } catch (e) { toast((e as Error).message, true); } finally { setBusy(false); }
   }
-  const sw = (cols: [string, string][], sel: string, on: (k: string) => void, label: string) =>
-    <span className="sws" role="radiogroup" aria-label={label}>{cols.map(([k, c]) => <button key={k} className={`sw ${sel === k ? 'sel' : ''}`} style={{ background: c }} onClick={() => on(k)} aria-label={`${label} ${k}`} aria-checked={sel === k} role="radio" />)}</span>;
+  const sw = (cols: [string, string][], sel: string | undefined | null, on: (k: string) => void, label: string, none?: string) =>
+    <span className="sws" role="radiogroup" aria-label={label}>
+      {none && <button className={`sw none ${!sel ? 'sel' : ''}`} onClick={() => on('')} aria-label={`${label} ${none}`} aria-checked={!sel} role="radio" title={none} />}
+      {cols.map(([k, c]) => <button key={k} className={`sw ${sel === k ? 'sel' : ''}`} style={{ background: c }} onClick={() => on(k)} aria-label={`${label} ${k}`} aria-checked={sel === k} role="radio" title={k} />)}</span>;
+  const cl = (keys: string[]): [string, string][] => keys.map((k) => [k, CLOTH[k]]);
+  const tog = (on: boolean, set: (v: boolean) => void, label: string, sub: string, disabled = false) =>
+    <div className={`swrow ${disabled ? 'off' : ''}`}><div><div style={{ fontSize: 14, fontWeight: 600 }}>{label}</div><div className="sub">{sub}</div></div>
+      <button className={`tog ${on ? 'on' : ''}`} onClick={() => !disabled && set(!on)} role="switch" aria-checked={on} aria-label={label} disabled={disabled} data-testid={`tog-${label.toLowerCase().replace(/\W+/g, '-')}`} /></div>;
   return (
     <Modal onClose={close} size="md" label="Your citizen">
       <div className="mh"><span className="medal" style={{ background: 'var(--robe-100)' }}><Px src="icon-tree" /></span>
@@ -111,17 +126,48 @@ export function ProfileEditor() {
             <ZipNamePanel me={me} />
           </div>
           <div>
-            <div className="sect"><div className="sh">Outfit <span>From the Veridia wardrobe</span></div>
-              <div className="outfits">{OUTFITS.map(([k, l]) => <button key={k} className={`of ${av.outfit === k ? 'sel' : ''}`} onClick={() => upd({ outfit: k })} data-testid={`outfit-${k}`}>
-                <div className="im"><Figure cfg={{ ...av, outfit: k }} w={32} /></div>{l}</button>)}</div></div>
-            <div className="swcard">
-              <div className="swrow"><span className="lb">Hair</span>{sw(Object.entries(HAIRS).map(([k, v]) => [k, v[0]]), av.hair, (k) => upd({ hair: k as AvatarCfg['hair'] }), 'Hair colour')}</div>
-              <div className="swrow"><span className="lb">Style</span><span className="seg">{(['short', 'long', 'bun'] as const).map((h) => <button key={h} className={av.hairstyle === h ? 'on' : ''} onClick={() => upd({ hairstyle: h })} disabled={av.outfit === 'hood'}>{h[0].toUpperCase() + h.slice(1)}</button>)}</span></div>
-              <div className="swrow"><span className="lb">Skin</span>{sw(Object.entries(SKINS).map(([k, v]) => [k, v[0]]), av.skin, (k) => upd({ skin: k as AvatarCfg['skin'] }), 'Skin tone')}</div>
-              {shirt && <div className="swrow"><span className="lb">Shirt</span>{sw(SHIRTS.map((c) => [c, c]), av.shirt ?? '#5c9a3e', (k) => upd({ shirt: k }), 'Shirt colour')}</div>}
-              <div className="swrow"><div><div style={{ fontSize: 14, fontWeight: 600 }}>Silk neck band</div><div className="sub">A silky cloth band, as in the book</div></div>
-                <button className={`tog ${av.band ? 'on' : ''}`} onClick={() => upd({ band: !av.band })} role="switch" aria-checked={av.band} aria-label="Silk neck band" /></div>
-            </div>
+            <span className="seg btabs" role="tablist" aria-label="Avatar builder">{([['outfit', 'Outfit'], ['face', 'Face & hair'], ['extras', 'Extras']] as [BTab, string][]).map(([k, l]) =>
+              <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)} data-testid={`btab-${k}`}>{l}</button>)}</span>
+            {tab === 'outfit' && <>
+              <div className="sect"><div className="sh">Outfit <span>From the Veridia wardrobe</span></div>
+                <div className="outfits">{OUTFITS.map(([k, l]) => <button key={k} className={`of ${av.outfit === k ? 'sel' : ''}`} onClick={() => pickOutfit(k)} data-testid={`outfit-${k}`}>
+                  <div className="im"><Figure cfg={{ ...av, outfit: k, ...(k === 'apron' && !av.over ? { over: 'parchment' } : {}), ...((k === 'cardigan' || k === 'bandtee') && !av.accent ? { accent: 'cream' } : {}) }} w={32} /></div>{l}</button>)}</div></div>
+              <div className="swcard">
+                {!robe && <div className="swrow"><span className="lb">{av.outfit === 'apron' ? 'Shirt' : av.outfit === 'cardigan' ? 'Knit' : av.outfit === 'coat' ? 'Coat' : 'Top'}</span>{sw(cl(TOPS), av.top ?? 'leaf', (k) => upd({ top: k }), 'Top colour')}</div>}
+                {(av.outfit === 'cardigan' || av.outfit === 'bandtee') && <div className="swrow"><span className="lb">{av.outfit === 'cardigan' ? 'Inner' : 'Print'}</span>{sw(cl(ACCENTS), av.accent, (k) => upd({ accent: k }), av.outfit === 'cardigan' ? 'Inner shirt colour' : 'Print colour')}</div>}
+                {av.outfit === 'apron' && <div className="swrow"><span className="lb">Apron</span>{sw(cl(['parchment', 'cream', 'moss', 'wood', 'skyblue', 'rose']), av.over, (k) => upd({ over: k }), 'Apron colour')}</div>}
+                {!robe && <div className="swrow"><span className="lb">{av.bottom_kind === 'skirt' ? 'Skirt' : 'Trousers'}</span>{sw(cl(BOTTOMS), av.bottom ?? 'charcoal', (k) => upd({ bottom: k }), 'Bottom colour')}
+                  <span className="seg mini">{([['', 'Trousers'], ['skirt', 'Skirt']] as const).map(([k, l]) => <button key={l} className={(av.bottom_kind ?? '') === k ? 'on' : ''} onClick={() => upd({ bottom_kind: k || undefined })}>{l}</button>)}</span></div>}
+                {tog(!!av.neckband, (v) => upd({ neckband: v }), 'Silk neck band', hood ? 'Hidden under the hood' : 'A silky cloth band, as in the book', hood)}
+              </div>
+            </>}
+            {tab === 'face' && <>
+              <div className="sect"><div className="sh">Hairstyle <span>{hood ? 'Under the hood' : STYLE_LABEL[av.hairstyle ?? 'short']}</span></div>
+                <div className="thumbs" role="radiogroup" aria-label="Hairstyle">{HAIRSTYLES.map((h) => <button key={h} role="radio" aria-checked={(av.hairstyle ?? 'short') === h} disabled={hood}
+                  className={`th ${(av.hairstyle ?? 'short') === h ? 'sel' : ''}`} onClick={() => upd({ hairstyle: h, ...(h === 'braid' ? { braid_side: av.held && av.hold_side === -1 ? 1 : -1 } : {}) })} title={STYLE_LABEL[h]} data-testid={`hair-${h}`}>
+                  <img src={avatarUrl({ ...av, outfit: hood ? 'robe' : av.outfit, hairstyle: h, ...(h === 'braid' && !av.braid_side ? { braid_side: -1 } : {}) }, 'bust', 40)} alt="" draggable={false} /><span>{STYLE_LABEL[h]}</span></button>)}</div></div>
+              <div className="swcard">
+                <div className="swrow"><span className="lb">Hair</span>{sw(Object.entries(HAIRS), av.hair, (k) => upd({ hair: k as AvatarCfg['hair'] }), 'Hair colour')}</div>
+                <div className="swrow"><span className="lb">Skin</span>{sw(Object.entries(SKINS), av.skin, (k) => upd({ skin: k as AvatarCfg['skin'] }), 'Skin tone')}</div>
+                <div className="swrow"><span className="lb">Eyes</span>{sw(Object.entries(EYES), av.eyes ?? 'brown', (k) => upd({ eyes: k as AvatarCfg['eyes'] }), 'Eye colour')}</div>
+              </div>
+              <div className="sect"><div className="sh">Expression <span>{hood ? 'Behind the face cover' : EXPR_LABEL[av.expr ?? 'smile']}</span></div>
+                <div className="thumbs faces" role="radiogroup" aria-label="Expression">{EXPRS.map((x) => <button key={x} role="radio" aria-checked={(av.expr ?? 'smile') === x} disabled={hood}
+                  className={`th ${(av.expr ?? 'smile') === x ? 'sel' : ''}`} onClick={() => upd({ expr: x })} title={EXPR_LABEL[x]} data-testid={`expr-${x}`}>
+                  <img src={avatarUrl({ ...av, outfit: hood ? 'robe' : av.outfit, expr: x }, 'bust', 40)} alt="" draggable={false} /><span>{EXPR_LABEL[x]}</span></button>)}</div></div>
+            </>}
+            {tab === 'extras' && <>
+              <div className="swcard">
+                <div className={`swrow ${robe ? 'off' : ''}`}><span className="lb">Holding</span><span className="seg">{([['', 'Nothing'], ['tea', 'Tea cup'], ['book', 'Book']] as const).map(([k, l]) =>
+                  <button key={l} disabled={robe} className={(av.held ?? '') === k ? 'on' : ''} onClick={() => upd(k ? { held: k, pose: 'hold', hold_side: av.satchel || (av.hairstyle === 'braid' && (av.braid_side ?? 1) === 1) ? -1 : 1 } : { held: undefined, pose: undefined, hold_side: undefined })} data-testid={`held-${k || 'none'}`}>{l}</button>)}</span>
+                  {av.held === 'book' && sw(cl(['maple', 'moss', 'navy', 'plum', 'wood']), av.book_col ?? 'moss', (k) => upd({ book_col: k }), 'Book colour')}</div>
+                <div className={`swrow ${robe ? 'off' : ''}`}><span className="lb">Scarf</span>{robe ? <span className="sub">Not with the robe</span> : sw(cl(SCARVES), av.scarf, (k) => upd({ scarf: k || undefined }), 'Scarf', 'No scarf')}</div>
+                {tog(!!av.satchel, (v) => upd({ satchel: v || undefined, satchel_side: v ? 1 : undefined, ...(v && av.held ? { hold_side: -1 } : {}) }), 'Satchel', robe ? 'Not with the robe' : 'Leather bag on a shoulder strap', robe)}
+                {tog(!!av.glasses, (v) => upd({ glasses: v || undefined }), 'Glasses', hood ? 'Hidden under the hood' : 'Round reading glasses', hood)}
+                {tog(!!av.beard, (v) => upd({ beard: v || undefined }), 'Beard', hood ? 'Hidden under the hood' : 'Full, in your hair colour', hood)}
+                {tog(!!av.freckles, (v) => upd({ freckles: v || undefined }), 'Freckles', hood ? 'Hidden under the hood' : 'A dusting across the cheeks', hood)}
+              </div>
+            </>}
             <div style={{ display: 'flex', gap: 8 }}>
               <button className="btn ghost sm" onClick={() => upd(randomAvatar())}><I n="shuffle" c="sm" />Randomize</button>
               <button className="btn ghost sm" disabled={!hist.length} onClick={() => { setAv(hist[hist.length - 1]); setHist(hist.slice(0, -1)); }}>Undo</button>

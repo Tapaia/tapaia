@@ -4,14 +4,15 @@ import { I, Px, Av, Figure, Modal } from '../ui';
 import { api, enterApp, toast, useS } from '../store';
 import { KNOWN, isDiscovered, signInWithWallet, friendlyError } from '../wallet';
 import { randomAvatar, type AvatarCfg } from '../../shared/avatar';
+import { castAvatar } from '../../shared/cast';
 import type { PublicUser } from '../../shared/types';
 import { Legal } from './Legal';
 
 const HERO_PEOPLE: Pick<PublicUser, 'avatar' | 'tile'>[] = [
-  { tile: 'c5', avatar: { outfit: 'robe', skin: 'fair', hair: 'ginger', hairstyle: 'long', band: true } },
-  { tile: 'c2', avatar: { outfit: 'robe', skin: 'deep', hair: 'black', hairstyle: 'bun', band: true } },
-  { tile: 'c1', avatar: { outfit: 'hood', skin: 'warm', hair: 'black', hairstyle: 'short', band: true } },
-  { tile: 'c3', avatar: { outfit: 'plain', skin: 'tan', hair: 'black', hairstyle: 'short', band: false, shirt: '#f2c84b' } },
+  { tile: 'c5', avatar: castAvatar('Nessa Quill') },
+  { tile: 'c2', avatar: castAvatar('Tobin Larkspur') },
+  { tile: 'c1', avatar: castAvatar('Alder Meadows') },
+  { tile: 'c3', avatar: castAvatar('Pim Tallow') },
 ];
 
 export function SignIn() {
@@ -61,7 +62,7 @@ export function SignIn() {
         <div className="brand"><img className="logo" src="/brand/logo.svg" alt="Tapaia" /><b>Tapaia</b></div>
         <div className="copy"><h1>A town square<br />in Veridia.</h1>
           <p>Chat, role-play and gather, powered by Zipcoin. Talk like you would on Telegram, and speak as your citizen whenever you feel like it.</p>
-          <div className="proof"><span className="avs">{HERO_PEOPLE.map((p, i) => <Av key={i} u={p} />)}</span>Open source · based on <i>Snowmoon</i></div></div>
+          <div className="proof"><span className="avs">{HERO_PEOPLE.map((p, i) => <Av key={i} u={p} px={30} />)}</span>Open source · based on <i>Snowmoon</i></div></div>
       </section>
       <section className="form"><div className="inner">
         <div className="mobile-hero"><div className="brand"><img className="logo" src="/brand/logo.svg" alt="Tapaia" /><b>Tapaia</b></div><div className="t">A town square in Veridia.<span className="s">Chat, role-play and gather, powered by Zipcoin.</span></div></div>

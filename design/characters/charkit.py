@@ -991,8 +991,13 @@ BUSTS = {   # size -> (frame width in sprite units, detail). Small tiles crop ti
 }
 
 
+def bust_spec(size):
+    """Any tile size: the table above, else <=32 'S', <=48 'M', larger 'L' (same rule as app/shared/avatar2.ts)."""
+    return BUSTS.get(size) or ((25.0, 'S') if size <= 32 else (25.0, 'M') if size <= 48 else (27.0, 'L'))
+
+
 def bust(cfg, size=32):
-    frame, det = BUSTS[size]
+    frame, det = bust_spec(size)
     k = size / frame
     ox = 16 - frame / 2
     oy = .8 if frame < 27 else 1.2

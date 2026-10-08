@@ -5,6 +5,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import type { Channel, Message, PublicUser } from '../shared/types';
 import { CHANNELS, SEED_MESSAGES, SEED_USERS } from './seed';
+import { normalizeAvatar, randomAvatar } from '../shared/avatar';
 
 const DIR = process.env.TAPAIA_DATA_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), 'data'); // override used by verify's mocked-zipcoin instance
 const FILE = path.join(DIR, 'db.json');
@@ -22,7 +23,7 @@ interface DB {
   nextId: number;
 }
 
-const DB_VERSION = 2; // v2: Zipcoin names (demo names on two seed citizens)
+const DB_VERSION = 3; // v2: Zipcoin names (demo names on two seed citizens) · v3: Cozy HD avatars (v2 avatar configs)
 export let db: DB;
 
 function seed(): DB {
@@ -55,10 +56,21 @@ function seed(): DB {
 export function load() {
   try {
     const raw = JSON.parse(fs.readFileSync(FILE, 'utf8')) as DB;
+    if (raw.version === 2) { migrateV3(raw); db = raw; save(true); return; }
     if (raw.version === DB_VERSION) { db = raw; return; }
   } catch { /* fresh start */ }
   db = seed();
   save(true);
+}
+
+/** v2 -> v3: keep everyone, move avatars to v2 configs (lossless for v1), and dress the seed citizens in the new cast. */
+function migrateV3(raw: DB) {
+  const seeds = new Map(SEED_USERS.map((s) => [s.id, s]));
+  for (const u of Object.values(raw.users)) {
+    const s = seeds.get(u.id);
+    u.avatar = s && (u.kind === 'seed' || u.kind === 'bot') ? s.avatar : normalizeAvatar(u.avatar) ?? randomAvatar();
+  }
+  raw.version = 3;
 }
 
 let timer: NodeJS.Timeout | null = null;

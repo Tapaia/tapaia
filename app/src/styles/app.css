@@ -75,11 +75,14 @@ svg.i.lg { width: 22px; height: 22px; }
 
 /* avatars: pixel busts inside soft rounded tiles */
 .av { position: relative; flex: none; width: 40px; height: 40px; border-radius: 12px; overflow: hidden; display: flex; align-items: flex-end; justify-content: center; }
-.av img { width: 32px; height: 32px; image-rendering: pixelated; }
-.av.s28 { width: 28px; height: 28px; border-radius: 9px; } .av.s28 img { width: 32px; height: 32px; margin-bottom: -4px; }
-.av.s32 { width: 32px; height: 32px; border-radius: 10px; } .av.s32 img { width: 32px; height: 32px; }
-.av.s48 { width: 48px; height: 48px; border-radius: 14px; } .av.s48 img { width: 48px; height: 48px; }
-.av.s64 { width: 64px; height: 64px; border-radius: 18px; } .av.s64 img { width: 64px; height: 64px; }
+.av img { width: 100%; height: 100%; image-rendering: pixelated; }   /* busts are drawn natively at the tile size (ui.tsx Av) */
+.av.s24 { width: 24px; height: 24px; border-radius: 8px; }
+.av.s28 { width: 28px; height: 28px; border-radius: 9px; }
+.av.s32 { width: 32px; height: 32px; border-radius: 10px; }
+.av.s36 { width: 36px; height: 36px; border-radius: 11px; }
+.av.s48 { width: 48px; height: 48px; border-radius: 14px; }
+.av.s64 { width: 64px; height: 64px; border-radius: 18px; }
+.av.s128 { width: 128px; height: 128px; border-radius: 30px; }
 .c1 { background: #e9e1f3; } .c2 { background: #ddefd9; } .c3 { background: #f3e6cf; } .c4 { background: #dce9f2; } .c5 { background: #f6dfda; } .c6 { background: #ece6dc; }
 [data-theme="dark"] .c1 { background: #3a2d4c; } [data-theme="dark"] .c2 { background: #26402b; } [data-theme="dark"] .c3 { background: #4a3c25; }
 [data-theme="dark"] .c4 { background: #24384a; } [data-theme="dark"] .c5 { background: #4a2c2a; } [data-theme="dark"] .c6 { background: #3a332b; }
@@ -101,7 +104,7 @@ svg.i.lg { width: 22px; height: 22px; }
 .stack .avs { display: flex; }
 .stack .avs .av { width: 24px; height: 24px; border-radius: 50%; margin-left: -6px; border: 2px solid var(--surface); }
 .stack .avs .av:first-child { margin-left: 0; }
-.stack .avs .av img { width: 16px; height: 16px; }
+.stack .avs .av img { image-rendering: auto; }   /* 24 px bust shown in the 20 px ring */
 
 .pill { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 99px; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .pill img { width: 14px; height: 14px; }
@@ -127,7 +130,7 @@ svg.i.lg { width: 22px; height: 22px; }
 .at { color: var(--robe-600); background: var(--robe-100); padding: 0 4px; border-radius: 5px; font-weight: 600; }
 .replyline { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-3); margin: 0 0 2px 52px; padding: 0 24px; }
 .replyline .bar { width: 26px; height: 10px; border-left: 2px solid var(--line-2); border-top: 2px solid var(--line-2); border-top-left-radius: 8px; margin-top: 6px; }
-.replyline .av { width: 18px; height: 18px; border-radius: 6px; } .replyline .av img { width: 16px; height: 16px; }
+.replyline .av { width: 18px; height: 18px; border-radius: 6px; } .replyline .av img { image-rendering: auto; }   /* 24 px bust, smooth at 18 */
 .replyline b { color: var(--text-2); font-weight: 600; }
 .reactions { display: flex; gap: 6px; margin-top: 6px; }
 .react { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 8px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; color: var(--text-2); font-weight: 600; }
@@ -146,7 +149,7 @@ svg.i.lg { width: 22px; height: 22px; }
 .card-arrival { margin: 6px 24px 6px 76px; padding: 14px 16px; border-radius: var(--r-lg); display: flex; gap: 14px; align-items: center;
   background: linear-gradient(135deg, var(--robe-50), #fff 60%); border: 1px solid var(--robe-200); box-shadow: var(--shadow-sm); }
 .card-arrival .fig { width: 64px; height: 76px; border-radius: 14px; background: linear-gradient(#cfe3f1, #e7f0e0); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; flex: none; }
-.card-arrival .fig img { width: 48px; height: 75px; }
+.card-arrival .fig img { width: 48px; height: auto; margin-bottom: 2px; }
 .card-arrival .k { font-size: 12px; font-weight: 700; color: var(--robe-600); letter-spacing: .03em; text-transform: uppercase; display: flex; gap: 8px; align-items: center; }
 .card-arrival .q { font-size: 15px; margin-top: 4px; }
 .card-arrival .q b { font-weight: 650; }
@@ -189,7 +192,10 @@ svg.i.lg { width: 22px; height: 22px; }
 
 /* banner */
 .banner { position: relative; flex: none; margin: 16px 20px 4px; height: 132px; border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-md);
-  background: url('/assets/scene-header.png') center bottom / 1230px 144px no-repeat, #93c1e6; }
+  background: linear-gradient(90deg, #3b2251 calc(100% - 750px), rgba(59,34,81,0) calc(100% - 670px)),
+    url('/assets/scene-square.png') right bottom / 750px 250px no-repeat, #3b2251; image-rendering: pixelated; }
+/* Cozy HD plaza (design/characters/scene.py) at 1x, pinned right; on banners wider than 750 px the plum fill on the
+   left fades into the plaza under the title instead of ending in a hard edge */
 .banner::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(35,20,47,.55), rgba(35,20,47,0) 45%); }
 .banner .over { position: absolute; z-index: 2; left: 20px; top: 18px; color: #fff; }
 .banner .over h2 { margin: 6px 0 2px; font-size: 22px; font-weight: 750; letter-spacing: -.02em; text-shadow: 0 1px 2px rgba(0,0,0,.3); }

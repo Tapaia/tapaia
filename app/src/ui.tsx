@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { avatarPixels, type AvatarCfg } from '../shared/avatar';
+import { avatarPixels, toV1, type AvatarCfg } from '../shared/avatar';
+import { renderBust, renderFigure, type Pixels } from '../shared/avatar2';
 import type { PublicUser } from '../shared/types';
 import { meldanTicks } from '../shared/clock';
 
@@ -46,32 +47,60 @@ export function I({ n, c = '' }: { n: string; c?: string }) {
 export const Px = ({ src, alt = '', className = '', style }: { src: string; alt?: string; className?: string; style?: React.CSSProperties }) =>
   <img className={`px ${className}`} src={`/assets/${src}.png`} alt={alt} style={style} draggable={false} />;
 
-// ---- pixel avatars, drawn from the sprite maps in shared/avatar.ts
-const cache = new Map<string, string>();
-export function avatarUrl(cfg: AvatarCfg, bust = false): string {
-  const key = JSON.stringify(cfg) + bust;
-  const hit = cache.get(key);
-  if (hit) return hit;
-  const px = avatarPixels(cfg);
-  const h = bust ? 16 : px.length;
+// ---- pixel avatars: Cozy HD citizens (shared/avatar2.ts), re-rasterised natively at each display size.
+// Fallback: ?avatars=classic (remembered) draws the original 16x24 sprites from shared/avatar.ts.
+const CLASSIC = (() => {
+  try {
+    const q = new URLSearchParams(location.search).get('avatars');
+    if (q === 'classic' || q === 'hd') localStorage.setItem('tapaia.avatars', q);
+    return localStorage.getItem('tapaia.avatars') === 'classic';
+  } catch { return false; }
+})();
+const cache = new Map<string, string>();   // LRU of data URLs, key = cfg + kind + size
+const CACHE_MAX = 300;
+function toUrl(px: Pixels): string {
   const cv = document.createElement('canvas');
-  cv.width = 16; cv.height = h;
-  const ctx = cv.getContext('2d')!;
-  for (let y = 0; y < h; y++) for (let x = 0; x < 16; x++) { const c = px[y][x]; if (c) { ctx.fillStyle = c; ctx.fillRect(x, y, 1, 1); } }
-  const url = cv.toDataURL('image/png');
+  cv.width = px.w; cv.height = px.h;
+  cv.getContext('2d')!.putImageData(new ImageData(px.data as Uint8ClampedArray<ArrayBuffer>, px.w, px.h), 0, 0);
+  return cv.toDataURL('image/png');
+}
+function classicPixels(cfg: AvatarCfg, bust: boolean): Pixels {
+  const rows = avatarPixels(toV1(cfg));
+  const h = bust ? 16 : rows.length;
+  const data = new Uint8ClampedArray(16 * h * 4);
+  for (let y = 0; y < h; y++) for (let x = 0; x < 16; x++) {
+    const c = rows[y][x];
+    if (c) data.set([parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16), 255], (y * 16 + x) * 4);
+  }
+  return { w: 16, h, data };
+}
+/** Data URL for a citizen: kind 'bust' = head and shoulders at `size` px (24-64), 'figure' = full body `size` px wide. */
+export function avatarUrl(cfg: AvatarCfg, kind: 'bust' | 'figure' = 'figure', size = 48): string {
+  const key = JSON.stringify(cfg) + kind + size + (CLASSIC ? 'c' : '');
+  const hit = cache.get(key);
+  if (hit) { cache.delete(key); cache.set(key, hit); return hit; }
+  const px = CLASSIC ? classicPixels(cfg, kind === 'bust') : kind === 'bust' ? renderBust(cfg, size) : renderFigure(cfg, size / 32);
+  const url = toUrl(px);
   cache.set(key, url);
+  if (cache.size > CACHE_MAX) cache.delete(cache.keys().next().value!);
   return url;
 }
 
-export function Av({ u, size = '', dot, onClick }: { u: Pick<PublicUser, 'avatar' | 'tile'> & Partial<PublicUser>; size?: string; dot?: boolean; onClick?: (e: React.MouseEvent) => void }) {
-  const tile = <span className={`av ${size} ${u.tile}`} onClick={onClick}><img src={avatarUrl(u.avatar, true)} alt="" draggable={false} /></span>;
+const TILE_PX: Record<string, number> = { s24: 24, s28: 28, s32: 32, s36: 36, s48: 48, s64: 64, s128: 128 };
+/** Avatar tile. The bust is drawn natively at the tile size (`px`, default from the size class; 40 px plain), so it
+ *  fills the tile 1:1; tiles above 64 px show the 64 px portrait at an integer scale (128 = 64 at 2x). */
+export function Av({ u, size = '', px, dot, onClick }: { u: Pick<PublicUser, 'avatar' | 'tile'> & Partial<PublicUser>; size?: string; px?: number; dot?: boolean; onClick?: (e: React.MouseEvent) => void }) {
+  const n = px ?? TILE_PX[size] ?? 40;
+  const r = n > 64 ? 64 : n;
+  const tile = <span className={`av ${size} ${u.tile}`} onClick={onClick}><img src={avatarUrl(u.avatar, 'bust', r)} alt="" draggable={false} /></span>;
   if (!dot) return tile;
   const p = u.presence === 'idle' ? 'idle' : u.presence === 'off' ? 'off' : '';
   return <span className="av-wrap">{tile}<span className={`dot ${p}`} /></span>;
 }
 
+/** Full-body citizen, drawn natively at w px wide (32 = the 32x48 sprite, 48 = 48x72, 80 = 80x120). */
 export const Figure = ({ cfg, w, className = '', alt = '' }: { cfg: AvatarCfg; w: number; className?: string; alt?: string }) =>
-  <img className={`px ${className}`} src={avatarUrl(cfg)} style={{ width: w, height: 'auto' }} alt={alt} draggable={false} />;
+  <img className={`px fig-img ${className}`} src={avatarUrl(cfg, 'figure', w)} style={{ width: w, height: 'auto' }} alt={alt} draggable={false} />;
 
 export const BADGE_ICON: Record<string, string> = { founder: 'icon-medal', onchain: 'icon-flame', team: 'icon-shield', bot: 'icon-robot', mod: 'icon-star' };
 export const BADGE_LABEL: Record<string, string> = { founder: 'Founding Citizen', onchain: 'Arrival post', team: 'Verified team', bot: 'Bot', mod: 'Moderator' };

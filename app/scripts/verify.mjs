@@ -260,6 +260,81 @@ try {
   await C.waitForTimeout(400);
   await shot(C, '16-mobile-general-dark.png');
 
+  // ---- H: Cozy HD citizens (shared/avatar2.ts) at DPR 2: native busts/figures, HD Square banner, builder, migration
+  const H = await ctx({ label: 'H', viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, colorScheme: 'light' });
+  await demo(H, { skip: true });
+  await H.getByTestId('composer').waitFor();
+  await H.getByTestId('ch-square').click().catch(() => {});
+  await H.locator('.feed .card-arrival').first().waitFor({ timeout: 8000 }).catch(() => {});
+  await H.waitForTimeout(500);
+  {
+    const av = await H.evaluate(() => [...document.querySelectorAll('.feed .msg .av img')].map((i) => [i.naturalWidth, i.naturalHeight, Math.round(i.getBoundingClientRect().width)]));
+    ok('HD avatars: chat-row busts are drawn natively at the 40 px tile size (no upscaling)', av.length > 3 && av.every(([w, h, cw]) => w === 40 && h === 40 && cw === 40), `${av.length} rows`);
+    const fig = await H.evaluate(() => [...document.querySelectorAll('.feed .card-arrival .fig img')].map((i) => [i.naturalWidth, i.naturalHeight]));
+    ok('HD avatars: arrival-card figures are native 48×72 full-body citizens', fig.length > 0 && fig.every(([w, h]) => w === 48 && h === 72), JSON.stringify(fig[0]));
+    const bn = await H.evaluate(async () => {
+      const bg = getComputedStyle(document.querySelector('.banner')).backgroundImage;
+      const im = new Image(); im.src = '/assets/scene-square.png'; await im.decode().catch(() => {});
+      return { bg, w: im.naturalWidth, h: im.naturalHeight };
+    });
+    ok('HD Square banner: the Cozy HD plaza (750×250, 1 art px = 1 CSS px) is the Tapaia Square banner', /scene-square\.png/.test(bn.bg) && bn.w === 750 && bn.h === 250, `${bn.w}×${bn.h}`);
+    const stack = await H.evaluate(() => [...document.querySelectorAll('.topbar .stack .av img')].map((i) => i.naturalWidth));
+    ok('HD avatars: member stack and replies use small native busts (24 px)', stack.length > 0 && stack.every((w) => w === 24), JSON.stringify(stack));
+  }
+  await H.mouse.move(700, 120);
+  await H.evaluate(() => document.querySelector('.feed .card-arrival')?.scrollIntoView({ block: 'center' }));   // the seeded conversation around Ilse's arrival
+  await H.waitForTimeout(300);
+  await shot(H, '21-square-hd-light.png');
+  await H.locator('.banner').screenshot({ path: path.join(OUT, '23-square-banner.png') });
+  await H.locator('.feed .card-arrival').first().screenshot({ path: path.join(OUT, '24-arrival-card.png') }).catch(() => {});
+  await H.getByTestId('theme-toggle').click();
+  await H.waitForTimeout(400);
+  await H.evaluate(() => document.querySelector('.feed .card-arrival')?.scrollIntoView({ block: 'center' }));
+  await H.waitForTimeout(300);
+  await shot(H, '22-square-hd-dark.png');
+  await H.getByTestId('theme-toggle').click();
+  {
+    // API: v1 configs are still accepted (migrated to v2 on the way in), junk is refused
+    const r = await H.evaluate(async () => {
+      const patch = (avatar) => fetch('/api/profile', { method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ avatar }) });
+      const a = await patch({ outfit: 'slogan', hair: 'ginger', hairstyle: 'long', skin: 'tan', band: true, shirt: '#c8452e' });
+      const b = await patch({ v: 2, outfit: 'cape', skin: 'warm', hair: 'black' });
+      return { a: a.status, av: (await a.json()).me?.avatar, b: b.status };
+    });
+    ok('avatar API: a v1 config is migrated to v2 (lossless), an invalid v2 config is rejected', r.a === 200 && r.av?.v === 2 && r.av.outfit === 'bandtee' && r.av.top === '#c8452e' && r.av.neckband === true && r.b === 400, JSON.stringify(r.av));
+  }
+  // builder: new parts end to end (hairstyle, expression, eyes, outfit colours, extras) -> saved v2 config
+  await H.reload();
+  await H.getByTestId('composer').waitFor();
+  await H.getByTestId('me-card').click();
+  await H.getByTestId('outfit-cardigan').click();
+  ok('builder: 8 outfits, each previewed as a native 32×48 figure', await H.locator('.outfits .of').count() === 8 &&
+    (await H.evaluate(() => [...document.querySelectorAll('.outfits .of img')].every((i) => i.naturalWidth === 32 && i.naturalHeight === 48))));
+  await H.locator('.swrow', { hasText: 'Knit' }).locator('button[aria-label="Top colour teal"]').click();
+  await H.waitForTimeout(250);
+  await shot(H, '25-builder-outfit.png');
+  await H.getByTestId('btab-face').click();
+  await H.getByTestId('hair-braid').click();
+  await H.locator('button[aria-label="Hair colour auburn"]').click();
+  await H.locator('button[aria-label="Eye colour green"]').click();
+  await H.getByTestId('expr-wink').click();
+  ok('builder: 11 hairstyles and 9 expressions shown as native bust thumbnails', await H.locator('[data-testid^="hair-"]').count() === 11 && await H.locator('[data-testid^="expr-"]').count() === 9);
+  await H.waitForTimeout(250);
+  await shot(H, '26-builder-face.png');
+  await H.getByTestId('btab-extras').click();
+  await H.getByTestId('held-tea').click();
+  await H.locator('button[aria-label="Scarf mustard"]').click();
+  await H.getByTestId('tog-glasses').click();
+  await H.waitForTimeout(250);
+  await shot(H, '27-builder-extras.png');
+  await H.getByTestId('save-citizen').click();
+  await H.waitForTimeout(400);
+  {
+    const m = await H.evaluate(() => fetch('/api/me').then((r) => r.json()));
+    const a = m.me?.avatar ?? {};
+    ok('builder: saving stores the new parts as a v2 avatar', a.v === 2 && a.outfit === 'cardigan' && a.top === 'teal' && a.hairstyle === 'braid' && a.hair === 'auburn' && a.eyes === 'green' && a.expr === 'wink' && a.held === 'tea' && a.scarf === 'mustard' && a.glasses === true, JSON.stringify(a));
+  }
+
   // ---- D: real SIWE flow against a mock EIP-6963 wallet ("Rabby", throwaway key, no funds, signs only the SIWE text)
   const D = await ctx({ label: 'D', viewport: { width: 1280, height: 860 }, colorScheme: 'light' });
   const acct = privateKeyToAccount(generatePrivateKey());
@@ -375,6 +450,11 @@ try {
     const gMe = await G.evaluate(() => fetch('/api/me').then((r) => r.json()));
     ok('zipcoin: demo "Simulate claim" gives a DEMO name (labelled, nothing burned)', held && gMe.me?.zip?.name === 'demoname' && gMe.me?.zip?.demo === true && /DEMO: nothing was burned/.test(await G.getByTestId('zip-panel').innerText()));
   } finally { inst.stop(); }
+
+  // avatar2 golden-image + migration unit checks (TS port vs the Python reference renderer)
+  const gold = spawnSync(path.join(APP, 'node_modules', '.bin', 'tsx'), ['scripts/test-avatar2.ts'], { cwd: APP, encoding: 'utf8' });
+  for (const line of (gold.stdout || '').split('\n')) { const m = /^(PASS|FAIL)  (.*)$/.exec(line); if (m) ok(m[2], m[1] === 'PASS'); }
+  if (gold.status !== 0 && !/FAIL/.test(gold.stdout || '')) ok('avatar2 golden checks ran', false, gold.stderr?.slice(0, 200));
 
   // resolver unit checks (mocked fetch)
   const unit = spawnSync(path.join(APP, 'node_modules', '.bin', 'tsx'), ['scripts/test-zipcoin.ts'], { cwd: APP, encoding: 'utf8' });
