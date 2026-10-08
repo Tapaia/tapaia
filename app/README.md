@@ -29,6 +29,8 @@ Optional environment variables:
 | `WALLETCONNECT_PROJECT_ID` | Turns on WalletConnect (QR / phone wallets). Without it, browser-extension wallets (EIP-6963) and Coinbase Wallet still work, and the WalletConnect row says it isn't configured. Get an id at cloud.reown.com. |
 | `ETH_RPC_URL` | RPC used only to verify smart-contract wallet signatures (EIP-1271 / ERC-6492). Default: a public mainnet RPC. |
 | `FOUNDER_SLOTS` | Demo value for X, the number of Founding Citizen slots (default 100; the real X isn't decided). |
+| `ZIPCOIN_API` | Base URL of zipcoin.cash's public read API (default `https://www.zipcoin.cash/api/v1`). `verify.mjs` points a throwaway instance at a local mock. |
+| `TAPAIA_DATA_DIR` | Where the JSON snapshot lives (default `server/data/`). |
 
 Data lives in memory and is snapshotted to `server/data/db.json` (git-ignored). Delete that file to reset to the seed.
 
@@ -38,7 +40,7 @@ Data lives in memory and is snapshotted to `server/data/db.json` (git-ignored). 
 npm run verify            # or: node scripts/verify.mjs http://localhost:4417
 ```
 
-Runs headless Chrome (`playwright-core` + the system Chrome/Chromium) through: demo sign-in, both entry paths, live chat between two browsers, mentions, replies, reactions, Speak, theme toggle and persistence, read-only rooms, #feeds, DMs, the mobile layout, and a real SIWE sign-in against a mock EIP-6963 wallet (throwaway key, no funds). Screenshots go to `screenshots/`.
+Runs headless Chrome (`playwright-core` + the system Chrome/Chromium) through: demo sign-in, both entry paths, live chat between two browsers, mentions, replies, reactions, Speak, theme toggle and persistence, read-only rooms, #feeds, DMs, the mobile layout, and a real SIWE sign-in against a mock EIP-6963 wallet (throwaway key, no funds). It also checks Zipcoin names. Against the target, it checks that our resolver matches zipcoin.cash's `/identities` for a real holder, that the availability proxy reads the live API, and that the seeded demo names carry the DEMO badge. On a throwaway second instance of this checkout, with zipcoin's API mocked, it checks a wallet that owns a name (handle, badge and tooltip in message rows, members, @mentions, profile card and profile), the five availability states, the cost, the deep link, the demo simulated claim, and that no transaction methods are ever requested. It also runs `scripts/test-zipcoin.ts` for resolver caching and fallback. The second instance needs `npm run build` first. Screenshots go to `screenshots/`.
 
 ## Deploy
 
@@ -64,6 +66,7 @@ Any host that runs a long-lived Node process with WebSockets works the same way 
 - **Chat.** Live over WebSockets. Say/Speak toggle in the Square (Speak is simulated, with the burn notice and checkboxes). Arrival and Speak cards, "has entered / left the square" lines, @mention autocomplete with highlights and an @ marker in the room list, replies with quote chips that jump to the original, reactions, edit and delete your own messages, typing indicators, unread markers, pinned notices, and a member list with presence (here, idle, offline) and badges. Basic DMs.
 - **Seed and bots.** The fictional citizens from the mockups with their seed messages. The **ZC Price Bot** posts real price, 24h change, liquidity and volume from GeckoTerminal's public API every 30 minutes (it posts nothing if the API fails). The **Book Feed Bot** posts SAMPLE Book posts, clearly labelled. Seeded citizens chat now and then, wander in and out of the Square, and answer DMs and @mentions. All of that is simulated, and their profile cards say so.
 - **Profile.** Pixel avatar builder (outfit, hair colour, hair style, skin, shirt colour, silk neck band; randomize and undo), citizen name and handle, a "link names publicly" toggle, and a locked Rep stat. Theme setting: System (default), Light or Dark, saved in the browser. Profile cards include Message, plus Mute, Block and Report (stubbed) and a greyed-out Knock.
+- **Zipcoin names.** At wallet sign-in the server looks up the wallet's Zipcoin name through zipcoin.cash's public API (`/identities/:address`, cached for 10 minutes and refreshed when you reconnect). If you hold `alice.zipcoin.cash`, then `alice` becomes your @handle, with a small green seal and the tooltip "Verified Zipcoin name: alice.zipcoin.cash". The name shows in messages, @mention autocomplete, the member list, DMs, profile cards, your profile, and the arrival and Speak cards. Your role-play citizen name stays separate and editable. Without a name, or if the API is down, you're shown by your short address. The profile has a **Get a Zipcoin name** panel with a debounced availability check (`/names/check`: available, taken, reserved, invalid, or can't reach zipcoin.cash) and the burn cost from the API. Two seeded citizens (Wren, Nessa) have **demo** names (`wrenh`, `nessaq`). These are demo data, not real registrations, and they show with a grey dashed seal.
 - **Mobile.** Below 768px the app becomes a room list and chat screens like the phone mockups, with a slide-over member list and a full-screen arrival flow and profile.
 
 ## What's stubbed or left out
@@ -72,7 +75,20 @@ Any host that runs a long-lived Node process with WebSockets works the same way 
 - The values E, S, X, the founder window and the eligibility rules are placeholders. In the demo every account can claim a founder slot (100 demo slots).
 - DMs don't use message requests yet. Mute, block, report, the moderation queue, slow mode, link filters and the address guard are stubs or missing. There's a simple rate limit (8 messages per 10 seconds).
 - No push notifications, PWA install, sounds, history paging (each room keeps its last 400 messages), attachments, threads or search beyond filtering the room list.
-- ENS / zipbook names aren't looked up.
+- ENS names aren't looked up (only Zipcoin names). Claiming a Zipcoin name is never done in the app. See below.
+
+## Zipcoin names: how claiming works
+
+**Now (prototype, no transactions):**
+- **Wallet accounts.** "Claim on zipcoin.cash" opens zipcoin.cash's own claim form, prefilled (`https://www.zipcoin.cash/names?name=alice`). You connect and burn there, from your own wallet. Back in Tapaia, "Check my wallet again" re-reads `/identities` (at most once every 15 seconds), and the name and badge appear.
+- **Demo accounts.** "Simulate claim" is labelled **DEMO: nothing is burned**. It only works for names that `/names/check` reports as available, and it gives a name that exists only in this demo. It shows the grey demo seal, never the verified one. A real holder who signs in later takes the name over.
+
+**A real in-app claim (documented, not built).** It would stay non-custodial, with every transaction signed by the user's wallet:
+1. Check the name and price with `GET /api/v1/names/check?name=alice` (`status`, `priceZc`). The cost is set at the room of the claim's block: 5+ letters = one row (1,000 ZC on Oct 7), 4 letters = a card, 3 letters = a large word.
+2. `ZC.approve(ZipBroadcaster 0x992550B536749125D63d5F9c19fea765232D6928, amount)`.
+3. `ZipBroadcaster.speak(amount, "alice.zipcoin.cash is mine.", "/claim alice")`. The third argument is the envelope (≤120 bytes) that makes the Book word a claim. The first valid claim in chain order wins, and later claims of a held name are just ordinary words.
+   - Alternatives: zipcoin.cash's ETH route (buy the ZC and burn it in one go), or an anonymous claim from a zipped note with `/claim alice 0x…` on the envelope.
+4. Wait for `/identities/:address` to return `alice.zipcoin.cash` (the registry is derived from chain events), then show the badge. Never show it based on the transaction alone.
 
 ## Layout
 

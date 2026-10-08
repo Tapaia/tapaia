@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { I, Px, Av } from '../ui';
+import { I, Px, Av, ZipBadge, zipDomain } from '../ui';
 import { nameIn, toast, useS, wsSend } from '../store';
 import { byteLen } from '../../shared/perms';
 import type { Channel, PublicUser } from '../../shared/types';
@@ -33,7 +33,7 @@ export function Composer({ ch, mobile }: { ch: Channel; mobile: boolean }) {
     setText(v);
     const caret = ta.current?.selectionStart ?? v.length;
     const before = v.slice(0, caret);
-    const m = /(^|\s)@([\p{L}0-9_ ]{0,24})$/u.exec(before);
+    const m = /(^|\s)@([\p{L}0-9_\- ]{0,24})$/u.exec(before);
     if (m && !(m[2].includes(' ') && !ic)) setSug({ q: m[2], start: caret - m[2].length - 1, sel: 0 }); else setSug(null);
     if (Date.now() - lastTyping.current > 2500 && v.trim()) { lastTyping.current = Date.now(); wsSend({ t: 'typing', channel: ch.id }); }
   }
@@ -43,7 +43,7 @@ export function Composer({ ch, mobile }: { ch: Channel; mobile: boolean }) {
     const ins = `@${nameIn(u, ch)} `;
     const v = text.slice(0, sug.start) + ins + text.slice(caret);
     setText(v); setSug(null);
-    requestAnimationFrame(() => { ta.current?.focus(); const p = sug.start + ins.length; ta.current?.setSelectionRange(p, p); });
+    requestAnimationFrame(() => { const el = ta.current; if (!el) return; el.focus(); if (el.value === v) { const p = sug.start + ins.length; el.setSelectionRange(p, p); } }); // skip if they already kept typing
   }
   function send() {
     const t = text.trim();
@@ -69,7 +69,7 @@ export function Composer({ ch, mobile }: { ch: Channel; mobile: boolean }) {
   }
   const placeholder = ch.layer === 'dm' ? `Message ${nameIn(users[ch.members?.find((x) => x !== me.id) ?? ''], ch)}` : ic ? (mode === 'speak' ? 'Speak to the whole square…' : mobile ? 'Say something…' : `Say something as ${me.citizenName}…`) : `Message #${ch.name}`;
   const suggest = sug && candidates.length > 0 && <div className="suggest" role="listbox"><div className="h">{ic ? 'CITIZENS' : 'PEOPLE'}</div>
-    {candidates.map((u, i) => <button key={u.id} className={i === sug.sel ? 'sel' : ''} onMouseDown={(e) => { e.preventDefault(); pick(u); }}><Av u={u} size="s28" />{nameIn(u, ch)}<span className="sub">{ic ? `@${u.handle}` : u.citizenName}</span></button>)}</div>;
+    {candidates.map((u, i) => <button key={u.id} className={i === sug.sel ? 'sel' : ''} onMouseDown={(e) => { e.preventDefault(); pick(u); }}><Av u={u} size="s28" />{nameIn(u, ch)}<ZipBadge u={u} /><span className="sub">{u.zip ? zipDomain(u.zip.name) : ic ? `@${u.handle}` : u.citizenName}</span></button>)}</div>;
   const emojis = emo && <div className="emojis">{EMOJI.map((e) => <button key={e} onMouseDown={(ev) => { ev.preventDefault(); setText((t) => t + e); setEmo(false); ta.current?.focus(); }}>{e}</button>)}</div>;
   const replying = reply && <div className="replying"><I n="reply" c="sm" />Replying to <b>{nameIn(users[reply.userId ?? ''], ch)}</b><button className="x" onClick={() => useS.setState({ replyTo: null })} aria-label="Cancel reply"><I n="x" c="sm" /></button></div>;
   const seg = ic && <span className="seg" role="radiogroup" aria-label="Say or Speak">

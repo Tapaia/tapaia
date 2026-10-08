@@ -10,6 +10,8 @@ export interface SeedUser {
   id: string; handle: string; citizenName: string; tile: Tile; badges: Badge[];
   avatar: AvatarCfg; status: string; presence: Presence; entry?: 'founder' | 'burn'; arrivalText?: string;
   wallet?: string; district?: string; about?: string; room?: string; kind?: 'seed' | 'bot'; linked?: boolean;
+  /** DEMO Zipcoin name (sample data, not a real zipcoin.cash registration). Picked from names that were unclaimed on Oct 7, 2026. */
+  zipDemo?: string;
 }
 
 const A = (outfit: AvatarCfg['outfit'], skin: AvatarCfg['skin'], hair: AvatarCfg['hair'], hairstyle: AvatarCfg['hairstyle'] = 'short', band = true, shirt?: string): AvatarCfg =>
@@ -17,9 +19,9 @@ const A = (outfit: AvatarCfg['outfit'], skin: AvatarCfg['skin'], hair: AvatarCfg
 
 export const SEED_USERS: SeedUser[] = [
   { id: 'ilse', handle: 'ilseh', citizenName: 'Ilse Hartwood', tile: 'c1', badges: ['founder'], avatar: A('robe', 'tan', 'plum', 'long'), status: 'just arrived', presence: 'here', entry: 'founder', arrivalText: 'Hello Tapaia! I brought cards and a terrible sense of direction.', wallet: '0x3fA1…c07e', district: 'Kalimar', room: 'square' },
-  { id: 'nessa', handle: 'nessaq', citizenName: 'Nessa Quill', tile: 'c5', badges: ['founder'], avatar: A('robe', 'fair', 'ginger', 'long'), status: 'at the tea cart', presence: 'here', entry: 'founder', arrivalText: 'First cup of tea in the square is on me.', wallet: '0x88b2…41d0', room: 'square' },
+  { id: 'nessa', handle: 'nessaq', citizenName: 'Nessa Quill', tile: 'c5', badges: ['founder'], avatar: A('robe', 'fair', 'ginger', 'long'), status: 'at the tea cart', presence: 'here', entry: 'founder', arrivalText: 'First cup of tea in the square is on me.', wallet: '0x88b2…41d0', room: 'square', zipDemo: 'nessaq' },
   { id: 'corvin', handle: 'ashdale', citizenName: 'Corvin Ashdale', tile: 'c3', badges: ['founder'], avatar: A('robe', 'warm', 'chestnut'), status: 'idle', presence: 'idle', entry: 'founder', arrivalText: 'Keeper of the tea cart schedule. Ask me anything about jasmine.', wallet: '0x1c9e…77aa', room: 'square' },
-  { id: 'wren', handle: 'wrenh', citizenName: 'Wren Halloway', tile: 'c2', badges: ['onchain'], avatar: A('robe', 'deep', 'black', 'bun'), status: 'herb swap at 6 lh', presence: 'here', entry: 'burn', arrivalText: 'Hello Tapaia! Herb grower from Kalimar, here for the tea and the talk.', wallet: '0x5d0F…e912', district: 'Kalimar', room: 'square' },
+  { id: 'wren', handle: 'wrenh', citizenName: 'Wren Halloway', tile: 'c2', badges: ['onchain'], avatar: A('robe', 'deep', 'black', 'bun'), status: 'herb swap at 6 lh', presence: 'here', entry: 'burn', arrivalText: 'Hello Tapaia! Herb grower from Kalimar, here for the tea and the talk.', wallet: '0x5d0F…e912', district: 'Kalimar', room: 'square', zipDemo: 'wrenh' },
   { id: 'orla', handle: 'orlaf', citizenName: 'Orla Fenwick', tile: 'c4', badges: ['onchain'], avatar: A('robe', 'fair', 'blonde', 'bun'), status: 'by the maple', presence: 'here', entry: 'burn', arrivalText: 'Here for the maple and the benches.', wallet: '0xa7E3…0b5c', room: 'square' },
   { id: 'tobin', handle: 'tobinl', citizenName: 'Tobin Larkspur', tile: 'c1', badges: ['onchain'], avatar: A('hood', 'warm', 'black'), status: 'hood up', presence: 'here', entry: 'burn', arrivalText: 'Hood up, ears open.', wallet: '0x29Cc…a3f1', room: 'square' },
   { id: 'pim', handle: 'tallowpim', citizenName: 'Pim Tallow', tile: 'c3', badges: ['onchain'], avatar: A('plain', 'tan', 'black', 'short', false, '#f2c84b'), status: 'in the library', presence: 'idle', entry: 'burn', arrivalText: 'Looking for a book that is not about business.', wallet: '0x6b41…9e2d', room: 'square' },

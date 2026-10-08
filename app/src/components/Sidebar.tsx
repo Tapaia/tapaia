@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { I, Px, Av } from '../ui';
+import { I, Px, Av, ZipBadge } from '../ui';
 import { openChannel, toggleTheme, unreadFor, useS } from '../store';
 import { canRead } from '../../shared/perms';
 import type { Channel } from '../../shared/types';
@@ -58,14 +58,14 @@ export function Sidebar() {
         {dms.map((ch) => {
           const o = dmOther(ch, me?.id); if (!o || !match(o.handle)) return null;
           const { n } = unreadFor(ch);
-          return <button key={ch.id} className={`ch ${ch.id === active ? 'on' : n ? 'unread' : ''}`} onClick={() => openChannel(ch.id)}><Av u={o} size="s28" /><span className="nmx">{o.handle}</span>{n > 0 && ch.id !== active && <span className="badge">{n}</span>}</button>;
+          return <button key={ch.id} className={`ch ${ch.id === active ? 'on' : n ? 'unread' : ''}`} onClick={() => openChannel(ch.id)}><Av u={o} size="s28" /><span className="nmx">{o.handle}</span><ZipBadge u={o} />{n > 0 && ch.id !== active && <span className="badge">{n}</span>}</button>;
         })}
         {me && !dms.length && <div className="small" style={{ padding: '2px 10px 8px' }}>Click someone’s name to message them.</div>}
       </nav>
       {me ? (
         <div className="me" onClick={() => useS.setState({ modal: { kind: 'profile' } })} data-testid="me-card" role="button" tabIndex={0}>
           <Av u={me} dot />
-          <div style={{ minWidth: 0 }}><div className="nm">{active === 'square' ? me.citizenName : me.handle}</div><div className="st">{!me.isCitizen ? 'Not a citizen yet' : active === 'square' ? 'In Tapaia Square' : 'Online'}</div></div>
+          <div style={{ minWidth: 0 }}><div className="nm" style={{ display: 'flex', alignItems: 'center', gap: 5 }}><span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{active === 'square' ? me.citizenName : me.handle}</span><ZipBadge u={me} /></div><div className="st">{!me.isCitizen ? 'Not a citizen yet' : active === 'square' ? 'In Tapaia Square' : 'Online'}</div></div>
           <div className="icons">
             <button onClick={(e) => { e.stopPropagation(); toggleTheme(); }} aria-label="Toggle theme" data-testid="theme-toggle-me"><I n={dark ? 'sun' : 'moon'} c="sm" /></button>
             <button aria-label="Profile and settings"><I n="sliders" c="sm" /></button>

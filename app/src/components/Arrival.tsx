@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { I, Px, Av, Figure, Modal, Chk } from '../ui';
+import { I, Px, Av, Figure, Modal, Chk, ZipBadge } from '../ui';
 import { api, openChannel, refreshConfig, toast, useS, wsSend } from '../store';
 import { byteLen } from '../../shared/perms';
 import type { PublicUser } from '../../shared/types';
@@ -67,7 +67,7 @@ export function ArrivalModal() {
   const preview = (
     <div className="card-arrival pv"><div className="fig"><Figure cfg={me.avatar} w={48} /></div>
       <div style={{ minWidth: 0 }}><div className="k"><Px src={path === 'founder' ? 'icon-medal' : 'icon-flame'} style={{ width: 14, height: 14 }} />{stage === 'done' ? 'New arrival' : 'Preview'} · {path === 'founder' ? 'Founding Citizen' : 'new citizen'}</div>
-        <div className="q"><b>{me.citizenName}</b> “{text.trim() || 'Your arrival message…'}”</div></div></div>
+        <div className="q"><b>{me.citizenName}</b>{me.zip && <> <ZipBadge u={me} /></>} “{text.trim() || 'Your arrival message…'}”</div></div></div>
   );
 
   if (stage === 'done' && result) return (
@@ -161,7 +161,7 @@ export function SpeakModal({ text, replyTo }: { text: string; replyTo?: number }
         <button className="iconbtn x" onClick={close} aria-label="Close"><I n="x" /></button></div>
       <div className="prof-body">
         <div className="card-speak" style={{ margin: 0 }}><div className="h"><Px src="icon-flame" />Preview · Speak <span className="ph" style={{ textTransform: 'none' }}>S</span> ZC</div>
-          <div className="b"><Av u={me} /><div style={{ minWidth: 0 }}><div className="meta"><span className="who">{me.citizenName}</span></div><div className="text">{text}</div></div></div></div>
+          <div className="b"><Av u={me} /><div style={{ minWidth: 0 }}><div className="meta"><span className="who">{me.citizenName}</span><ZipBadge u={me} /></div><div className="text">{text}</div></div></div></div>
         <div className="fieldrow" style={{ marginTop: -4 }}><span /><span className={bytes > 280 ? 'over' : ''}>{bytes} / 280 bytes</span></div>
         {step >= 0 ? <div className="box"><h4>SIGNING · SIMULATED</h4><SimProgress step={step} /></div> : <>
           <BurnNotice kind="speak" />

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { I, Px, Av, Figure, Modal, BADGE_ICON, BADGE_LABEL, useTicks, avatarUrl } from '../ui';
+import { I, Px, Av, Figure, Modal, BADGE_ICON, BADGE_LABEL, useTicks, avatarUrl, ZipBadge, zipDomain, zipTitle } from '../ui';
+import { ZipNamePanel, zipPage } from './ZipName';
 import { api, setTheme, signOff, toast, useS, wsSend, type ThemePref } from '../store';
 import { HAIRS, SKINS, SHIRTS, randomAvatar, type AvatarCfg, type Outfit } from '../../shared/avatar';
 import { fmtTicks, meldanTicks } from '../../shared/clock';
@@ -14,7 +15,8 @@ function Chips({ u }: { u: PublicUser }) {
     {u.isCitizen && !u.entry && <span className="pill ic">Citizen · demo</span>}
     {!u.isCitizen && u.kind !== 'bot' && <span className="pill neutral">Not a citizen yet</span>}
     {u.badges.filter((b) => b === 'team' || b === 'mod' || b === 'bot').map((b) => <span key={b} className={`pill ${b === 'team' ? 'ok' : 'neutral'}`}><Px src={BADGE_ICON[b]} />{BADGE_LABEL[b]}</span>)}
-    {u.wallet && <span className="pill ok"><I n="check" c="sm" />{u.wallet}</span>}
+    {u.zip ? <span className={`pill zip ${u.zip.demo ? 'demo' : ''}`} title={zipTitle(u.zip)} data-testid="zip-pill"><ZipBadge u={u} />{zipDomain(u.zip.name)}{u.zip.demo ? ' · demo' : ''}</span>
+      : u.wallet && <span className="pill ok" title="Wallet (no Zipcoin name)"><I n="check" c="sm" />{u.wallet}</span>}
     {u.kind === 'demo' && <span className="pill neutral">demo account</span>}
   </>;
 }
@@ -30,15 +32,17 @@ export function ProfileCard() {
   const x = Math.min(pc.x, innerWidth - 336), y = Math.min(Math.max(8, pc.y - 40), innerHeight - 440);
   const isMe = u.id === me?.id;
   const since = u.arrivalAt ?? u.createdAt;
+  const site = useS.getState().config?.zipcoin.site ?? 'https://www.zipcoin.cash';
   return <>
     <div className="pcard-dim" onClick={close} />
     <div className="pcard" style={{ left: x, top: y }} data-testid="profile-card">
       <div className="scene"><Figure cfg={u.avatar} w={48} /><span className="tr pill dark pixel" style={{ fontSize: 8 }}>{fmtTicks(meldanTicks(since))}</span></div>
       <div className="body">
-        <h3>{ic || !u.linked ? (ic ? u.citizenName : u.handle) : u.handle}</h3>
+        <h3 style={{ display: 'flex', alignItems: 'center', gap: 6 }}>{ic || !u.linked ? (ic ? u.citizenName : u.handle) : u.handle}<ZipBadge u={u} /></h3>
         <div className="h">{u.linked || isMe ? (ic ? `@${u.handle} in community channels` : `${u.citizenName} in Tapaia Square`) : ic ? 'Citizen of Meldan' : 'Community member'}</div>
         <div className="chips"><Chips u={u} /></div>
         <div className="row">Citizen since <b>{new Date(since).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</b></div>
+        {u.zip && <div className="row" data-testid="pcard-zip">Zipcoin name <b>{u.zip.demo ? <>{zipDomain(u.zip.name)} <span className="pill sample">DEMO DATA</span></> : <a href={zipPage(site, u.zip.name)} target="_blank" rel="noreferrer noopener">{zipDomain(u.zip.name)}</a>}</b></div>}
         {u.district && <div className="row">Home district <b>{u.district}</b></div>}
         {u.about && <div className="row">{u.about}</div>}
         {u.arrivalText && <div className="quote"><span className="small">Arrival post</span><br />“{u.arrivalText}”</div>}
@@ -78,7 +82,7 @@ export function ProfileEditor() {
   async function save() {
     setBusy(true);
     try {
-      const { me: m } = await api<{ me: PublicUser }>('/api/profile', { citizenName: name, handle, avatar: av, linked }, 'PATCH');
+      const { me: m } = await api<{ me: PublicUser }>('/api/profile', { citizenName: name, handle: me.zip && me.handle === me.zip.name ? undefined : handle, avatar: av, linked }, 'PATCH');
       useS.setState({ me: m }); toast('Citizen saved.'); close();
     } catch (e) { toast((e as Error).message, true); } finally { setBusy(false); }
   }
@@ -96,12 +100,15 @@ export function ProfileEditor() {
               <span className="shadow" /><Figure cfg={av} w={80} className="ava" alt="Avatar preview" /></div>
             <div className="pname">
               <input className="name-in" value={name} onChange={(e) => setName(e.target.value)} maxLength={32} aria-label="Citizen name" />
-              <div className="h">Posts as <b>@</b><input className="handle-in" style={{ width: `${Math.max(3, handle.length) * 0.6 + 0.9}em` }} value={handle} onChange={(e) => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))} maxLength={20} aria-label="Handle" /> in community channels</div>
+              {me.zip && me.handle === me.zip.name
+                ? <div className="h" data-testid="handle-locked">Posts as <b>@{me.handle}</b> <ZipBadge u={me} /> in community channels</div>
+                : <div className="h">Posts as <b>@</b><input className="handle-in" style={{ width: `${Math.max(3, handle.length) * 0.6 + 0.9}em` }} value={handle} onChange={(e) => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))} maxLength={20} aria-label="Handle" /> in community channels</div>}
               <div className="chips"><Chips u={me} /></div>
             </div>
             <div className="stats"><div><div className="v">{me.speaks}</div><div className="k">Speaks</div></div>
               <div><div className="v">Day {days}</div><div className="k">{me.isCitizen ? 'Arrived' : 'Joined'}</div></div>
               <div className="locked"><div className="v"><I n="lock" c="sm" />Rep</div><div className="k">Coming later</div></div></div>
+            <ZipNamePanel me={me} />
           </div>
           <div>
             <div className="sect"><div className="sh">Outfit <span>From the Veridia wardrobe</span></div>

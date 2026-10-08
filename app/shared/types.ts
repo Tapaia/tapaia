@@ -25,6 +25,9 @@ export interface PublicUser {
   district?: string;
   createdAt: number;
   speaks: number;
+  /** Zipcoin name label ("alice" = alice.zipcoin.cash). Real ones are resolved from the wallet via zipcoin.cash's API.
+   *  demo: true = demo data or a simulated claim, NOT a real zipcoin.cash registration. */
+  zip?: { name: string; demo?: boolean };
 }
 
 export type MsgKind = 'text' | 'system' | 'arrival' | 'speak';
@@ -64,6 +67,7 @@ export interface AppConfig {
   zcAddress: string;
   speakMinimum: number;
   repoUrl: string;
+  zipcoin: { api: string; site: string };
 }
 
 export type ClientMsg =

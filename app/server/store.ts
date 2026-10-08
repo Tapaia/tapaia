@@ -6,11 +6,11 @@ import { fileURLToPath } from 'node:url';
 import type { Channel, Message, PublicUser } from '../shared/types';
 import { CHANNELS, SEED_MESSAGES, SEED_USERS } from './seed';
 
-const DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), 'data');
+const DIR = process.env.TAPAIA_DATA_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), 'data'); // override used by verify's mocked-zipcoin instance
 const FILE = path.join(DIR, 'db.json');
 const MAX_PER_CHANNEL = 400;
 
-export interface User extends PublicUser { address?: string }
+export interface User extends PublicUser { address?: string; preZipHandle?: string }
 export interface Session { userId: string; expires: number }
 
 interface DB {
@@ -22,7 +22,7 @@ interface DB {
   nextId: number;
 }
 
-const DB_VERSION = 1;
+const DB_VERSION = 2; // v2: Zipcoin names (demo names on two seed citizens)
 export let db: DB;
 
 function seed(): DB {
@@ -34,6 +34,7 @@ function seed(): DB {
       isCitizen: s.kind !== 'bot', entry: s.entry, arrivalText: s.arrivalText, arrivalAt: now - 86_400_000 * (2 + Math.floor(Math.random() * 5)),
       wallet: s.wallet, kind: s.kind ?? 'seed', status: s.status, presence: s.presence, room: s.room,
       linked: s.linked ?? false, about: s.about, district: s.district, createdAt: now - 86_400_000 * 6, speaks: s.id === 'wren' ? 1 : 0,
+      ...(s.zipDemo ? { zip: { name: s.zipDemo, demo: true } } : {}),
     };
   }
   const messages: Message[] = [];
@@ -83,6 +84,6 @@ export const newId = (p: string) => `${p}_${crypto.randomBytes(6).toString('hex'
 export const newToken = () => crypto.randomBytes(24).toString('base64url');
 
 export function publicUser(u: User): PublicUser {
-  const { address: _a, ...rest } = u;
+  const { address: _a, preZipHandle: _p, ...rest } = u;
   return rest;
 }

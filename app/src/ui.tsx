@@ -76,6 +76,23 @@ export const Figure = ({ cfg, w, className = '', alt = '' }: { cfg: AvatarCfg; w
 export const BADGE_ICON: Record<string, string> = { founder: 'icon-medal', onchain: 'icon-flame', team: 'icon-shield', bot: 'icon-robot', mod: 'icon-star' };
 export const BADGE_LABEL: Record<string, string> = { founder: 'Founding Citizen', onchain: 'Arrival post', team: 'Verified team', bot: 'Bot', mod: 'Moderator' };
 
+// ---- Zipcoin names
+export const zipDomain = (name: string) => `${name}.zipcoin.cash`;
+export const zipTitle = (z: NonNullable<PublicUser['zip']>) => z.demo
+  ? `Demo Zipcoin name: ${zipDomain(z.name)} (demo data, not a real zipcoin.cash registration)`
+  : `Verified Zipcoin name: ${zipDomain(z.name)}`;
+/** How a person's identity reads outside of chat names: their Zipcoin name, else the short wallet address. */
+export const identityOf = (u?: Partial<PublicUser>) => (u?.zip ? zipDomain(u.zip.name) : u?.wallet ?? null);
+
+/** Small seal next to a name: verified Zipcoin name (green) or a demo one (dashed, grey). */
+export function ZipBadge({ u, className = '' }: { u?: Partial<PublicUser>; className?: string }) {
+  if (!u?.zip) return null;
+  const t = zipTitle(u.zip);
+  return <span className={`zipb ${u.zip.demo ? 'demo' : ''} ${className}`} title={t} aria-label={t} role="img" data-testid="zip-badge" data-name={u.zip.name}>
+    <svg viewBox="0 0 16 16" aria-hidden><path d="M8 .9l1.7 1.3 2.1-.2.7 2 1.9 1-.5 2.1.9 1.9-1.5 1.5-.2 2.1-2.1.4L9.7 14.9 8 13.7l-1.9 1.2-1.3-1.7-2.1-.4-.2-2.1L1 9.2l.9-1.9-.5-2.1 1.9-1 .7-2 2.1.2z" className="seal" /><path d="M5.2 8.3l1.9 1.9 3.8-4" className="tick" /></svg>
+  </span>;
+}
+
 export function useTicks() {
   const [t, setT] = useState(meldanTicks());
   useEffect(() => { const id = setInterval(() => setT(meldanTicks()), 432); return () => clearInterval(id); }, []);

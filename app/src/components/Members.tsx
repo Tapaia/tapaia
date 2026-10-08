@@ -1,4 +1,4 @@
-import { I, Px, Av, BADGE_ICON } from '../ui';
+import { I, Px, Av, BADGE_ICON, ZipBadge } from '../ui';
 import { nameIn, useS } from '../store';
 import { canRead } from '../../shared/perms';
 import type { PublicUser } from '../../shared/types';
@@ -40,7 +40,7 @@ export function Members() {
         <div className="grp">{title} — {xs.length}</div>
         {xs.map((u) => <button key={u.id} className={`mem ${on(u) ? '' : 'away'}`} onClick={(e) => openCard(u.id, e)}>
           <Av u={u} size="s32" dot />
-          <div className="info"><div className="nm">{nameIn(u, ch)}</div><div className="st">{u.id === me?.id ? 'that’s you' : u.status}</div></div>{badge(u)}
+          <div className="info"><div className="nmrow"><div className="nm">{nameIn(u, ch)}</div><ZipBadge u={u} /></div><div className="st">{u.id === me?.id ? 'that’s you' : u.status}</div></div>{badge(u)}
         </button>)}
       </div>)}
     </aside>

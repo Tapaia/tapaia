@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, Fragment } from 'react';
-import { I, Px, Av, Figure, BADGE_ICON, BADGE_LABEL, useTicks } from '../ui';
+import { I, Px, Av, Figure, BADGE_ICON, BADGE_LABEL, useTicks, ZipBadge, zipDomain } from '../ui';
 import { backToList, nameIn, mentionsMe, openChannel, toggleTheme, unreadFor, useS, wsSend } from '../store';
 import { canPost, canRead, postBlockedReason } from '../../shared/perms';
 import { fmtTicks, longhours, meldanTicks } from '../../shared/clock';
@@ -48,7 +48,7 @@ export function Main({ mobile }: { mobile: boolean }) {
   return (
     <main className="main" style={{ position: 'relative' }}>
       <div className="topbar">
-        <div className="title">{ic ? <Px src="icon-tree" /> : ch.layer === 'dm' && other ? <Av u={other} size="s28" /> : <span className="hash">#</span>}{title}</div>
+        <div className="title">{ic ? <Px src="icon-tree" /> : ch.layer === 'dm' && other ? <Av u={other} size="s28" /> : <span className="hash">#</span>}{title}{ch.layer === 'dm' && <ZipBadge u={other} />}</div>
         <div className="topic">{ch.layer === 'dm' ? `Direct message with ${other?.handle}. Staff never DM first.` : ch.topic}</div>
         <div className="acts">
           {ch.layer !== 'dm' && <button className="stack" onClick={() => useS.setState({ showMembers: !showMembers })} aria-label="Members"><span className="avs">{stack.map((u) => <Av key={u.id} u={u} />)}</span>{present.length}</button>}
@@ -198,8 +198,8 @@ function Item({ m, ch, cont, reply, ctx, mobile }: { m: Message; ch: Channel; co
   const timeTitle = ic ? `${localTime(m.ts)} your time` : new Date(m.ts).toLocaleString();
 
   if (m.kind === 'system') {
-    if (m.sys === 'citizen') return <div className="sysline" id={`m${m.id}`}>👋 <b role="button" onClick={(e) => u && openCard(u.id, e)}>{name}</b> {m.text}</div>;
-    return <div className="sysline" id={`m${m.id}`}><Px src="icon-door" /><b role="button" onClick={(e) => u && openCard(u.id, e)}>{name}</b> {m.text}</div>;
+    if (m.sys === 'citizen') return <div className="sysline" id={`m${m.id}`}>👋 <b role="button" onClick={(e) => u && openCard(u.id, e)}>{name}</b><ZipBadge u={u} /> {m.text}</div>;
+    return <div className="sysline" id={`m${m.id}`}><Px src="icon-door" /><b role="button" onClick={(e) => u && openCard(u.id, e)}>{name}</b><ZipBadge u={u} /> {m.text}</div>;
   }
   if (m.kind === 'arrival' && u) {
     const waved = !!me && (m.reactions['👋'] ?? []).includes(me.id);
@@ -208,7 +208,7 @@ function Item({ m, ch, cont, reply, ctx, mobile }: { m: Message; ch: Channel; co
     return <div className="card-wrap" id={`m${m.id}`}><div className="card-arrival">
       <div className="fig"><Figure cfg={u.avatar} w={mobile ? 32 : 48} /></div>
       <div style={{ minWidth: 0 }}><div className="k"><Px src={founder ? 'icon-medal' : 'icon-flame'} className="badge-ic" />New arrival · {founder ? 'Founding Citizen' : 'Arrival post'}{m.simulated && <span className="pill demo sample">demo · nothing burned</span>}</div>
-        <div className="q"><b role="button" onClick={(e) => openCard(u.id, e)} style={{ cursor: 'pointer' }}>{u.citizenName}</b> “{m.text}”</div></div>
+        <div className="q"><b role="button" onClick={(e) => openCard(u.id, e)} style={{ cursor: 'pointer' }}>{u.citizenName}</b>{u.zip && <> <ZipBadge u={u} /> <span className="zipdom">{zipDomain(u.zip.name)}</span></>} “{m.text}”</div></div>
       <div className="wave">
         <button className={`btn-soft ${waved ? 'mine' : ''}`} disabled={!me} onClick={() => wsSend({ t: 'react', id: m.id, emoji: '👋' })} data-testid="wave">👋 Wave hello{waveCount > 0 && ` · ${waveCount}`}</button>
         <span className="time" style={{ fontSize: 12, color: 'var(--text-3)' }} title={timeTitle}>{time}</span></div>
@@ -219,7 +219,7 @@ function Item({ m, ch, cont, reply, ctx, mobile }: { m: Message; ch: Channel; co
     return <>{replyEl}<div className="card-wrap" id={`m${m.id}`}><div className="card-speak">
       <div className="h"><Px src="icon-flame" />Spoke to the Square · burned <span className="ph" style={{ textTransform: 'none' }}>S</span> ZC
         <span className="v demo" title="Prototype: Speak is simulated, nothing was burned">{m.simulated ? <>demo · nothing burned</> : <><I n="check" c="sm" />Verified on-chain</>}</span></div>
-      <div className="b"><Av u={u} onClick={(e) => openCard(u.id, e)} /><div style={{ minWidth: 0 }}><div className="meta"><span className="who" role="button" onClick={(e) => openCard(u.id, e)}>{u.citizenName}</span><span className="time" title={timeTitle}>{time}</span></div>
+      <div className="b"><Av u={u} onClick={(e) => openCard(u.id, e)} /><div style={{ minWidth: 0 }}><div className="meta"><span className="who" role="button" onClick={(e) => openCard(u.id, e)}>{u.citizenName}</span><ZipBadge u={u} />{u.zip && <span className="zipdom">{zipDomain(u.zip.name)}</span>}<span className="time" title={timeTitle}>{time}</span></div>
         <div className="text">{m.deleted ? <span className="deleted">message deleted</span> : renderText(m.text, ctx)}</div><Reactions m={m} /></div></div>
     </div><Toolbar m={m} ch={ch} /></div></>;
   }
@@ -230,7 +230,7 @@ function Item({ m, ch, cont, reply, ctx, mobile }: { m: Message; ch: Channel; co
   if (cont) return <div className={`msg cont ${mention ? 'mention' : ''}`} id={`m${m.id}`}><span className="time-h">{ic ? '' : localTime(m.ts).replace(/\s?[AP]M/, '')}</span><span className="spacer" /><div className="content">{body}{card}<Reactions m={m} /></div><Toolbar m={m} ch={ch} /></div>;
   return <>{replyEl}<div className={`msg ${mention ? 'mention' : ''}`} id={`m${m.id}`}>
     {u ? <Av u={u} onClick={(e) => openCard(u.id, e)} /> : <span className="av c6" />}
-    <div className="content"><div className="meta"><span className="who" role="button" onClick={(e) => u && openCard(u.id, e)}>{name}</span><Badges u={u} />{m.sample && <span className="pill sample">SAMPLE DATA</span>}<span className="time" title={timeTitle}>{time}</span></div>
+    <div className="content"><div className="meta"><span className="who" role="button" onClick={(e) => u && openCard(u.id, e)}>{name}</span><ZipBadge u={u} /><Badges u={u} />{m.sample && <span className="pill sample">SAMPLE DATA</span>}<span className="time" title={timeTitle}>{time}</span></div>
       {body}{card}<Reactions m={m} /></div>
     <Toolbar m={m} ch={ch} /></div></>;
 }

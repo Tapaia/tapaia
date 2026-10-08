@@ -17,6 +17,7 @@ import type { AppConfig, Channel, ClientMsg, Message, PublicUser, ServerMsg, Til
 import { ZC_ADDRESS } from './seed';
 import { randomName, RESERVED } from './names';
 import { startBots, onUserMessage } from './bots';
+import { checkZipName, claimUrl, isZipLabel, resolveZipName, shortAddress, ZIPCOIN_API, ZIPCOIN_SITE } from './zipcoin';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = Number(process.env.PORT || 4417);
@@ -87,6 +88,46 @@ function validCitizenName(n?: unknown): n is string {
   if (typeof n !== 'string') return false;
   const t = n.trim();
   return t.length >= 2 && t.length <= 32 && /^[\p{L}][\p{L} '\-.]*$/u.test(t) && !RESERVED.includes(t.toLowerCase());
+}
+
+// ---------------------------------------------------------------- Zipcoin names
+const STAFF_WORDS = ['tapaia', 'tapaiasquare', 'team', 'admin', 'moderator', 'mod', 'support', 'staff'];
+// One Tapaia account per name. A real (wallet-verified) holder always wins over a demo copy.
+function clearZip(u: User) {
+  if (!u.zip) return false;
+  const was = u.zip.name;
+  delete u.zip;
+  if (u.handle === was) {
+    const back = u.preZipHandle && !Object.values(db.users).some((x) => x.id !== u.id && x.handle === u.preZipHandle) ? u.preZipHandle : undefined;
+    u.handle = back ?? uniqueHandle(u.address ? `citizen${u.address.slice(2, 6).toLowerCase()}` : 'citizen');
+  }
+  delete u.preZipHandle;
+  return true;
+}
+/** Give `u` the Zipcoin name `name` (or take it away with null). Returns true if anything visible changed. */
+function applyZip(u: User, name: string | null, demo = false): boolean {
+  if (!name) return clearZip(u);
+  if (u.zip?.name === name && !!u.zip.demo === demo) return false;
+  if (u.zip) clearZip(u);
+  for (const o of Object.values(db.users)) {
+    if (o.id === u.id) continue;
+    if (o.zip?.name === name) { clearZip(o); broadcastUser(o); }   // demo copy or a stale holder
+  }
+  // the name becomes the handle (@alice), unless it's one of our own staff/brand words (a verified holder of a
+  // lore or "kept" name like gladias or vitalik does get it: the seal shows it's really theirs)
+  if (!STAFF_WORDS.includes(name)) {
+    for (const o of Object.values(db.users)) if (o.id !== u.id && o.handle === name) { o.handle = uniqueHandle(name); broadcastUser(o); }
+    if (u.handle !== name) { u.preZipHandle = u.handle; u.handle = name; }
+  }
+  u.zip = demo ? { name, demo: true } : { name };
+  return true;
+}
+/** Look up the wallet's Zipcoin name (cached) and apply it. API down = keep what we have; the UI falls back to the short address. */
+async function refreshZip(u: User, force = false) {
+  if (u.kind !== 'wallet' || !u.address) return;
+  const r = await resolveZipName(u.address, { force });
+  if (!r.ok) return;
+  if (applyZip(u, r.name)) { save(); broadcastUser(u); rehelloUser(u.id); }
 }
 
 const founderUsed = () => Object.values(db.users).filter((u) => u.entry === 'founder').length;
@@ -249,6 +290,7 @@ app.get('/api/config', (_req, res) => {
     walletConnectProjectId: WC_ID, build: BUILD,
     founderSlots: { total: FOUNDER_SLOTS, used: founderUsed(), demoValue: true },
     zcAddress: ZC_ADDRESS, speakMinimum: SPEAK_MIN, repoUrl: 'https://github.com/tapaia/tapaia',
+    zipcoin: { api: ZIPCOIN_API, site: ZIPCOIN_SITE },
   };
   res.json(cfg);
 });
@@ -295,6 +337,9 @@ app.post('/api/siwe/verify', async (req, res) => {
       const short = address.slice(2, 6).toLowerCase();
       u = newUser('wallet', { handle: `citizen${short}`, address });
     }
+    const z = await resolveZipName(address); // cached 10 min, never throws, ~4 s worst case
+    if (z.ok) applyZip(u, z.name);
+    save();
     setSession(req, res, u.id);
     broadcastUser(u);
     res.json({ me: publicUser(u) });
@@ -345,9 +390,14 @@ app.patch('/api/profile', (req, res) => {
   }
   if (b.handle !== undefined) {
     const h = String(b.handle).trim().toLowerCase();
-    if (!/^[a-z0-9_]{3,20}$/.test(h) || RESERVED.includes(h)) return res.status(400).json({ error: 'Handles are 3–20 letters, numbers or _.' });
-    if (Object.values(db.users).some((x) => x.id !== u.id && x.handle === h)) return res.status(400).json({ error: 'That handle is taken.' });
-    u.handle = h;
+    const locked = !!u.zip && u.handle === u.zip.name; // a Zipcoin name is your handle while you hold it
+    if (locked) {
+      if (h !== u.handle) return res.status(400).json({ error: 'Your handle is your Zipcoin name. Change your citizen name instead.' });
+    } else {
+      if (!/^[a-z0-9_]{3,20}$/.test(h) || RESERVED.includes(h)) return res.status(400).json({ error: 'Handles are 3–20 letters, numbers or _.' });
+      if (Object.values(db.users).some((x) => x.id !== u.id && x.handle === h)) return res.status(400).json({ error: 'That handle is taken.' });
+      u.handle = h;
+    }
   }
   if (b.avatar !== undefined) { if (!isAvatarCfg(b.avatar)) return res.status(400).json({ error: 'Bad avatar' }); u.avatar = b.avatar; }
   if (typeof b.linked === 'boolean') u.linked = b.linked;
@@ -355,6 +405,44 @@ app.patch('/api/profile', (req, res) => {
   if (typeof b.status === 'string') u.status = b.status.slice(0, 40);
   save(); broadcastUser(u);
   res.json({ me: publicUser(u) });
+});
+
+// ---- Zipcoin names (read-only proxies to zipcoin.cash's public API; nothing here sends a transaction)
+app.get('/api/zipcoin/identity/:address', async (req, res) => {
+  const a = String(req.params.address || '');
+  if (!/^0x[0-9a-fA-F]{40}$/.test(a)) return res.status(400).json({ error: 'Bad address' });
+  const r = await resolveZipName(a);
+  res.json({ address: a.toLowerCase(), name: r.name, domain: r.name ? `${r.name}.zipcoin.cash` : null, display: r.display, ok: r.ok, short: shortAddress(a) });
+});
+app.get('/api/zipcoin/check', async (req, res) => {
+  const r = await checkZipName(String(req.query.name ?? ''));
+  res.json({ ...r, claimUrl: r.state === 'available' || r.state === 'reserved' ? claimUrl(r.name) : null });
+});
+const lastRefresh = new Map<string, number>();
+app.post('/api/zipcoin/refresh', async (req, res) => {
+  const u = me(req);
+  if (!u) return res.status(401).json({ error: 'Sign in first' });
+  if (u.kind !== 'wallet' || !u.address) return res.status(400).json({ error: 'Only wallet accounts have a Zipcoin name to look up.' });
+  const force = Date.now() - (lastRefresh.get(u.id) ?? 0) > 15_000;
+  if (force) lastRefresh.set(u.id, Date.now());
+  const r = await resolveZipName(u.address, { force });
+  if (r.ok && applyZip(u, r.name)) { save(); broadcastUser(u); rehelloUser(u.id); }
+  res.json({ me: publicUser(u), ok: r.ok });
+});
+// DEMO accounts only: a simulated claim. Nothing is burned and nothing is registered on zipcoin.cash.
+app.post('/api/zipcoin/demo-claim', async (req, res) => {
+  const u = me(req);
+  if (!u) return res.status(401).json({ error: 'Sign in first' });
+  if (u.kind !== 'demo') return res.status(400).json({ error: 'Real wallets claim on zipcoin.cash. Simulated claims are for demo accounts.' });
+  const name = String(req.body?.name ?? '').trim().toLowerCase();
+  if (!isZipLabel(name)) return res.status(400).json({ error: 'Names are 3 to 24 lowercase letters, digits and hyphens, with no hyphen at either end.' });
+  if (Object.values(db.users).some((o) => o.id !== u.id && o.zip?.name === name)) return res.status(400).json({ error: 'Someone in Tapaia already holds that name.' });
+  const c = await checkZipName(name);
+  if (c.state === 'error') return res.status(503).json({ error: 'Couldn’t reach zipcoin.cash to check that name. Try again in a moment.' });
+  if (c.state !== 'available') return res.status(400).json({ error: `That name is ${c.state} on zipcoin.cash.` });
+  applyZip(u, name, true);
+  save(); broadcastUser(u); rehelloUser(u.id);
+  res.json({ me: publicUser(u), simulated: true });
 });
 
 app.post('/api/report', (req, res) => { if (!me(req)) return res.status(401).end(); res.json({ ok: true, note: 'Reports are stubbed in the prototype.' }); });
@@ -374,7 +462,7 @@ server.on('upgrade', (req, socket, head) => {
     const c: Client = { ws, userId: u?.id, room: null, idle: false, recent: [] };
     clients.add(c);
     hello(c);
-    if (u) refreshPresence(u.id);
+    if (u) { refreshPresence(u.id); if (u.kind === 'wallet') void refreshZip(u); }
     ws.on('message', (raw) => { try { handle(c, JSON.parse(String(raw))); } catch { /* ignore bad frames */ } });
     ws.on('close', () => { clients.delete(c); if (c.userId) refreshPresence(c.userId); });
   });
